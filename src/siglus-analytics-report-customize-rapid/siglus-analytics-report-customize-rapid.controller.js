@@ -75,7 +75,8 @@
             vm.comments = requisition.draftStatusMessage;
             vm.year = moment(requisition.processingPeriod.endDate).format('YYYY');
             vm.signaure =  requisition.extraData.signaure;
-            vm.approvedSignature = _.join(vm.signaure.approve, ',');
+            var approvedSignatureList = vm.signaure.approve;
+            vm.approvedSignature = approvedSignatureList.join(',');
             vm.creationDate = siglusAnalyticsDateService.getCreationDateWithTranslatedMonth(requisition.createdDate);
             var endDate = requisition.processingPeriod.endDate;
             vm.month = siglusAnalyticsDateService.getAbbrTranslatedMonthFromDateText(endDate);
