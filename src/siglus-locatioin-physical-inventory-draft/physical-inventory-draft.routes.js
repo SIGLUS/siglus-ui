@@ -106,13 +106,10 @@
                 lotsMapByOrderableId: function(rawDraft, siglusOrderableLotListService, facility) {
                     var orderableIdList = _.uniq(
                         _.filter(rawDraft.lineItems, function(lineItem) {
-                            return !lineItem.stockCardId;
+                            return !lineItem.stockCardId && _.get(lineItem, ['orderable', 'id']);
                         }).map(function(item) {
                             return _.get(item, ['orderable', 'id']);
                         })
-                            .filter(function(item) {
-                                return !!item;
-                            })
                     );
                     if (orderableIdList.length > 0) {
                         return siglusOrderableLotListService.getOrderableLots(facility.id, orderableIdList)
@@ -174,6 +171,7 @@
                         size: '@@STOCKMANAGEMENT_PAGE_SIZE',
                         page: $stateParams.page || 0
                     };
+
                     return paginationService.registerList(validator, paginationParams, function() {
                         return groupedLineItems;
                     });

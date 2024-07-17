@@ -311,9 +311,7 @@
                         ng-model="lineItem.reasonFreeText" rows="1" cols="15" />
                 </td>
                 <td ng-if="!vm.isFreeTextAllowed(lineItem) && !vm.isInitialInventory"></td>
-                <!-- <td ng-if="!vm.isInitialInventory" class="text-align-right">{{lineItem.unaccountedQuantity}}</td> -->
                 <td ng-if="vm.actionType !== 'SUBMITTED'" style="max-width: 170px;">
-                    <!-- <button ng-if="!(lineItem.orderable && lineItem.orderable.isKit)" class="stock-actions add" ng-click="vm.addLotByLocation(lineItem, lineItems)">{{'stockPhysicalInventoryDraft.addItem' | message}}</button> -->
                     <button ng-if="vm.isInitialInventory || vm.isEmpty(lineItem.stockCardId) || lineItem.orderable.archived" class="danger stock-actions" ng-click="vm.removeLot(lineItem, lineItems)">{{'stockPhysicalInventoryDraft.remove' | message}}</button>
                 </td>
             </tr>

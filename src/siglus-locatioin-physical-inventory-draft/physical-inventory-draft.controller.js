@@ -1194,7 +1194,7 @@
             reload($state.current.name);
         }
 
-        function addLotByLocation(lineItem) {
+        function addLotByLocation(lineItem, lineItems) {
             loadingModalService.open();
             physicalInventoryService.getApprovedProducts(facility.id, program.id)
                 .then(function(productsForThisProgram) {
@@ -1209,6 +1209,12 @@
                                     orderable: angular.copy(item.orderable)
                                 });
                             });
+                            var isEmptyLocation = !lineItem.id && !lineItem.lot && !lineItem.orderable
+                                && lineItems.length === 1;
+                            if (isEmptyLocation) {
+                                var lineItemIndex = _.findIndex(draft.lineItems, lineItem);
+                                draft.lineItems.splice(lineItemIndex, 1);
+                            }
                             draft.lineItems = draft.lineItems.concat(lineItemsToAdd);
                             loadingModalService.close();
                             $stateParams.isAddProduct = true;
