@@ -925,7 +925,7 @@
 
                 var categories = $stateParams.locationManagementOption === 'location' ?
                     $filter('siglusGroupByAllProductProgramProductCategoryByLocation')(newList) :
-                    $filter('siglusGroupByAllProductProgramProductCategory')(newList);
+                    $filter('siglusGroupByCategoryDisplayName')(newList);
                 vm.groupedCategories = _.isEmpty(categories) ? [] : categories;
                 localStorageService.add('physicalInventoryCategories', JSON.stringify(categories));
                 // SIGLUS-REFACTOR: ends here
@@ -1201,7 +1201,6 @@
                         productsForThisProgram, vm.hasLot, lineItem.locationCode, [], facility
                     )
                         .then(function(addedItems) {
-                            console.log('addedItems', addedItems);
                             var lineItemsToAdd = addedItems.map(function(item) {
                                 return _.assign(generateEmptyLineItem(), {
                                     locationCode: item.locationCode,
