@@ -429,7 +429,7 @@
             if (!_.isEmpty(keyword)) {
                 keyword = keyword.trim();
                 result = _.filter(lineItems, function(item) {
-                    var searchableFields = item.orderable.productCode ? [
+                    var searchableFields = _.get(item, ['orderable', 'productCode']) ? [
                         item.orderable.productCode,
                         productNameFilter(item.orderable),
                         item.locationCode
