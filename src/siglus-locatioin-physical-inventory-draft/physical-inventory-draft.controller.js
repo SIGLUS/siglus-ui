@@ -753,11 +753,10 @@
             var anyError = false;
             var isByLocation = $stateParams.locationManagementOption;
             var allLineItems = vm.draft.lineItems;
-            // var deferredByValidate = $q.defer();
+
             if (isByLocation === 'location') {
-                // deferredByValidate
                 allLineItems.forEach(function(item) {
-                    if (!item.orderable.id && !item.skipped) {
+                    if (!_.get(item, ['orderable', 'id']) && !item.skipped) {
                         item.$errors.skippedInvalid = 'hasEmptyLocation';
                         anyError = 'hasEmptyLocation';
                     }
