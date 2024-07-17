@@ -65,7 +65,6 @@
         vm.expirationDateChanged = expirationDateChanged;
         vm.reasonChanged = reasonChanged;
         vm.reasonTextChanged = reasonTextChanged;
-        vm.addStockAdjustments = addStockAdjustments;
         vm.focusedRowChanged = focusedRowChanged;
         vm.addLot = addLot;
         vm.addLotByLocation = addLotByLocation;
@@ -1049,7 +1048,7 @@
         function quantityChanged(lineItem) {
             vm.validateQuantity(lineItem);
             if (!lineItem.$errors.quantityInvalid) {
-                vm.addStockAdjustments(lineItem);
+                addStockAdjustments(lineItem);
                 vm.checkUnaccountedStockAdjustments(lineItem);
             }
             vm.updateProgress();
@@ -1206,7 +1205,8 @@
                                 return _.assign(generateEmptyLineItem(), {
                                     locationCode: item.locationCode,
                                     lot: angular.copy(item.lot),
-                                    orderable: angular.copy(item.orderable)
+                                    orderable: angular.copy(item.orderable),
+                                    programId: _.get(item, ['program', 'id'])
                                 });
                             });
                             var isEmptyLocation = !lineItem.id && !lineItem.lot && !lineItem.orderable
@@ -1374,10 +1374,11 @@
                 lotOptions: [],
                 orderable: {},
                 orderableId: null,
-                programId: vm.program.id,
-                quantity: null,
+                programId: null,
+                quantity: 0,
                 reasonFreeText: undefined,
                 skipped: false,
+                stockOnHand: 0,
                 stockAdjustments: [],
                 stockCardId: null,
                 vvmStatuses: undefined

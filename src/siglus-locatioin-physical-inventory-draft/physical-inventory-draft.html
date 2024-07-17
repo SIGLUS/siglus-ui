@@ -292,16 +292,8 @@
                     </select>
                 </td>
                 <td ng-if="!vm.isInitialInventory" class="reasons-cell">
-                    <!-- SIGLUS-REFACTOR: starts here -->
-                    <!-- <stock-reasons
-                            ng-model="lineItem.stockAdjustments"
-                            line-item="lineItem"
-                            reasons="vm.reasons[lineItem.programId] || []"
-                            ng-change="vm.reasonChanged(lineItem)"
-                    /> -->
                     <p ng-if="!vm.isEmpty(lineItem.stockCardId)">{{ lineItem.stockAdjustments[0].reason.name }}</p>
                     <p ng-style="{'color' : 'red'}">{{lineItem.$diffMessage.movementPopoverMessage}}</p>
-                    <!-- SIGLUS-REFACTOR: ends here -->
                 </td>
                 <td ng-if="vm.isFreeTextAllowed(lineItem) && !vm.isInitialInventory" openlmis-invalid="{{lineItem.$errors.reasonFreeTextInvalid ? 'openlmisForm.required' : '' | message}}">
                     <span ng-if="vm.actionType === 'SUBMITTED'" style="padding: 8px;">{{lineItem.reasonFreeText}}</span>
