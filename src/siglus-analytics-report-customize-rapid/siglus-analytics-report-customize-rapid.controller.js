@@ -72,13 +72,10 @@
             vm.columns = _.forEach(requisition.requisitionLineItems, function(item) {
                 item.expirationDate = moment(item.expirationDate).format('DD/MM/YYYY');
             });
-            var commentsStr = _.reduce(requisition.statusHistory, function(r, c) {
-                r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
-                return r;
-            }, '');
-            vm.comments = commentsStr.substr(0, commentsStr.length - 1);
+            vm.comments = requisition.draftStatusMessage;
             vm.year = moment(requisition.processingPeriod.endDate).format('YYYY');
             vm.signaure =  requisition.extraData.signaure;
+            vm.approvedSignature = _.join(vm.signaure.approve, ',');
             vm.creationDate = siglusAnalyticsDateService.getCreationDateWithTranslatedMonth(requisition.createdDate);
             var endDate = requisition.processingPeriod.endDate;
             vm.month = siglusAnalyticsDateService.getAbbrTranslatedMonthFromDateText(endDate);
