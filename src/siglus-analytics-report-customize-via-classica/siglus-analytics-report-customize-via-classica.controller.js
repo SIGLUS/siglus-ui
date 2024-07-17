@@ -28,14 +28,19 @@
         .module('siglus-analytics-report-customize-via-classica')
         .controller('siglusAnalyticsReportCustomizeViaClassicaController', controller);
 
-    controller.$inject = [ 'requisition', 'facility', 'processingPeriod',
-        'messageService',  'lineItemsList', 'columns', '$q', 'siglusTemplateConfigureService',
-        'SIGLUS_SECTION_TYPES', 'openlmisDateFilter', 'requisitionService', 'siglusDownloadLoadingModalService',
-        '$stateParams'];
+    controller.$inject = [
+        'requisition', 'facility', 'processingPeriod', 'messageService', 'lineItemsList',
+        'columns', '$q', 'siglusTemplateConfigureService', 'SIGLUS_SECTION_TYPES',
+        'requisitionService', 'siglusDownloadLoadingModalService', '$stateParams', 'moment',
+        'siglusAnalyticsDateService'
+    ];
 
-    function controller(requisition, facility, processingPeriod, messageService, lineItemsList,
-                        columns, $q, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES, openlmisDateFilter,
-                        requisitionService, siglusDownloadLoadingModalService, $stateParams) {
+    function controller(
+        requisition, facility, processingPeriod, messageService, lineItemsList,
+        columns, $q, siglusTemplateConfigureService, SIGLUS_SECTION_TYPES,
+        requisitionService, siglusDownloadLoadingModalService, $stateParams, moment,
+        siglusAnalyticsDateService
+    ) {
         var vm = this;
         vm.requisition = undefined;
         vm.facility = undefined;
@@ -46,7 +51,7 @@
         vm.$onInit = onInit;
         vm.downloadPdf = downloadPdf;
         vm.emergencyCount = '01';
-        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+        vm.nowTime = siglusAnalyticsDateService.getNowTimeWithTranslatedMonth();
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -103,12 +108,12 @@
             siglusDownloadLoadingModalService.open();
             var viaHeader = document.getElementById('via-header');
             var viaTableHeader = document.getElementById('via-table-header');
-            var viaSignaure = document.getElementById('via-signaure');
+            var viaSignature = document.getElementById('via-signaure');
             var viaPrint = document.getElementById('via-print');
 
             var viaHeaderHeight = viaHeader.offsetHeight;
             var viaTableHeaderHeight = viaTableHeader.offsetHeight;
-            var viaSignaureHeight = viaSignaure.offsetHeight;
+            var viaSignatureHeight = viaSignature.offsetHeight;
             var viaPrintHeight = viaPrint.offsetHeight;
 
             //A4[595.28,841.89]
@@ -118,17 +123,17 @@
                 A4_HEIGHT = 555,
                 CONTAINER_WIDTH = viaHeader.offsetWidth,
                 BLANK_DIVIDE_HEIGHT = 10,
-                PAGE_NUMBER_TOPOFFSET_HEIGHT = 575;
+                PAGE_NUMBER_TOP_OFFSET_HEIGHT = 575;
             var rate = A4_WIDTH / CONTAINER_WIDTH;
             var a4Height2px = A4_HEIGHT / rate;
             var fixedHeight = viaHeaderHeight
                     + viaTableHeaderHeight
-                    + viaSignaureHeight
+                    + viaSignatureHeight
                     + viaPrintHeight;
             var canUseHeight = a4Height2px - fixedHeight  - topOffsetConstant * 2;
             var needCalcTrNodes = document.querySelectorAll('.calcTr');
             var needCalcTrNodesArray = Array.from(needCalcTrNodes);
-            var tableDomList = [viaHeader, viaTableHeader, viaSignaure, viaPrint];
+            var tableDomList = [viaHeader, viaTableHeader, viaSignature, viaPrint];
             var fixedPromiseList = [];
             angular.forEach(tableDomList, function(item) {
                 // eslint-disable-next-line no-undef
@@ -201,7 +206,7 @@
                             PDF.text(
                                 pageNumber.toString(),
                                 A4_WIDTH / 2,
-                                PAGE_NUMBER_TOPOFFSET_HEIGHT
+                                PAGE_NUMBER_TOP_OFFSET_HEIGHT
                             );
 
                             // 遍历跟随分页部分重复的部分
@@ -236,7 +241,7 @@
                             PDF.text(
                                 pageNumber.toString(),
                                 A4_WIDTH / 2,
-                                PAGE_NUMBER_TOPOFFSET_HEIGHT
+                                PAGE_NUMBER_TOP_OFFSET_HEIGHT
                             );
 
                             PDF.addImage(
@@ -276,7 +281,7 @@
                             PDF.text(
                                 pageNumber.toString() + '-END',
                                 A4_WIDTH / 2,
-                                PAGE_NUMBER_TOPOFFSET_HEIGHT
+                                PAGE_NUMBER_TOP_OFFSET_HEIGHT
                             );
                         }
                         offsetHeight = offsetHeight + result[index].nodeHeight;

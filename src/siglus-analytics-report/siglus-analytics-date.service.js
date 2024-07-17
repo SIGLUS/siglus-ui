@@ -31,9 +31,18 @@
     siglusAnalyticsDateService.$inject = ['moment', 'messageService'];
     function siglusAnalyticsDateService(moment, messageService) {
 
+        this.getNowTimeWithTranslatedMonth = getNowTimeWithTranslatedMonth;
         this.getCreationDateWithTranslatedMonth = getCreationDateWithTranslatedMonth;
         this.getFullTranslatedMonthFromDateText = getFullTranslatedMonthFromDateText;
         this.getAbbrTranslatedMonthFromDateText = getAbbrTranslatedMonthFromDateText;
+
+        function getNowTimeWithTranslatedMonth() {
+            var nowTime = moment().utcOffset(2);
+            var monthNumber = nowTime.month();
+            var abbrMonthText = getTranslatedMonthText(monthNumber, true);
+            return nowTime.format('D') + ' ' + abbrMonthText + ' ' + nowTime.format('Y') +
+                ' ' + nowTime.format('h:mm:ss a');
+        }
 
         function getCreationDateWithTranslatedMonth(creationDateText) {
             var creationDate = moment(creationDateText).utcOffset(2);
@@ -43,22 +52,20 @@
 
         function getFullTranslatedMonthFromDateText(dateText) {
             var monthNumber = moment(dateText).month();
-            var currentLocale = messageService.getCurrentLocale();
-            if (currentLocale === 'en') {
-                return englishFullMonths[monthNumber];
-            } else if (currentLocale === 'pt') {
-                return portugueseFullMonths[monthNumber];
-            }
-            return '';
+            return getTranslatedMonthText(monthNumber, false);
         }
 
         function getAbbrTranslatedMonthFromDateText(dateText) {
             var monthNumber = moment(dateText).month();
+            return getTranslatedMonthText(monthNumber, true);
+        }
+
+        function getTranslatedMonthText(monthNumber, isAbbr) {
             var currentLocale = messageService.getCurrentLocale();
             if (currentLocale === 'en') {
-                return englishAbbrMonths[monthNumber];
+                return isAbbr ? englishAbbrMonths[monthNumber] : englishFullMonths[monthNumber];
             } else if (currentLocale === 'pt') {
-                return portugueseAbbrMonths[monthNumber];
+                return isAbbr ? portugueseAbbrMonths[monthNumber] : portugueseFullMonths[monthNumber];
             }
             return '';
         }

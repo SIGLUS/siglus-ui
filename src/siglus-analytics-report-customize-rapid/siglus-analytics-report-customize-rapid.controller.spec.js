@@ -17,6 +17,7 @@ describe('siglusAnalyticsReportCustomizeRapidController', function() {
     var testData = [];
     beforeEach(function() {
         var context = this;
+        module('siglus-analytics-report');
         module('siglus-analytics-report-customize-rapid');
         module('requisition-view', function($provide) {
             context.RequisitionStockCountDateModalMock = jasmine.createSpy('RequisitionStockCountDateModal');
@@ -39,13 +40,14 @@ describe('siglusAnalyticsReportCustomizeRapidController', function() {
             this.openlmisDateFilter = $injector.get('openlmisDateFilter');
             this.siglusTemplateConfigureService = $injector.get('siglusTemplateConfigureService');
             this.$controller = $injector.get('$controller');
+            this.siglusAnalyticsDateService = $injector.get('siglusAnalyticsDateService');
         });
 
         this.program = new ProgramDataBuilder()
             .withEnabledDatePhysicalStockCountCompleted()
             .build();
         this.facility = new this.FacilityDataBuilder().build();
-        // for constroller's functions
+
         testData = [
             {
                 title: 'is January',
@@ -1218,7 +1220,8 @@ describe('siglusAnalyticsReportCustomizeRapidController', function() {
             facility: this.facility,
             requisition: this.requisition,
             openlmisDateFilter: this.openlmisDateFilter,
-            siglusTemplateConfigureService: this.siglusTemplateConfigureService
+            siglusTemplateConfigureService: this.siglusTemplateConfigureService,
+            siglusAnalyticsDateService: this.siglusAnalyticsDateService
         });
         this.vm.$onInit();
     });

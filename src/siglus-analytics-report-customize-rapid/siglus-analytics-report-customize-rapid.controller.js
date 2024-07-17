@@ -31,21 +31,23 @@
     controller.$inject = [
         'facility',
         'requisition',
-        'openlmisDateFilter',
         'siglusTemplateConfigureService',
         'SIGLUS_SECTION_TYPES',
         'siglusDownloadLoadingModalService',
-        '$stateParams'
+        '$stateParams',
+        'siglusAnalyticsDateService',
+        'moment'
     ];
 
     function controller(
         facility,
         requisition,
-        openlmisDateFilter,
         siglusTemplateConfigureService,
         SIGLUS_SECTION_TYPES,
         siglusDownloadLoadingModalService,
-        $stateParams
+        $stateParams,
+        siglusAnalyticsDateService,
+        moment
     ) {
         var vm = this;
         vm.facility = undefined;
@@ -56,12 +58,10 @@
         vm.signaure = {};
         vm.$onInit = onInit;
         vm.creationDate = undefined;
-        vm.getCreationDate = getCreationDate;
-        vm.getMonth = getMonth;
         vm.getPdfName = getPdfName;
         vm.getDataFromField = getDataFromField;
         vm.requisition = {};
-        vm.nowTime = openlmisDateFilter(new Date(), 'd MMM y h:mm:ss a');
+        vm.nowTime = siglusAnalyticsDateService.getNowTimeWithTranslatedMonth();
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -70,17 +70,18 @@
                 hideBreadcrumb();
             }
             vm.columns = _.forEach(requisition.requisitionLineItems, function(item) {
-                item.expirationDate = openlmisDateFilter(item.expirationDate, 'dd/MM/yyyy');
+                item.expirationDate = moment(item.expirationDate).format('DD/MM/YYYY');
             });
             var commentsStr = _.reduce(requisition.statusHistory, function(r, c) {
                 r = c.statusMessageDto ?  r + c.statusMessageDto.body + '.' : r + '';
                 return r;
             }, '');
             vm.comments = commentsStr.substr(0, commentsStr.length - 1);
-            vm.year = openlmisDateFilter(requisition.processingPeriod.endDate, 'yyyy');
+            vm.year = moment(requisition.processingPeriod.endDate).format('YYYY');
             vm.signaure =  requisition.extraData.signaure;
-            vm.creationDate = getCreationDate(requisition.createdDate);
-            vm.month = getMonth(requisition.processingPeriod.endDate);
+            vm.creationDate = siglusAnalyticsDateService.getCreationDateWithTranslatedMonth(requisition.createdDate);
+            var endDate = requisition.processingPeriod.endDate;
+            vm.month = siglusAnalyticsDateService.getAbbrTranslatedMonthFromDateText(endDate);
             vm.service = siglusTemplateConfigureService.getSectionByName(
                 requisition.usageTemplate.rapidTestConsumption,
                 SIGLUS_SECTION_TYPES.SERVICE
@@ -94,19 +95,13 @@
                 SIGLUS_SECTION_TYPES.OUTCOME
             );
             vm.services = getSortedServices(requisition.testConsumptionLineItems);
-            console.log('test');
-        }
-
-        function getCreationDate(date) {
-            return openlmisDateFilter(date, 'd MMM y');
         }
 
         function getPdfName(date, facilityName, id) {
             return (
                 'MIT.' + id
-                + '.' + openlmisDateFilter(date, 'yy')
-                + openlmisDateFilter(date, 'MM') + '.'
-                + '01'
+                + '.' + moment(date).format('YY MM')
+                + '.01'
                 + '.pdf'
             );
         }
@@ -130,10 +125,6 @@
             return _.sortBy(requisition.testConsumptionLineItems, function(service) {
                 return service.displayOrder;
             });
-        }
-
-        function getMonth(date) {
-            return openlmisDateFilter(date, 'MMMM');
         }
 
         vm.downloadPdf = function() {
