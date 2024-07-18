@@ -540,8 +540,9 @@
                             draft.lineItems = _.filter(draft.lineItems, function(item) {
                                 return !item.skipped;
                             });
+                            var historyData = buildHistoryData(resolvedData);
                             physicalInventoryService.submitPhysicalInventory(
-                                draft, true, buildHistoryData(resolvedData)
+                                draft, true, historyData
                             )
                                 .then(function() {
                                     if (vm.isInitialInventory) {
@@ -1311,58 +1312,65 @@
         }
 
         function buildLineItemsData(isByProduct) {
-            var lineItemsData = [];
+            try {
+                var lineItemsData = [];
 
-            vm.displayLineItemsGroup.forEach(function(displayLineItems) {
-                var currentProduct = displayLineItems[0].orderable;
-                var currentLocation = displayLineItems[0].locationCode;
+                vm.displayLineItemsGroup.forEach(function(displayLineItems) {
+                    var currentProduct = displayLineItems[0].orderable;
+                    var currentLocation = displayLineItems[0].locationCode;
 
-                if (displayLineItems.length > 1) {
-                    var stockOnHandSum = 0;
-                    var currentStockSum = 0;
-                    displayLineItems.forEach(function(lineItem) {
-                        stockOnHandSum = stockOnHandSum + lineItem.stockOnHand;
-                        currentStockSum = currentStockSum + lineItem.quantity;
-                    });
+                    if (displayLineItems.length > 1) {
+                        var stockOnHandSum = 0;
+                        var currentStockSum = 0;
+                        displayLineItems.forEach(function(lineItem) {
+                            stockOnHandSum = stockOnHandSum + lineItem.stockOnHand;
+                            currentStockSum = currentStockSum + lineItem.quantity;
+                        });
 
-                    lineItemsData.push({
-                        productCode: isByProduct ? currentProduct.productCode : null,
-                        productName: isByProduct ? currentProduct.fullProductName : null,
-                        location: isByProduct ? null : currentLocation,
-                        lotCode: null,
-                        expirationDate: null,
-                        stockOnHand: stockOnHandSum,
-                        currentStock: currentStockSum,
-                        reasons: null,
-                        comments: null
-                    });
-                    lineItemsData = lineItemsData.concat(buildLotItemListData(displayLineItems, isByProduct));
-                } else {
-                    var lineItem = buildLotItemListData(displayLineItems, isByProduct)[0];
-                    var assignData = isByProduct ? {
-                        productCode: currentProduct.productCode,
-                        productName: currentProduct.fullProductName
-                    } : {
-                        location: currentLocation
-                    };
-                    lineItemsData.push(_.assign(lineItem, assignData));
-                }
-            });
-            return lineItemsData;
+                        lineItemsData.push({
+                            productCode: isByProduct ? currentProduct.productCode : null,
+                            productName: isByProduct ? currentProduct.fullProductName : null,
+                            location: isByProduct ? null : currentLocation,
+                            lotCode: null,
+                            expirationDate: null,
+                            stockOnHand: stockOnHandSum,
+                            currentStock: currentStockSum,
+                            reasons: null,
+                            comments: null
+                        });
+                        lineItemsData = lineItemsData.concat(buildLotItemListData(displayLineItems, isByProduct));
+                    } else {
+                        var lineItem = buildLotItemListData(displayLineItems, isByProduct)[0];
+                        var assignData = isByProduct ? {
+                            productCode: currentProduct.productCode,
+                            productName: currentProduct.fullProductName
+                        } : {
+                            location: currentLocation
+                        };
+                        lineItemsData.push(_.assign(lineItem, assignData));
+                    }
+                });
+                return lineItemsData;
+            } catch (error) {
+                notificationService.error('Build History Data Error:', error);
+            }
+
         }
 
         function buildLotItemListData(lineItems, isByProduct) {
             return lineItems.map(function(lineItem) {
                 return {
-                    productCode: isByProduct ? null : lineItem.orderable.productCode,
-                    productName: isByProduct ? null : lineItem.orderable.fullProductName,
-                    lotCode: lineItem.lot ? lineItem.lot.lotCode : null,
-                    expirationDate: lineItem.lot ? lineItem.lot.expirationDate : null,
+                    productCode: isByProduct ? null : _.get(lineItem, ['orderable', 'orderable'], ''),
+                    productName: isByProduct ? null : _.get(lineItem, ['orderable', 'fullProductName'], ''),
+                    lotCode: lineItem.lot ?  _.get(lineItem, ['lot', 'lotCode'], '') : null,
+                    expirationDate: lineItem.lot ? _.get(lineItem, ['lot', 'expirationDate'], '') : null,
                     stockOnHand: lineItem.stockOnHand,
                     currentStock: lineItem.quantity,
                     reasons: {
-                        reason: lineItem.stockAdjustments[0] ? lineItem.stockAdjustments[0].reason.name : null,
-                        message: lineItem.$diffMessage ? lineItem.$diffMessage.movementPopoverMessage : null
+                        reason: _.get(lineItem, ['stockAdjustments', 0]) ?
+                            _.get(lineItem, ['stockAdjustments', 0, 'reason', 'name'], '') : null,
+                        message: lineItem.$diffMessage ?
+                            _.get(lineItem, ['$diffMessage', 'movementPopoverMessage'], '') : null
                     },
                     comments: lineItem.reasonFreeText,
                     location: isByProduct ? lineItem.area + ' - ' + lineItem.locationCode : null
