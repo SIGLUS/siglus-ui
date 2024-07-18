@@ -125,7 +125,8 @@
 
                         $scope.finishInput = function(lineItem) {
                             if (lineItem.lot && lineItem.isFromInput) {
-                                lineItem.lot.lotCode = lineItem.lot.lotCode.toUpperCase();
+                                var validInputLotCode = validateInputLotCode(lineItem.lot.lotCode);
+                                lineItem.lot.lotCode = validInputLotCode.toUpperCase();
                                 var option = findLotOptionByCode(lineItem.lotOptions, lineItem.lot.lotCode);
                                 if (_.isUndefined(option)) {
                                     // not found then reset, only keep lot code
@@ -241,6 +242,14 @@
                                     lineItem.$errors.lotDateInvalid = messageService.get('openlmisForm.required');
                                 }
                             }
+                        }
+
+                        function validateInputLotCode(inputContent) {
+                            var VALID_CHARS = /^[a-zA-Z0-9-]*$/;
+                            if (!VALID_CHARS.test(inputContent)) {
+                                return inputContent.replace(/[^a-zA-Z0-9-]/g, '');
+                            }
+                            return inputContent;
                         }
                     }],
                 replace: true,
