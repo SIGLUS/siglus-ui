@@ -645,7 +645,6 @@
             });
         }
 
-        // 校验form表单的Lot Code的地方;
         vm.validateLotCode = function(lineItem) {
             var lotCode = _.get(lineItem, ['lot', 'lotCode']);
             if (!hasLot(lineItem)) {
@@ -752,10 +751,10 @@
 
         function validate() {
             var anyError = false;
-            var isByLocation = $stateParams.locationManagementOption;
+            var locationManagementOption = $stateParams.locationManagementOption;
             var allLineItems = vm.draft.lineItems;
 
-            if (isByLocation === 'location') {
+            if (locationManagementOption === 'location') {
                 allLineItems.forEach(function(item) {
                     if (!_.get(item, ['orderable', 'id']) && !item.skipped) {
                         item.$errors.skippedInvalid = 'hasEmptyLocation';
@@ -763,7 +762,7 @@
                     }
                 });
             }
-            if (!anyError && isByLocation === 'location') {
+            if (!anyError && locationManagementOption === 'location') {
                 allLineItems.forEach(function(item) {
                     if (hasDuplicateLotCode(item)) {
                         item.$errors.lotCodeInvalid = messageService
@@ -772,7 +771,7 @@
                     }
                 });
             }
-            if (!anyError && $stateParams.locationManagementOption === 'product') {
+            if (!anyError && locationManagementOption === 'product') {
                 allLineItems.forEach(function(item) {
                     if (item.orderable && item.orderable.id) {
                         if (!item.orderable.isKit) {
@@ -784,7 +783,7 @@
                         anyError = vm.validateLocation(item) || anyError;
                     }
                 });
-            } else if (!anyError && $stateParams.locationManagementOption === 'location') {
+            } else if (!anyError && locationManagementOption === 'location') {
                 allLineItems.forEach(function(item) {
                     var skipped = _.get(item, 'skipped', false);
                     if (!skipped) {
