@@ -122,7 +122,7 @@
             submitSubDraftWithLocation: {
                 method: 'POST',
                 url: stockmanagementUrlFactory(
-                    '/api/siglusapi/location/physicalInventories/subDraftSubmit?isByLocation=true'
+                    '/api/siglusapi/location/physicalInventories/subDraftSubmit'
                 )
             }
         });
@@ -529,7 +529,9 @@
             });
             // SIGLUS-REFACTOR: ends here
             if (locationManagementOption === 'location' || locationManagementOption === 'product') {
-                return locationResource.submitSubDraftWithLocation(draft).$promise;
+                return locationResource.submitSubDraftWithLocation({
+                    isByLocation: locationManagementOption === 'location'
+                }, draft).$promise;
             }
             return resource.submit(draft).$promise;
         }

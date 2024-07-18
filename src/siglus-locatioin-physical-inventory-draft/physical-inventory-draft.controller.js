@@ -344,8 +344,6 @@
             }
         };
 
-        this.saveOrSubmit = saveOrSubmit;
-
         var saveDraft = function(notReload) {
             if ($stateParams.keyword) {
                 $stateParams.keyword = null;
@@ -535,7 +533,6 @@
                             vm.downloadPrint();
                         }
                         chooseDateModalService.show(new Date(), true).then(function(resolvedData) {
-
                             $scope.needToConfirm = false;
                             loadingModalService.open();
                             draft.occurredDate = resolvedData.occurredDate;
@@ -960,11 +957,10 @@
                 vm.validateLotCode(lineItem);
                 vm.validateLocation(lineItem);
             } else {
+                // type === 'location'
                 if (lineItem.locationCode) {
                     setSohForLineItem(lineItem);
-                    lineItem.area = _.find(_.flatten(Object.values(vm.allLocationAreaMap)), function(item) {
-                        return item.locationCode === lineItem.locationCode;
-                    }).area;
+                    lineItem.area = getAreaByLocationCode(lineItem.locationCode);
                     lineItem.locationList = _.map(vm.allLocationAreaMap[lineItem.area], function(item) {
                         return {
                             code: item.locationCode,
@@ -990,6 +986,14 @@
                 vm.validateLocation(lineItem);
             }
         };
+
+        function getAreaByLocationCode(locationCode) {
+            var allLocationAreaItems = _.flatten(Object.values(vm.allLocationAreaMap));
+            var targetLocationArea = _.find(allLocationAreaItems, function(locationAreaItem) {
+                return locationAreaItem.locationCode === locationCode;
+            });
+            return _.get(targetLocationArea, 'area', null);
+        }
 
         function onChange() {
             $scope.needToConfirm = true;
@@ -1208,8 +1212,10 @@
                     )
                         .then(function(addedItems) {
                             var lineItemsToAdd = addedItems.map(function(item) {
+                                var area = getAreaByLocationCode(item.locationCode);
                                 return _.assign(generateEmptyLineItem(), {
                                     locationCode: item.locationCode,
+                                    area: area,
                                     lot: angular.copy(item.lot),
                                     orderable: angular.copy(item.orderable),
                                     programId: _.get(item, ['program', 'id'])
