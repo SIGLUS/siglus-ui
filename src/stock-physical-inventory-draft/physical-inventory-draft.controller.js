@@ -65,6 +65,7 @@
         vm.addLot = addLot;
         vm.removeLot = removeLot;
         vm.isEmpty = isEmpty;
+        vm.back = goBack;
         vm.actionType = $stateParams.actionType;
         vm.isMergeDraft = $stateParams.isMerged === 'true';
         // SIGLUS-REFACTOR: ends here

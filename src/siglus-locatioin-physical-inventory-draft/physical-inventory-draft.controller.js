@@ -71,6 +71,7 @@
         vm.removeLot = removeLot;
         vm.isEmpty = isEmpty;
         vm.print = print;
+        vm.back = goBack;
         vm.actionType = $stateParams.actionType;
         vm.isMergeDraft = $stateParams.isMerged === 'true';
         vm.locationManagementOption = $stateParams.locationManagementOption;
