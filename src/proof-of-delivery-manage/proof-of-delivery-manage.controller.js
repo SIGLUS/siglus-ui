@@ -352,14 +352,14 @@
                                             );
 
                                             ReportService.downloadPdf(numberAndFileName.fileName, undefined, true);
-                                            siglusDownloadLoadingModalService.open();
+                                            siglusDownloadLoadingModalService.close();
                                         });
                                 });
                             });
                         })
                         .catch(function() {
                             notificationService.error('proofOfDeliveryManage.noOrderFound');
-                            siglusDownloadLoadingModalService.open();
+                            siglusDownloadLoadingModalService.close();
                         });
                 });
         }
