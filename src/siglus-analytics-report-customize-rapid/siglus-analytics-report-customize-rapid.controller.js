@@ -70,7 +70,8 @@
                 hideBreadcrumb();
             }
             vm.columns = _.forEach(requisition.requisitionLineItems, function(item) {
-                item.expirationDate = moment(item.expirationDate).format('DD/MM/YYYY');
+                var itemExpirationDate = moment(item.expirationDate);
+                item.expirationDate = itemExpirationDate.isValid() ? itemExpirationDate.format('DD/MM/YYYY') : '';
             });
             vm.comments = requisition.draftStatusMessage;
             vm.year = moment(requisition.processingPeriod.endDate).format('YYYY');
