@@ -43,6 +43,7 @@ describe('ViewTabController', function() {
             // SIGLUS-REFACTOR: ends here
             // #409: populate value when requisition is rejected
             this.REQUISITION_STATUS = $injector.get('REQUISITION_STATUS');
+            this.alertConfirmModalService = $injector.get('REQUISITION_STATUS');
             spyOn(this.$scope, '$broadcast');
             spyOn(this.notificationService, 'success');
             spyOn(this.offlineService, 'isOffline');
@@ -1095,8 +1096,9 @@ describe('ViewTabController', function() {
             program: this.program,
             canSync: this.canSync,
             isCreateForClient: this.isCreateForClient,
-            approvedProducts: []
+            approvedProducts: [],
             // #375: ends here
+            alertConfirmModalService: this.alertConfirmModalService
         });
         this.vm.$onInit();
     }
