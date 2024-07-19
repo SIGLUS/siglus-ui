@@ -29,23 +29,24 @@
         .controller('ViewTabController', ViewTabController);
 
     ViewTabController.$inject = [
-        '$filter', 'selectProductsModalService', 'requisitionValidator', 'requisition', 'columns', 'messageService',
-        'lineItems', 'alertService', 'canSubmit', 'canAuthorize', 'fullSupply',
-        'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items', 'paginationService',
-        '$stateParams', 'requisitionCacheService',
-        // SIGLUS-REFACTOR: starts here
-        'canSubmitAndAuthorize', 'requisitionService', 'loadingModalService', 'COLUMN_SOURCES',
-        'siglusArchivedProductService', 'program', '$scope', 'notificationService', 'offlineService', 'canSync',
-        '$state'
-        // SIGLUS-REFACTOR: ends here
+        '$filter', 'selectProductsModalService', 'requisitionValidator', 'requisition', 'columns',
+        'messageService', 'lineItems', 'alertService', 'canSubmit', 'canAuthorize', 'fullSupply',
+        'TEMPLATE_COLUMNS', '$q', 'OpenlmisArrayDecorator', 'canApproveAndReject', 'items',
+        '$stateParams', 'requisitionCacheService', 'canSubmitAndAuthorize', 'requisitionService',
+        'loadingModalService', 'siglusArchivedProductService', 'program', '$scope',
+        'notificationService', 'offlineService', 'canSync', '$state', 'alertConfirmModalService',
+        '$window'
     ];
 
-    function ViewTabController($filter, selectProductsModalService, requisitionValidator, requisition, columns,
-                               messageService, lineItems, alertService, canSubmit, canAuthorize,
-                               fullSupply, TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
-                               paginationService, $stateParams, requisitionCacheService, canSubmitAndAuthorize,
-                               requisitionService, loadingModalService, COLUMN_SOURCES, siglusArchivedProductService,
-                               program, $scope, notificationService, offlineService, canSync, $state) {
+    function ViewTabController(
+        $filter, selectProductsModalService, requisitionValidator, requisition, columns,
+        messageService, lineItems, alertService, canSubmit, canAuthorize, fullSupply,
+        TEMPLATE_COLUMNS, $q, OpenlmisArrayDecorator, canApproveAndReject, items,
+        $stateParams, requisitionCacheService, canSubmitAndAuthorize, requisitionService,
+        loadingModalService, siglusArchivedProductService, program, $scope,
+        notificationService, offlineService, canSync, $state, alertConfirmModalService,
+        $window
+    ) {
 
         var vm = this;
         vm.$onInit = onInit;
@@ -157,6 +158,7 @@
         vm.columns = undefined;
 
         vm.keyword = $stateParams.keyword;
+        vm.isExpiredEmergency = $stateParams.isExpiredEmergency || false;
         vm.search = function() {
             $stateParams.keyword = vm.keyword;
             if (vm.requisition.isInitForClient || vm.requisition.isCreateForClient) {
@@ -195,6 +197,7 @@
             // SIGLUS-REFACTOR: starts here
             populateDefaultValue();
             // SIGLUS-REFACTOR: ends here
+            showDeleteModalForExpiredEmergency();
         }
 
         // SIGLUS-REFACTOR: starts here
@@ -571,6 +574,34 @@
                 });
             }
             return vm.requisition.requisitionLineItems;
+        }
+
+        function showDeleteModalForExpiredEmergency() {
+            if (vm.isExpiredEmergency) {
+                alertConfirmModalService.error(
+                    'requisitionViewTab.expiredEmergency.title',
+                    'requisitionViewTab.expiredEmergency.message',
+                    ['', 'requisitionView.delete.label']
+                )
+                    .then(function() {
+                        loadingModalService.open();
+                        vm.requisition.$remove().then(function() {
+                            goBack();
+                            notificationService.success('requisitionView.delete.success');
+                        }, loadingModalService.close);
+                    });
+            }
+        }
+
+        function goBack() {
+            var prevPage = $window.location.href;
+            $window.history.back();
+            $window.onpopstate = function() {
+                if ($window.location.href === prevPage) {
+                    $state.go('openlmis.home');
+                }
+                $window.onpopstate = null;
+            };
         }
     }
 

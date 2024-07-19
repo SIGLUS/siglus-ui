@@ -59,6 +59,7 @@
         vm.periodHasRequisition = periodHasRequisition;
         vm.goToRequisition = goToRequisition;
         vm.checkProceedButton = checkProceedButton;
+        vm.isAfterSubmitStartDate = isAfterSubmitStartDate;
 
         /**
      * @ngdoc property
@@ -249,7 +250,8 @@
         function goToRequisition(id) {
             loadingModalService.open();
             $state.go('openlmis.requisitions.requisition.fullSupply', {
-                rnr: id
+                rnr: id,
+                isExpiredEmergency: vm.emergency && isAfterSubmitEndDate(vm.periods[0])
             });
         }
 
@@ -291,9 +293,14 @@
             return true;
         }
 
-        vm.isAfterSubmitStartDate = function(period) {
+        function isAfterSubmitStartDate(period) {
             var today = moment();
             return today.isSameOrAfter(period.submitStartDate, 'day');
-        };
+        }
+
+        function isAfterSubmitEndDate(period) {
+            var today = moment();
+            return today.isSameOrAfter(period.submitEndDate, 'day');
+        }
     }
 })();

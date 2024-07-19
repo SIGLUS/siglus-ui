@@ -10,7 +10,7 @@
   "requisitionInitiate.status": "Status",
   "requisitionInitiate.noHistory": "There is no history",
   "requisitionInitiate.startDate": "Start Date",
-  "requisitionInitiate.confirm.label": "Please finish physcial inventory before creating a requisition.",
+  "requisitionInitiate.confirm.label": "Please finish physical inventory before creating a requisition.",
   "requisitionInitiate.confirm.button": "Physical Inventory",
   "requisitionInitiate.submitDuration": "Submit Duration",
   "requisitionInitiate.noFirstStockMovement": "There is no stock card of any product under this program, you cannot process the requisition/report.",

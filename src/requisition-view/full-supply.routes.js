@@ -40,6 +40,10 @@
                 accessRights: [
                     REQUISITION_RIGHTS.REQUISITION_VIEW
                 ],
+                params: {
+                    rnr: undefined,
+                    isExpiredEmergency: false
+                },
                 resolve: {
                     lineItems: function($filter, requisition, $stateParams) {
                         var filterObject = requisition.template.hideSkippedLineItems() ?

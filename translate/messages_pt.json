@@ -1741,6 +1741,8 @@
   "requisitionViewTab.quantity": "Quantidade",
   "requisitionViewTab.quicklyFill.success": "Todos os campos vazios, foram preenchidos com “0”",
   "requisitionViewTab.quicklyFill": "Preenchimento rápido",
+  "requisitionViewTab.expiredEmergency.title": "Requisição de Emergência Expirada",
+  "requisitionViewTab.expiredEmergency.message": "Esta requisição de emergência está expirada, por favor exclua-a e crie uma nova.",
   "requisitionViewTab.receivedKitNo": "Número de Kits recebidos",
   "requisitionViewTab.selectTooMany": "Não pode adicionar mais de 10 produtos na requisição de emergência",
   "requisitionViewTab.skip": "Ignorar",
