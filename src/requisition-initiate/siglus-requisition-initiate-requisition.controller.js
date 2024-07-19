@@ -300,7 +300,7 @@
 
         function isAfterSubmitEndDate(period) {
             var today = moment();
-            return today.isSameOrAfter(period.submitEndDate, 'day');
+            return today.isAfter(period.submitEndDate, 'day');
         }
     }
 })();
