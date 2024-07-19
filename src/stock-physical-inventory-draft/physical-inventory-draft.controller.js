@@ -430,11 +430,9 @@
         vm.saveOnPageChange = function() {
             // only this works!
             loadingModalService.open();
-            return delayPromise(SIGLUS_TIME.LOADING_TIME).then(function() {
-                var params = {};
-                params.draft = draft;
-                return $q.resolve(params);
-            });
+            draft.lineItems = getUpdatedLineItems();
+            $state.params.draft = draft;
+            return delayPromise(SIGLUS_TIME.LOADING_TIME);
         };
         // SIGLUS-REFACTOR: ends here
 

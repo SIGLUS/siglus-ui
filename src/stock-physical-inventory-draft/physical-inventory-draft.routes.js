@@ -60,10 +60,11 @@
                 subDraftIds: function($stateParams) {
                     return $stateParams.subDraftIds.split(',');
                 },
-                draft: function(facility, $stateParams, physicalInventoryFactory, program) {
-                    var draft = $stateParams.draft;
+                draft: function(facility, $stateParams, physicalInventoryFactory, program, $state) {
+                    var draft = $state.params.draft;
                     var subDraftIds = $stateParams.subDraftIds;
                     $stateParams.draft = undefined;
+                    $state.params.draft = undefined;
                     if (draft) {
                         return draft;
                     }
