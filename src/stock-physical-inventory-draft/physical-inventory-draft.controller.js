@@ -233,7 +233,8 @@
                                         return _.assign(buildEmptyLineItem(), {
                                             orderable: angular.copy(item.orderable),
                                             quantity: item.quantity || 0,
-                                            lotOptions: lotsMapByOrderableId[_.get(item, ['orderable', 'id'])]
+                                            lotOptions: lotsMapByOrderableId[_.get(item, ['orderable', 'id'])],
+                                            programId: _.get(item, ['program', 'id'])
                                         });
                                     });
                                     draft.lineItems = draft.lineItems.concat(lineItemsToAdd);
