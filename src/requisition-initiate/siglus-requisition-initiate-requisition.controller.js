@@ -59,7 +59,7 @@
         vm.periodHasRequisition = periodHasRequisition;
         vm.goToRequisition = goToRequisition;
         vm.checkProceedButton = checkProceedButton;
-        vm.isAfterSubmitStartDate = isAfterSubmitStartDate;
+        vm.isInSubmitDuration = isInSubmitDuration;
 
         /**
      * @ngdoc property
@@ -293,9 +293,10 @@
             return true;
         }
 
-        function isAfterSubmitStartDate(period) {
+        function isInSubmitDuration(period) {
             var today = moment();
-            return today.isSameOrAfter(period.submitStartDate, 'day');
+            return today.isSameOrAfter(period.submitStartDate, 'day') &&
+                today.isSameOrBefore(period.submitEndDate, 'day');
         }
 
         function isAfterSubmitEndDate(period) {
