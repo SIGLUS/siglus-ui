@@ -68,15 +68,15 @@
 
         vm.viewDetail = function(lineItem) {
             if (lineItem.type === 'PRODUCT') {
-                $state.go('openlmis.locationManagement.stockOnHand.productDetail', _.extend($stateParams, {
+                $state.go('openlmis.locationManagement.stockOnHand.productDetail', _.assign($stateParams, {
                     orderable: lineItem.orderableId
                 }));
             } else if (lineItem.type === 'LOT') {
-                $state.go('openlmis.locationManagement.stockOnHand.lotDetail', _.extend($stateParams, {
+                $state.go('openlmis.locationManagement.stockOnHand.lotDetail', _.assign($stateParams, {
                     stockCardId: lineItem.stockCardId
                 }));
             } else if (lineItem.type === 'LOCATION') {
-                $state.go('openlmis.locationManagement.stockOnHand.locationDetail', _.extend($stateParams, {
+                $state.go('openlmis.locationManagement.stockOnHand.locationDetail', _.assign($stateParams, {
                     stockCardId: lineItem.stockCardId,
                     locationCode: lineItem.locationCode
                 }));

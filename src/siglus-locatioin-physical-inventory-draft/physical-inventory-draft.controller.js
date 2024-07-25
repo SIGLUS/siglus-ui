@@ -553,13 +553,7 @@
                                     } else {
                                         notificationService.success('stockPhysicalInventoryDraft.submitted');
                                     }
-
-                                    $state.go('openlmis.locationManagement.stockOnHand', {
-                                        program: program.id,
-                                        facility: facility
-                                    }, {
-                                        reload: true
-                                    });
+                                    goToStockOnHandPage();
                                 }, function() {
                                     loadingModalService.close();
                                     alertService.error('stockPhysicalInventoryDraft.submitFailed');
@@ -1410,5 +1404,17 @@
                 reload: true
             });
         }
+
+        function goToStockOnHandPage() {
+            var ALL_PRODUCT_PROGRAM_ID = '00000000-0000-0000-0000-000000000000';
+            var programId = vm.program.code === 'MMC' ? ALL_PRODUCT_PROGRAM_ID : vm.program.id;
+            $state.go('openlmis.locationManagement.stockOnHand', {
+                program: programId,
+                facility: facility
+            }, {
+                reload: true
+            });
+        }
+
     }
 })();

@@ -529,13 +529,7 @@
                             } else {
                                 notificationService.success('stockPhysicalInventoryDraft.submitted');
                             }
-
-                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                                program: program.id,
-                                facility: facility.id
-                            }, {
-                                reload: true
-                            });
+                            goToStockOnHandPage();
                         }, function() {
                             loadingModalService.close();
                             if (vm.isInitialInventory) {
@@ -978,5 +972,17 @@
                 reload: true
             });
         }
+
+        function goToStockOnHandPage() {
+            var ALL_PRODUCT_PROGRAM_ID = '00000000-0000-0000-0000-000000000000';
+            var programId = vm.program.code === 'MMC' ? ALL_PRODUCT_PROGRAM_ID : vm.program.id;
+            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                program: programId,
+                facility: facility.id
+            }, {
+                reload: true
+            });
+        }
+
     }
 })();
