@@ -94,9 +94,12 @@
                                 _.each(orderLineItem.groupedLineItems, function(lineItemGroup) {
                                     var orderableId = lineItemGroup[0].orderable && lineItemGroup[0].orderable.id;
                                     // set price
-                                    lineItemGroup[0].price = orderablesPriceMap[orderableId]
-                                        ? orderablesPriceMap[orderableId]
-                                        : '';
+                                    var price = orderablesPriceMap[orderableId];
+                                    if (price) {
+                                        lineItemGroup.forEach(function(lineItem) {
+                                            lineItem.price = price;
+                                        });
+                                    }
                                     // set lotOptions
                                     var newlyAddedLineItems = lineItemGroup.filter(function(lineItem) {
                                         return lineItem.added;

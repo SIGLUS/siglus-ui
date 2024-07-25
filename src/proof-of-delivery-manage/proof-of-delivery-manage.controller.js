@@ -194,10 +194,7 @@
             vm.supplyingFacility = getSelectedObjectById(supplyingFacilities, $stateParams.supplyingFacilityId);
             vm.facilityName = getName(vm.requestingFacility);
             vm.programName = getName(vm.program);
-            facilityFactory.getUserHomeFacility()
-                .then(function(res) {
-                    vm.facility = res;
-                });
+            vm.facility = facility;
         }
 
         /**
