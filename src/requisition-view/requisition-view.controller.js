@@ -241,6 +241,7 @@
         vm.isFullSupplyTabValid = isFullSupplyTabValid;
         vm.isNonFullSupplyTabValid = isNonFullSupplyTabValid;
         vm.exportExcel = exportExcel;
+        vm.hidePrintButtonForMMC = hidePrintButtonForMMC;
 
         /**
          * @ngdoc method
@@ -422,6 +423,10 @@
             } else {
                 $window.open(accessTokenFactory.addAccessToken(vm.getPrintUrl()), '_blank');
             }
+        }
+
+        function hidePrintButtonForMMC() {
+            return vm.program.code === 'MMC';
         }
 
         function saveRnr() {
