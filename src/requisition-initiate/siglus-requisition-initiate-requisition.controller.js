@@ -59,7 +59,7 @@
         vm.periodHasRequisition = periodHasRequisition;
         vm.goToRequisition = goToRequisition;
         vm.checkProceedButton = checkProceedButton;
-        vm.isInSubmitDuration = isInSubmitDuration;
+        vm.checkSubmitDuration = checkSubmitDuration;
 
         /**
      * @ngdoc property
@@ -293,10 +293,23 @@
             return true;
         }
 
+        function checkSubmitDuration(period) {
+            if (vm.emergency) {
+                return isInSubmitDuration(period);
+            }
+            return isAfterSubmitStartDate(period);
+
+        }
+
         function isInSubmitDuration(period) {
             var today = moment();
             return today.isSameOrAfter(period.submitStartDate, 'day') &&
                 today.isSameOrBefore(period.submitEndDate, 'day');
+        }
+
+        function isAfterSubmitStartDate(period) {
+            var today = moment();
+            return today.isSameOrAfter(period.submitStartDate, 'day');
         }
 
         function isAfterSubmitEndDate(period) {
