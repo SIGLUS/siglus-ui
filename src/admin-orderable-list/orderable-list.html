@@ -1,0 +1,46 @@
+<h2>{{'adminOrderableList.products' | message}}</h2>
+<section class="openlmis-table-container">
+	<button ng-if="vm.canAdd" class="add" ui-sref='.add'>{{'adminOrderableList.addProduct' | message}}</button>
+	<form ng-submit="vm.search()">
+		<fieldset class="form-group">
+			<label for="code">{{'adminOrderableList.code' | message}}</label>
+			<input type="text" id="code" ng-model="vm.code"/>
+		</fieldset>
+		<fieldset class="form-group">
+			<label for="name">{{'adminOrderableList.name' | message}}</label>
+			<input type="text" id="name" ng-model="vm.name"/>
+		</fieldset>
+		<fieldset class="form-group">
+			<label for="program">{{'adminOrderableList.program' | message}}</label>
+			<select id="program"
+					ng-options="program.code as program.name for program in vm.programs"
+					ng-model="vm.program">
+			</select>
+		</fieldset>
+		<input type="submit" value="{{'adminOrderableList.search' | message}}"/>
+	</form>
+	<table>
+		<caption ng-if="!vm.orderables || vm.orderables.length === 0">
+			{{'adminOrderableList.products.error' | message}}
+		</caption>
+		<thead>
+		<tr>
+			<th>{{'adminOrderableList.code' | message}}</th>
+			<th>{{'adminOrderableList.name' | message}}</th>
+			<th>{{'adminOrderableList.description' | message}}</th>
+			<th>{{'adminOrderableList.actions' | message}}</th>
+		</tr>
+		</thead>
+		<tbody>
+		<tr ng-repeat="orderable in vm.orderables">
+			<td>{{orderable.productCode}}</td>
+			<td>{{orderable.fullProductName}}</td>
+			<td>{{orderable.description}}</td>
+			<td>
+				<button ui-sref=".edit.general({id: orderable.id})">{{'adminOrderableList.edit' | message}}</button>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+	<openlmis-pagination/>
+</section>
