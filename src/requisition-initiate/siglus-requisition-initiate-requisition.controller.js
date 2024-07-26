@@ -58,8 +58,8 @@
         vm.initRnr = initRnr;
         vm.periodHasRequisition = periodHasRequisition;
         vm.goToRequisition = goToRequisition;
-        vm.checkProceedButton = checkProceedButton;
         vm.checkSubmitDuration = checkSubmitDuration;
+        vm.shouldShowProceedButton = shouldShowProceedButton;
 
         /**
      * @ngdoc property
@@ -297,7 +297,7 @@
             if (vm.emergency) {
                 return isInSubmitDuration(period);
             }
-            return isAfterSubmitStartDate(period);
+            return isSameOrAfterSubmitStartDate(period);
         }
 
         function isInSubmitDuration(period) {
@@ -306,7 +306,7 @@
                 today.isSameOrBefore(period.submitEndDate, 'day');
         }
 
-        function isAfterSubmitStartDate(period) {
+        function isSameOrAfterSubmitStartDate(period) {
             var today = moment();
             return today.isSameOrAfter(period.submitStartDate, 'day');
         }
@@ -315,5 +315,18 @@
             var today = moment();
             return today.isAfter(period.submitEndDate, 'day');
         }
+
+        function shouldShowProceedButton(period, idx) {
+            var canProceed = checkProceedButton(period, idx);
+            if (!canProceed) {
+                return false;
+            }
+            // P2 cannot proceed INITIATED RNR
+            if (hasAuthorizeRight && period.rnrStatus === REQUISITION_STATUS.INITIATED) {
+                return false;
+            }
+            return true;
+        }
+
     }
 })();

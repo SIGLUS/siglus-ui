@@ -26,7 +26,7 @@
             </td>
             <td>{{period.submitStartDate | openlmisDate}} - {{period.submitEndDate | openlmisDate}}</td>
             <td>{{period.rnrStatus | requisitionStatus}}</td>
-            <td ng-if="vm.checkProceedButton(period, idx)">
+            <td ng-if="vm.shouldShowProceedButton(period, idx)">
                 <input id="proceedButton" type="button" ng-click="vm.initRnr(period)"
                        value="{{'requisitionInitiate.proceed'| message}}" class="primary"
                        ng-if="period.activeForRnr && !vm.periodHasRequisition(period) && vm.canInitiateRnr && vm.checkSubmitDuration(period)"/>
@@ -34,7 +34,7 @@
                        value="{{'requisitionInitiate.proceed'| message}}" class="primary"
                        ng-if="period.activeForRnr && vm.periodHasRequisition(period)"/>
             </td>
-            <td ng-if="!vm.checkProceedButton(period, idx)"></td>
+            <td ng-if="!vm.shouldShowProceedButton(period, idx)"></td>
         </tr>
         </tbody>
     </table>
