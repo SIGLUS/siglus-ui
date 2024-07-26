@@ -25,9 +25,9 @@
                             required>
                     </select>
                 </div>
-                <div ng-if="vm.selectedOrderableHasLots">
+                <div class="lot-select-section" ng-if="vm.selectedOrderableHasLots">
                     <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
-                    <div style="display: inline-block;"popover="{{vm.lotNotFirstExpireHint | message}}">
+                    <div class="lot-select" style="display: inline-block;"popover="{{vm.lotNotFirstExpireHint | message}}">
                         <select id="lotSelect"
                                 ng-model="vm.selectedLot"
                                 ng-change="vm.changeLot(lot)"
@@ -35,7 +35,6 @@
                                 required>
                         </select>
                     </div>
-
                 </div>
                 <button type="submit" class="add">{{vm.key('add') | message}}</button>
             </form>
