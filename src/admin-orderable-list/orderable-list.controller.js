@@ -35,6 +35,7 @@
 
         vm.$onInit = onInit;
         vm.search = search;
+        vm.cancelFilter = cancelFilter;
 
         /**
          * @ngdoc property
@@ -122,6 +123,19 @@
             stateParams.code = vm.code;
             stateParams.name = vm.name;
             stateParams.program = vm.program;
+            // SIGLUS-REFACTOR: starts here
+            stateParams.page = 0;
+            // SIGLUS-REFACTOR: ends here
+            $state.go('openlmis.administration.orderables', stateParams, {
+                reload: true
+            });
+        }
+
+        function cancelFilter() {
+            var stateParams = angular.copy($stateParams);
+            stateParams.code = '';
+            stateParams.name = '';
+            stateParams.program = '';
             // SIGLUS-REFACTOR: starts here
             stateParams.page = 0;
             // SIGLUS-REFACTOR: ends here

@@ -17,6 +17,7 @@
 					ng-model="vm.program">
 			</select>
 		</fieldset>
+		<input id="close-filters" type="button" value="{{'openlmisTableFilter.cancel' | message}}" ng-click="vm.cancelFilter()"/>
 		<input type="submit" value="{{'adminOrderableList.search' | message}}"/>
 	</form>
 	<table>
