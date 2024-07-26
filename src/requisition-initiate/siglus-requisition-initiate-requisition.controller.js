@@ -298,7 +298,6 @@
                 return isInSubmitDuration(period);
             }
             return isAfterSubmitStartDate(period);
-
         }
 
         function isInSubmitDuration(period) {

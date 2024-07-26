@@ -96,6 +96,12 @@
                     },
                     fullSupply: function() {
                         return true;
+                    },
+                    hasAuthorizeRight: function(authorizationService, requisition) {
+                        return authorizationService.hasRight(REQUISITION_RIGHTS.REQUISITION_AUTHORIZE, {
+                            programId: requisition.program.id,
+                            facilityId: requisition.facility.id
+                        });
                     }
                 }
             });

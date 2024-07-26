@@ -35,7 +35,7 @@
         '$stateParams', 'requisitionCacheService', 'canSubmitAndAuthorize', 'requisitionService',
         'loadingModalService', 'siglusArchivedProductService', 'program', '$scope',
         'notificationService', 'offlineService', 'canSync', '$state', 'alertConfirmModalService',
-        '$window'
+        '$window', 'hasAuthorizeRight'
     ];
 
     function ViewTabController(
@@ -45,7 +45,7 @@
         $stateParams, requisitionCacheService, canSubmitAndAuthorize, requisitionService,
         loadingModalService, siglusArchivedProductService, program, $scope,
         notificationService, offlineService, canSync, $state, alertConfirmModalService,
-        $window
+        $window, hasAuthorizeRight
     ) {
 
         var vm = this;
@@ -577,7 +577,8 @@
         }
 
         function showDeleteModalForExpiredEmergency() {
-            if (vm.isExpiredEmergency) {
+            // only P1 shows the delete modal
+            if (vm.isExpiredEmergency && !hasAuthorizeRight) {
                 alertConfirmModalService.error(
                     'requisitionViewTab.expiredEmergency.title',
                     'requisitionViewTab.expiredEmergency.message',

@@ -264,8 +264,8 @@
             vm.displayDeleteButton = canDelete;
             vm.displayApproveAndRejectButtons = canApproveAndReject;
             // SIGLUS-REFACTOR: starts here
-            vm.displayRejectButton = canApproveAndReject && !(vm.requisition.extraData &&
-                vm.requisition.extraData.originalRequisition);
+            vm.displayRejectButton = canApproveAndReject &&
+                !(_.get(vm.requisition, ['extraData', 'originalRequisition']));
             // SIGLUS-REFACTOR: ends here
             vm.displaySkipButton = canSkip;
             vm.displaySyncButton = canSync;
