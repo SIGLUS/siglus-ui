@@ -27,7 +27,7 @@
                 </div>
                 <div class="lot-select-section" ng-if="vm.selectedOrderableHasLots">
                     <label for="lotSelect">{{'stockAddProductsModal.lotCode' | message}}</label>
-                    <div class="lot-select" style="display: inline-block;"popover="{{vm.lotNotFirstExpireHint | message}}">
+                    <div class="lot-select" popover="{{vm.lotNotFirstExpireHint | message}}">
                         <select id="lotSelect"
                                 ng-model="vm.selectedLot"
                                 ng-change="vm.changeLot(lot)"

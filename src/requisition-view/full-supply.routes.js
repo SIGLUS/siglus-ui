@@ -60,8 +60,11 @@
                         var fullSupplyLineItems = $filter('filter')(requisition.requisitionLineItems, filterObject);
 
                         if ($stateParams.keyword) {
+                            var keyword = $stateParams.keyword.toLowerCase();
                             fullSupplyLineItems = fullSupplyLineItems.filter(function(lineItem) {
-                                return lineItem.orderable.fullProductName.includes($stateParams.keyword);
+                                var productName = _.get(lineItem, ['orderable', 'fullProductName'], '').toLowerCase();
+                                var productCode = _.get(lineItem, ['orderable', 'productCode'], '').toLowerCase();
+                                return productName.includes(keyword) || productCode.includes(keyword);
                             });
                         }
                         return $filter('orderBy')(fullSupplyLineItems, [
