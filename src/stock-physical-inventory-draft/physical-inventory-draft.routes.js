@@ -58,20 +58,18 @@
                     });
                 },
                 subDraftIds: function($stateParams) {
-                    return $stateParams.subDraftIds.split(',');
+                    return $stateParams.subDraftIds ? $stateParams.subDraftIds.split(',') : [];
                 },
-                draft: function(facility, $stateParams, physicalInventoryFactory, program, $state) {
+                draft: function(facility, $stateParams, physicalInventoryFactory, program, $state, subDraftIds) {
                     var draft = $state.params.draft;
-                    var subDraftIds = $stateParams.subDraftIds;
                     $stateParams.draft = undefined;
                     $state.params.draft = undefined;
                     if (draft) {
                         return draft;
                     }
                     // no existedDraft, call api to get/init draft
-                    if (subDraftIds) {
-                        var idList = subDraftIds.split(',');
-                        return physicalInventoryFactory.getPhysicalInventorySubDraftWithoutSummary(idList)
+                    if (subDraftIds.length > 0) {
+                        return physicalInventoryFactory.getPhysicalInventorySubDraftWithoutSummary(subDraftIds)
                             .then(function(draft) {
                                 return draft;
                             });

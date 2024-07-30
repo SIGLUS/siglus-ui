@@ -34,9 +34,8 @@
         'chooseDateModalService', 'program', 'facility', 'physicalInventoryService', 'MAX_INTEGER_VALUE',
         'VVM_STATUS', 'stockReasonsCalculations', 'loadingModalService', 'orderableGroupService', '$filter',
         '$q', 'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
-        'siglusArchivedProductService', 'physicalInventoryDataService', 'SIGLUS_TIME',
-        'siglusRemainingProductsModalService', 'subDraftIds', 'alertConfirmModalService',
-        'siglusOrderableLotService', 'draft', 'displayLineItemsGroup', 'reasons', 'rawLineItems',
+        'siglusArchivedProductService', 'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds',
+        'alertConfirmModalService', 'draft', 'displayLineItemsGroup', 'reasons', 'rawLineItems',
         'siglusOrderableLotListService'
     ];
 
@@ -46,9 +45,8 @@
         chooseDateModalService, program, facility, physicalInventoryService, MAX_INTEGER_VALUE,
         VVM_STATUS, stockReasonsCalculations, loadingModalService, orderableGroupService, $filter,
         $q, REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
-        siglusArchivedProductService, physicalInventoryDataService, SIGLUS_TIME,
-        siglusRemainingProductsModalService, subDraftIds, alertConfirmModalService,
-        siglusOrderableLotService, draft, displayLineItemsGroup, reasons, rawLineItems,
+        siglusArchivedProductService, SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds,
+        alertConfirmModalService, draft, displayLineItemsGroup, reasons, rawLineItems,
         siglusOrderableLotListService
     ) {
         var vm = this;
@@ -886,14 +884,6 @@
             }, delay);
             return deferred.promise;
         }
-
-        $scope.$on('$stateChangeStart', function(event, toState) {
-            if (toState.name !== 'openlmis.stockmanagement.initialInventory.draft'
-                && toState.name !== 'openlmis.stockmanagement.physicalInventory.draftList.draft') {
-                physicalInventoryDataService.clear();
-            }
-        });
-        // SIGLUS-REFACTOR: ends here
 
         function buildHistoryData(resolvedData) {
             return {
