@@ -48,167 +48,81 @@
             },
             resolve: {
                 facility: function($stateParams, facilityFactory) {
-                    if (_.isUndefined($stateParams.facility)) {
-                        return facilityFactory.getUserHomeFacility();
-                    }
-                    return $stateParams.facility;
+                    return $stateParams.facility || facilityFactory.getUserHomeFacility();
                 },
                 program: function($stateParams, programService) {
-                    if (_.isUndefined($stateParams.program)) {
-                        return programService.get($stateParams.programId).then(function(programs) {
-                            return programs;
-                        });
-                    }
-                    return $stateParams.program;
+                    return $stateParams.program || programService.get($stateParams.programId);
                 },
                 subDraftIds: function($stateParams) {
-                    return $stateParams.subDraftIds.indexOf(',')
-                        ? $stateParams.subDraftIds.split(',')
-                        : [$stateParams.subDraftIds];
+                    return $stateParams.subDraftIds ? $stateParams.subDraftIds.split(',') : [];
                 },
-                draft: function(
-                    facility,
-                    $stateParams,
-                    physicalInventoryFactory,
-                    physicalInventoryDataService,
-                    $q,
-                    program,
-                    physicalInventoryService
-                ) {
+                rawDraft: function($stateParams, physicalInventoryFactory, subDraftIds) {
                     var locationManagementOption = $stateParams.locationManagementOption;
-                    var deferred = $q.defer();
-                    if ($stateParams.draft) {
-                        physicalInventoryDataService.setDraft(facility.id, $stateParams.draft);
-                    }
+                    var draft = $stateParams.draft;
                     $stateParams.draft = undefined;
-                    if (_.isUndefined(physicalInventoryDataService.getDraft(facility.id))) {
-                        if ($stateParams.subDraftIds && !$stateParams.isMerged) {
-                            var id = $stateParams.subDraftIds.length > 1
-                                ? $stateParams.subDraftIds.split(',')
-                                : [$stateParams.subDraftIds];
-                            var flag = $stateParams.isMerged === 'true';
-                            physicalInventoryFactory.getLocationPhysicalInventorySubDraft(
-                                id, flag, locationManagementOption
-                            )
-                                .then(function(draft) {
-                                    var filterNullLineItems = _.filter(draft.lineItems, function(itm) {
-                                        return itm.orderable.id;
-                                    });
-                                    var orderableIds = _.uniq(_.map(filterNullLineItems, function(item) {
-                                        return item.orderable.id;
-                                    }));
-                                    if (orderableIds.length) {
-                                        physicalInventoryService.getSohByLocation(orderableIds)
-                                            .then(function(lotsDataByLocation) {
-                                                var lotsDataByLocationMap = _.reduce(
-                                                    lotsDataByLocation,
-                                                    function(r, c) {
-                                                        r[c.locationCode] = {
-                                                            values: c.lots,
-                                                            area: c.area
-                                                        };
-                                                        return r;
-                                                    }, {}
-                                                );
-                                                _.forEach(draft.lineItems, function(lineItem) {
-                                                    var array = _.get(
-                                                        lotsDataByLocationMap,
-                                                        [lineItem.locationCode, 'values'],
-                                                        []
-                                                    );
-                                                    var tempLots = _.filter(array, function(lot) {
-                                                        return lot.orderableId === lineItem.orderable.id;
-                                                    });
-                                                    var tempSoh = '';
-                                                    if (tempLots.length === 1) {
-                                                        tempSoh = tempLots[0].stockOnHand;
-                                                    } else if (tempLots.length > 1) {
-                                                        tempSoh = _.find(tempLots, function(item) {
-                                                            return item.lotCode === lineItem.lot.lotCode;
-                                                        }).stockOnHand;
-                                                    }
-                                                    lineItem.stockOnHand = tempSoh;
-                                                    lineItem.area = lineItem.area ?
-                                                        lineItem.area :
-                                                        _.get(
-                                                            lotsDataByLocationMap,
-                                                            [lineItem.locationCode, 'area'],
-                                                            null
-                                                        );
-                                                });
-                                                physicalInventoryDataService.setDraft(facility.id, draft);
-                                                deferred.resolve();
-                                            });
-                                    } else {
-                                        physicalInventoryDataService.setDraft(facility.id, draft);
-                                        deferred.resolve();
-                                    }
-                                })
-                                .catch(function(err) {
-                                    console.log('err: ', err);
-                                });
-                        } else {
-                            physicalInventoryFactory.getInitialInventory(
-                                program.id,
-                                facility.id,
-                                $stateParams.locationManagementOption
-                            )
-                                .then(function(draft) {
-                                    var orderableIds = _.uniq(_.map(draft.lineItems, function(item) {
-                                        return item.orderable.id;
-                                    }));
-                                    if (orderableIds.length) {
-                                        physicalInventoryService.getSohByLocation(orderableIds)
-                                            .then(function(lotsDataByLocation) {
-                                                var lotsDataByLocationMap = _.reduce(
-                                                    lotsDataByLocation,
-                                                    function(r, c) {
-                                                        r[c.locationCode] = {
-                                                            values: c.lots,
-                                                            area: c.area
-                                                        };
-                                                        return r;
-                                                    }, {}
-                                                );
-                                                _.forEach(draft.lineItems, function(lineItem) {
-                                                    var array = _.get(
-                                                        lotsDataByLocationMap,
-                                                        [lineItem.locationCode, 'values'],
-                                                        []
-                                                    );
-                                                    var tempLots = _.filter(array, function(lot) {
-                                                        return lot.orderableId === lineItem.orderable.id;
-                                                    });
-                                                    var tempSoh = '';
-                                                    if (tempLots.length === 1) {
-                                                        tempSoh = tempLots[0].stockOnHand;
-                                                    } else if (tempLots.length > 1) {
-                                                        tempSoh = _.find(tempLots, function(item) {
-                                                            return item.lotCode === lineItem.lot.lotCode;
-                                                        }).stockOnHand;
-                                                    }
-                                                    lineItem.stockOnHand = tempSoh;
-                                                });
-                                                physicalInventoryDataService.setDraft(facility.id, draft);
-                                                deferred.resolve();
-                                            });
-                                    } else {
-                                        physicalInventoryDataService.setDraft(facility.id, draft);
-                                        deferred.resolve();
-                                    }
-                                });
-                        }
-                    } else {
-                        deferred.resolve();
+                    if (draft) {
+                        return draft;
                     }
-                    return deferred.promise;
+                    return physicalInventoryFactory.getLocationPhysicalInventorySubDraftWithoutSummary(
+                        subDraftIds, locationManagementOption
+                    )
+                        .then(function(draft) {
+                            return draft;
+                        });
+                },
+                lotsMapByLocation: function(rawDraft, physicalInventoryService) {
+                    var orderableIds = _.uniq(_.map(rawDraft.lineItems, function(item) {
+                        return _.get(item, ['orderable', 'id']);
+                    }));
+                    if (orderableIds.length === 0) {
+                        return {};
+                    }
+                    return physicalInventoryService.getSohByLocation(orderableIds)
+                        .then(function(lotsLocationInfo) {
+                            _.reduce(lotsLocationInfo, function(lotsMapByLocation, lotsData) {
+                                lotsMapByLocation[lotsData.location] = {
+                                    values: lotsData.lots,
+                                    area: lotsData.area
+                                };
+                                return lotsMapByLocation;
+                            });
+                        }, {});
+                },
+                draft: function(rawDraft, lotsMapByLocation) {
+                    _.forEach(rawDraft.lineItems, function(lineItem) {
+                        var currentOrderableId = _.get(lineItem, ['orderable', 'id']);
+                        var currentLocationCode =  _.get(lineItem, ['locationCode']);
+                        var lotsInCurrentLocation = _.get(lotsMapByLocation, [currentLocationCode], []);
+                        var currentLotInfo = _.find(lotsInCurrentLocation, function(lotInCurrentLocation) {
+                            return lotInCurrentLocation.orderableId === currentOrderableId &&
+                                lotInCurrentLocation.lotCode === _.get(lineItem, ['lot', 'lotCode']);
+                        });
+
+                        if (_.get(currentLotInfo, ['stockOnHand'])) {
+                            lineItem.stockOnHand = _.get(currentLotInfo, ['stockOnHand']);
+                        }
+                        lineItem.area = lineItem.area ?
+                            lineItem.area : _.get(lotsMapByLocation, [lineItem.locationCode, 'area'], null);
+                    });
+                    return rawDraft;
                 },
                 allLocationAreaMap: function(siglusLocationAreaFactory) {
                     return siglusLocationAreaFactory.getAllLocationAreaInfoMap();
                 },
-                displayLineItemsGroup: function(paginationService, physicalInventoryService, $stateParams, $filter,
-                    orderableGroupService, physicalInventoryDataService, draft, facility) {
-                    $stateParams.size = '@@STOCKMANAGEMENT_PAGE_SIZE';
+                groupedLineItems: function($stateParams, physicalInventoryService, draft, $filter) {
+                    var searchedLineItems =  physicalInventoryService.search(
+                        $stateParams.keyword, draft.lineItems
+                    );
+                    var orderedLineItems = $filter('orderBy')(searchedLineItems, 'orderable.productCode');
+                    return _.chain(orderedLineItems)
+                        .groupBy(function(lineItem) {
+                            return $stateParams.locationManagementOption === 'product' ?
+                                lineItem.orderable.id : lineItem.locationCode;
+                        })
+                        .values()
+                        .value();
+                },
+                displayLineItemsGroup: function(paginationService, $stateParams, groupedLineItems) {
                     var validator = function(items) {
                         return _.chain(items).flatten()
                             .every(function(item) {
@@ -223,51 +137,28 @@
                             })
                             .value();
                     };
-                    var stateParamsCopy = _.clone($stateParams);
-                    stateParamsCopy.draft = physicalInventoryDataService.getDraft(facility.id);
-                    return paginationService.registerList(validator, stateParamsCopy, function() {
-                        var searchResult = physicalInventoryService.search(stateParamsCopy.keyword,
-                            stateParamsCopy.draft.lineItems);
-                        var lineItems = $filter('orderBy')(searchResult, 'orderable.productCode');
-                        // SIGLUS-REFACTOR: starts here
-                        var groups = _.chain(lineItems)
-                            .groupBy(function(lineItem) {
-                                return $stateParams.locationManagementOption === 'product' ?
-                                    lineItem.orderable.id :
-                                    lineItem.locationCode;
-                            })
-                            .values()
-                            .value();
-                        groups.forEach(function(group) {
-                            group.forEach(function(lineItem) {
-                                orderableGroupService.determineLotMessage(lineItem, group);
-                            });
-                        });
-                        return groups;
-                    })
-                        .then(function(items) {
-                            physicalInventoryDataService.setDisplayLineItemsGroup(facility.id, items);
-                        });
+                    var paginationParams = {
+                        size: '@@STOCKMANAGEMENT_PAGE_SIZE',
+                        page: $stateParams.page || 0
+                    };
+                    return paginationService.registerList(validator, paginationParams, function() {
+                        return groupedLineItems;
+                    });
                 },
                 /*eslint-enable */
-                reasons: function(facility, program, stockReasonsFactory, physicalInventoryDataService) {
-                    if (_.isUndefined(physicalInventoryDataService.getReasons(facility.id))) {
-                        return stockReasonsFactory.getReasons(
-                            program.id ? program.id : program,
-                            facility.type ? facility.type.id : facility
-                        ).then(function(reasons) {
+                reasons: function(facility, program, stockReasonsFactory, $stateParams) {
+                    if ($stateParams.reasons) {
+                        return $stateParams.reasons;
+                    }
+                    return stockReasonsFactory.getReasons(program.id, facility.type.id)
+                        .then(function(reasons) {
                             return _.chain(reasons).filter(function(reason) {
                                 return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT &&
                                     reason.name.toLowerCase().indexOf('correcção') > -1;
                             })
                                 .groupBy('programId')
                                 .value();
-                        })
-                            .then(function(reasons) {
-                                physicalInventoryDataService.setReasons(facility.id, reasons);
-                            });
-                    }
-                    // SIGLUS-REFACTOR: ends here
+                        });
                 }
             }
         });

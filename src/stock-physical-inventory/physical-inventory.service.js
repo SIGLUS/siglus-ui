@@ -141,7 +141,6 @@
         this.submitSubPhysicalInventory = submitSubPhysicalInventory;
         this.getLocationPhysicalInventorySubDraft = getLocationPhysicalInventorySubDraft;
         // SIGLUS-REFACTOR: starts here
-        this.getInitialDraft = getInitialDraft;
         this.getSohByLocation = getSohByLocation;
         this.validateConflictProgram = validateConflictProgram;
         this.getDraftByLocation = getDraftByLocation;
@@ -490,21 +489,6 @@
             return siglusStockEventService.submit(submitData);
             // SIGLUS-REFACTOR: ends here
         }
-
-        // SIGLUS-REFACTOR: starts here
-        function getInitialDraft(program, facility) {
-            return resource.query({
-                program: program,
-                facility: facility,
-                isDraft: true
-            })
-                .$promise
-                .then(function(response) {
-                    siglusStockEventService.formatResponse(response[0]);
-                    return response;
-                });
-        }
-        // SIGLUS-REFACTOR: ends here
 
         function getApprovedProducts(facilityId, programId) {
             return resource.getApprovedProducts({

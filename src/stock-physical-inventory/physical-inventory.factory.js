@@ -50,10 +50,7 @@
             getPhysicalInventorySubDraftWithoutSummary: getPhysicalInventorySubDraftWithoutSummary,
             saveDraft: saveDraft,
             getLocationPhysicalInventorySubDraft: getLocationPhysicalInventorySubDraft,
-            getLocationPhysicalInventorySubDraftWithoutSummary: getLocationPhysicalInventorySubDraftWithoutSummary,
-            // SIGLUS-REFACTOR: starts here
-            getInitialInventory: getInitialInventory
-            // SIGLUS-REFACTOR: ends here
+            getLocationPhysicalInventorySubDraftWithoutSummary: getLocationPhysicalInventorySubDraftWithoutSummary
         };
 
         /**
@@ -210,89 +207,6 @@
                 });
             });
         }
-
-        // SIGLUS-REFACTOR: starts here
-        function getInitialInventory(programId, facilityId, locationManagementOption) {
-            var result =  {};
-            if (locationManagementOption === 'location') {
-                result = physicalInventoryService.getDraftByLocation(facilityId, programId)
-                    .then(function(drafts) {
-                        var draft = _.first(drafts);
-                        var allLineOrderableIds = draft.lineItems.map(function(line) {
-                            return line.orderableId;
-                        });
-                        allLineOrderableIds = _.filter(allLineOrderableIds, function(item) {
-                            return item;
-                        });
-                        return getStockProducts(
-                            draft.programId, draft.facilityId, undefined, allLineOrderableIds, locationManagementOption
-                        )
-                            .then(function(summaries) {
-                                var initialInventory = {
-                                    programId: draft.programId,
-                                    facilityId: draft.facilityId,
-                                    lineItems: []
-                                };
-                                prepareLineItems(
-                                    draft,
-                                    summaries,
-                                    initialInventory,
-                                    true,
-                                    locationManagementOption
-                                );
-                                initialInventory.id = draft.id;
-                                return initialInventory;
-                            })
-                            .catch(function(err) {
-                                console.log('### err', err);
-                            });
-                    }, function(err) {
-                        if (err.status === 406) {
-                            currentUserService.clearCache();
-                            navigationStateService.clearStatesAvailability();
-                            $state.go('openlmis.home', {}, {
-                                reload: true
-                            });
-                            loadingModalService.close();
-                            alertService.error('stockInitialInventory.initialFailed');
-                        }
-                    });
-            } else {
-                result = physicalInventoryService.getInitialDraft(programId, facilityId)
-                    .then(function(drafts) {
-                        var draft = _.first(drafts);
-                        var allLineOrderableIds = draft.lineItems.map(function(line) {
-                            return line.orderableId;
-                        });
-                        return getStockProducts(
-                            draft.programId, draft.facilityId, undefined, allLineOrderableIds
-                        )
-                            .then(function(summaries) {
-                                var initialInventory = {
-                                    programId: draft.programId,
-                                    facilityId: draft.facilityId,
-                                    lineItems: []
-                                };
-                                prepareLineItems(draft, summaries, initialInventory);
-                                initialInventory.id = draft.id;
-
-                                return initialInventory;
-                            });
-                    }, function(err) {
-                        if (err.status === 406) {
-                            currentUserService.clearCache();
-                            navigationStateService.clearStatesAvailability();
-                            $state.go('openlmis.home', {}, {
-                                reload: true
-                            });
-                            loadingModalService.close();
-                            alertService.error('stockInitialInventory.initialFailed');
-                        }
-                    });
-            }
-            return result;
-        }
-        // SIGLUS-REFACTOR: ends here
 
         /**
          * @ngdoc method

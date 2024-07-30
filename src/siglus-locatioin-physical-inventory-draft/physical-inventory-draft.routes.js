@@ -56,29 +56,17 @@
                         });
                 },
                 subDraftIds: function($stateParams) {
-                    return $stateParams.subDraftIds.indexOf(',')
-                        ? $stateParams.subDraftIds.split(',')
-                        : [$stateParams.subDraftIds];
+                    return $stateParams.subDraftIds ? $stateParams.subDraftIds.split(',') : [];
                 },
-                rawDraft: function($stateParams, facility, program, physicalInventoryFactory) {
+                rawDraft: function($stateParams, physicalInventoryFactory, subDraftIds) {
                     var locationManagementOption = $stateParams.locationManagementOption;
                     var draft = $stateParams.draft;
-                    var idString = $stateParams.subDraftIds;
                     $stateParams.draft = undefined;
                     if (draft) {
                         return draft;
                     }
-                    if (idString) {
-                        var draftIdList = idString.split(',');
-                        return physicalInventoryFactory.getLocationPhysicalInventorySubDraftWithoutSummary(
-                            draftIdList, locationManagementOption
-                        )
-                            .then(function(draft) {
-                                return draft;
-                            });
-                    }
-                    return physicalInventoryFactory.getInitialInventory(
-                        program.id, facility.id, locationManagementOption
+                    return physicalInventoryFactory.getLocationPhysicalInventorySubDraftWithoutSummary(
+                        subDraftIds, locationManagementOption
                     )
                         .then(function(draft) {
                             return draft;
