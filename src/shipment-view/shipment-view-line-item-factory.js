@@ -62,15 +62,19 @@
 
             var shipmentViewLineItemGroups = shipment.order.orderLineItems
                 .map(function(orderLineItem) {
-                    var orderableId = orderLineItem.orderable.id,
-                        summary = findSummaryByOrderableId(summaries, orderableId),
-                        shipmentLineItem = findShipmentLineItemByOrderableIdAndLotId(
-                            shipmentLineItemMap,
-                            orderableId,
-                            undefined
-                        );
+                    var orderableId = orderLineItem.orderable.id;
+                    var  summary = summaries.find(function(summary) {
+                        return _.get(summary, ['orderable', 'id']) === orderableId;
+                    });
+                    var shipmentLineItem = findShipmentLineItemByOrderableIdAndLotId(
+                        shipmentLineItemMap,
+                        orderableId,
+                        undefined
+                    );
 
-                    if (isForGenericOrderable(summary) && shipmentLineItem && !summary.orderable.isKit) {
+                    var isGenericOrderable = summary && summary.canFulfillForMe.length === 1 &&
+                        summary.orderable.id === summary.canFulfillForMe[0].orderable.id;
+                    if (isGenericOrderable && shipmentLineItem && !summary.orderable.isKit) {
                         return new ShipmentViewLineItem({
                             id: orderLineItem.orderable.id,
                             productCode: orderLineItem.orderable.productCode,
@@ -118,8 +122,7 @@
             sortLotLineItems(shipmentViewLineItemGroups);
 
             shipmentViewLineItemGroups.forEach(function(shipmentViewLineItemGroup) {
-                if (shipmentViewLineItemGroup.lineItems
-                    && shipmentViewLineItemGroup.lineItems.length > 0) {
+                if (shipmentViewLineItemGroup.lineItems && shipmentViewLineItemGroup.lineItems.length > 0) {
                     var shipmentViewLineItems = _.flatten(shipmentViewLineItemGroup.lineItems.map(function(lineItem) {
                         return _.get(lineItem, 'lineItems', []);
                     }));
@@ -225,12 +228,6 @@
             }
         }
 
-        function findSummaryByOrderableId(summaries, orderableId) {
-            return summaries.filter(function(summary) {
-                return summary.orderable.id === orderableId;
-            })[0];
-        }
-
         function flatten(shipmentViewLineItems) {
             return shipmentViewLineItems.reduce(function(shipmentViewLineItems, lineItem) {
                 shipmentViewLineItems.push(lineItem);
@@ -286,12 +283,6 @@
             return Object.keys(orderablesMap).map(function(id) {
                 return orderablesMap[id];
             });
-        }
-
-        function isForGenericOrderable(summary) {
-            return summary &&
-                summary.canFulfillForMe.length === 1 &&
-                summary.orderable.id === summary.canFulfillForMe[0].orderable.id;
         }
 
         function compareLineItems(left, right) {

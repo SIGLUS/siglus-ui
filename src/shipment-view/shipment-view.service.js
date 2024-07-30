@@ -112,7 +112,7 @@
 
         // #372: Improving Fulfilling Order performance
         function getShipmentBasedOnOrderStatus(order, stockCardSummaries) {
-            // #400: Facility user partially fulfill an order and create sub-order for an requisition
+            // #400: Facility user partially fulfill an order and create sub-order for a requisition
             if (order.isOrdered() || order.isPartiallyFulfilled()) {
                 // #400: ends here
                 return shipmentRepository.createDraft(new ShipmentFactory().buildFromOrder(order, stockCardSummaries),

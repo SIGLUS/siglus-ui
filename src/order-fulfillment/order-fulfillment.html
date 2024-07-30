@@ -45,16 +45,8 @@
       <td>{{order.program.name}}</td>
       <td>{{order.processingPeriod.name}}</td>
       <td>{{order.createdDate | openlmisDate}}</td>
-      <td ng-if="!vm.enableLocationModule">
-        <button ng-if="!order.expired" ng-click="vm.fulFill('openlmis.orders.shipmentView',order)">
-          {{order.isFulfilling() ? 'orderFulfillment.continueFulfillment' : 'orderFulfillment.startFulfillment' | message}}
-        </button>
-        <button class="danger" ng-if="order.expired" ng-click="vm.closeFulfillment(order.id)">
-          {{'orderFulfillment.closeFulfillment' | message}}
-        </button>
-      </td>
-      <td ng-if="vm.enableLocationModule">
-        <button  ng-if="!order.expired" ng-click="vm.fulFill('openlmis.orders.locationShipmentView',order)">
+      <td>
+        <button ng-if="!order.expired" ng-click="vm.fulFill(order)">
           {{order.isFulfilling() ? 'orderFulfillment.continueFulfillment' : 'orderFulfillment.startFulfillment' | message}}
         </button>
         <button class="danger" ng-if="order.expired" ng-click="vm.closeFulfillment(order.id)">

@@ -50,6 +50,7 @@
          * Creates a new Shipment for the given Order.
          *
          * @param  {Object}  order order that we want to create shipment for
+         * @param  {Array}  stockCardSummaries stockCardSummaries of all products from api
          * @return {Promise}       the promise resolving to a shipment
          */
         // #372: Improving Fulfilling Order performance

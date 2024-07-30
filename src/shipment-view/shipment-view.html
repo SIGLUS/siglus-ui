@@ -95,9 +95,6 @@
                 <td class="white-space-pre">{{tableLineItem.productName}}</td>
                 <td ng-if="!tableLineItem.isLot"></td>
                 <td ng-if="tableLineItem.isLot">{{tableLineItem.lot | lotCode}}</td>
-                <!-- #370: hide VVM Status-->
-                <!--<td>{{vm.getVvmStatusLabel(tableLineItem.vvmStatus) | message}}</td>-->
-                <!-- #370: ends here -->
                 <td>{{tableLineItem.lot.expirationDate | openlmisDate}}</td>
                 <td>{{tableLineItem.getOrderQuantity(vm.showInDoses())}}</td>
                 <!-- #400: Facility user partially fulfill an order and create sub-order for an requisition -->

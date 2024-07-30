@@ -29,13 +29,13 @@
         .controller('OrderFulfillmentController', controller);
 
     controller.$inject = [
-        'orderingFacilities', 'programs', 'loadingModalService', 'orders',
+        'orderingFacilities', 'programs', 'program', 'loadingModalService', 'orders',
         '$stateParams', '$state', 'ORDER_STATUS', 'homeFacility', 'confirmService',
         'orderRepository', 'orderList', 'siglusFacilityViewRadioConfirmModalService'
     ];
 
     function controller(
-        orderingFacilities, programs, loadingModalService, orders,
+        orderingFacilities, programs, program, loadingModalService, orders,
         $stateParams, $state, ORDER_STATUS, homeFacility, confirmService,
         orderRepository, orderList, siglusFacilityViewRadioConfirmModalService
     ) {
@@ -46,6 +46,7 @@
         vm.loadOrders = loadOrders;
         vm.closeFulfillment = closeFulfillment;
         vm.batchCloseFulfillment = batchCloseFulfillment;
+        vm.fulFill = fulFill;
 
         /**
          * @ngdoc property
@@ -68,6 +69,7 @@
          * The list of all programs available to the user.
          */
         vm.programs = undefined;
+        vm.program = undefined;
 
         vm.enableLocationModule = _.get(homeFacility, 'enableLocationManagement');
 
@@ -107,7 +109,10 @@
             'orderFulfillment.createdDateAsc': ['createdDate,asc']
         };
 
-        vm.fulFill = function(url, order) {
+        function fulFill(order) {
+            var stateName = vm.enableLocationModule ?
+                'openlmis.orders.locationShipmentView' : 'openlmis.orders.shipmentView';
+
             if (order.showWarningPopup) {
                 siglusFacilityViewRadioConfirmModalService.error(
                     'orderFulfillment.startFulFillConfirm',
@@ -115,16 +120,16 @@
                     ['adminFacilityView.close',
                         'adminFacilityView.confirm']
                 ).then(function() {
-                    $state.go(url, _.extend({
+                    $state.go(stateName, _.assign({
                         id: order.id
                     }, $stateParams));
                 });
             } else {
-                $state.go(url, _.extend({
+                $state.go(stateName, _.assign({
                     id: order.id
                 }, $stateParams));
             }
-        };
+        }
 
         /**
          * @ngdoc method
@@ -136,32 +141,20 @@
          * setting data to be available on the view.
          */
         function onInit() {
-            console.log('fulfill reload3');
             $state.go('openlmis.orders.fulfillment', $stateParams, {
                 notify: false
             });
 
             vm.orderingFacilities = orderingFacilities;
-            // #400: Facility user partially fulfill an order and create sub-order for an requisition
             vm.orderStatuses = [ORDER_STATUS.FULFILLING, ORDER_STATUS.ORDERED, ORDER_STATUS.PARTIALLY_FULFILLED];
-            // #400: ends here
+            vm.orderStatus = $stateParams.status;
             vm.programs = programs;
-
+            vm.program = program;
             vm.orders = orders;
 
             if ($stateParams.requestingFacilityId) {
                 vm.orderingFacility = vm.orderingFacilities.filter(function(facility) {
                     return facility.id === $stateParams.requestingFacilityId;
-                })[0];
-            }
-
-            if ($stateParams.status) {
-                vm.orderStatus = $stateParams.status;
-            }
-
-            if ($stateParams.programId) {
-                vm.program = vm.programs.filter(function(program) {
-                    return program.id === $stateParams.programId;
                 })[0];
             }
         }
@@ -179,9 +172,9 @@
             stateParams.orderList  = orderList;
             stateParams.programs  = programs;
             stateParams.homeFacility = homeFacility;
-            stateParams.status = vm.orderStatus ? vm.orderStatus : null;
-            stateParams.requestingFacilityId = vm.orderingFacility ? vm.orderingFacility.id : null;
-            stateParams.programId = vm.program ? vm.program.id : null;
+            stateParams.status =  vm.orderStatus || null;
+            stateParams.requestingFacilityId = _.get(vm.orderingFacility, 'id', null);
+            stateParams.programId = _.get(vm.program, 'id', null);
             // SIGLUS-REFACTOR: starts here
             stateParams.page = 0;
             // SIGLUS-REFACTOR: ends here
@@ -191,17 +184,19 @@
         }
 
         function closeFulfillment(orderId) {
-            confirmService.confirm('orderFulfillment.closeConfirm',
+            confirmService.confirm(
+                'orderFulfillment.closeConfirm',
                 'PhysicalInventoryDraftList.confirm',
-                'PhysicalInventoryDraftList.cancel').then(function() {
-                loadingModalService.open();
-                orderRepository.closeOrder(orderId).then(function() {
-                    console.log('fulfill reload1');
-                    loadOrders();
-                    $state.reload();
-                })
-                    .finally(loadingModalService.close);
-            });
+                'PhysicalInventoryDraftList.cancel'
+            )
+                .then(function() {
+                    loadingModalService.open();
+                    orderRepository.closeOrder(orderId).then(function() {
+                        loadOrders();
+                        $state.reload();
+                    })
+                        .finally(loadingModalService.close);
+                });
         }
 
         function batchCloseFulfillment() {

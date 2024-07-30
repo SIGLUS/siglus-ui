@@ -107,12 +107,12 @@
                 return $q.reject();
             }
 
-            return this.repository.create(angular.extend({
+            return this.repository.create(_.assign({
                 shipment: this
             }, signature));
         }
 
-        // #400: Facility user partially fulfill an order and create sub-order for an requisition
+        // #400: Facility user partially fulfill an order and create sub-order for a requisition
         /**
          * @ngdoc method
          * @methodOf shipment.Shipment
@@ -131,7 +131,7 @@
 
             return resource.create({
                 isSubOrder: true
-            }, angular.extend({
+            }, _.assign({
                 shipment: this
             }, signature)).$promise;
         }

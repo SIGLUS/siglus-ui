@@ -36,7 +36,8 @@
                 sort: ['createdDate,desc'],
                 orderList: undefined,
                 programs: undefined,
-                homeFacility: undefined
+                homeFacility: undefined,
+                programId: undefined
             },
             accessRights: [
                 FULFILLMENT_RIGHTS.SHIPMENTS_VIEW,
@@ -61,7 +62,11 @@
                     }
                     return programService.getAll();
                 },
-
+                program: function(programs, $stateParams) {
+                    return programs.find(function(program) {
+                        return program.id === $stateParams.programId;
+                    }, undefined);
+                },
                 homeFacility: function(facilityFactory, $stateParams) {
                     if ($stateParams.homeFacility) {
                         return $stateParams.homeFacility;
@@ -79,24 +84,27 @@
                         status: ['FULFILLING', 'ORDERED', 'PARTIALLY_FULFILLED']
                     });
                 },
-                orders: function(paginationService, $stateParams, orderList, $filter) {
-                    return paginationService.registerUrl($stateParams, function(stateParams) {
-                        var orderListCopy = angular.copy(orderList);
-                        orderListCopy.content = _.filter(orderListCopy.content, function(item) {
-                            // eslint-disable-next-line max-len
-                            return  stateParams.requestingFacilityId ?
-                                _.get(item, [ 'facility', 'id']) === stateParams.requestingFacilityId : true
-                            // eslint-disable-next-line max-len
-                            && stateParams.programId ? _.get(item, [ 'program', 'id']) === stateParams.programId : true
-                            && stateParams.status ? _.get(item, ['status']) === stateParams.status : true;
-                        });
-                        orderListCopy.content = $filter('orderBy')(
-                            orderListCopy.content,
-                            ['createdDate'],
-                            stateParams.sort[0] === ['createdDate,desc'][0]
-                        );
-                        console.log('fulfill reload2');
-                        return orderListCopy;
+                filteredOrderList: function(orderList, $stateParams, $filter) {
+                    var orderListCopy = angular.copy(orderList);
+                    orderListCopy.content = _.filter(orderListCopy.content, function(item) {
+                        var filterByFacility = !$stateParams.requestingFacilityId ||
+                            _.get(item, [ 'facility', 'id']) === $stateParams.requestingFacilityId;
+                        var filterByProgram = !$stateParams.programId ||
+                            _.get(item, [ 'program', 'id']) === $stateParams.programId;
+                        var filterByStatus = !$stateParams.status ||
+                            _.get(item, ['status']) === $stateParams.status;
+                        return  filterByFacility && filterByProgram && filterByStatus;
+                    });
+                    orderListCopy.content = $filter('orderBy')(
+                        orderListCopy.content,
+                        ['createdDate'],
+                        $stateParams.sort[0] === ['createdDate,desc'][0]
+                    );
+                    return orderListCopy;
+                },
+                orders: function(paginationService, $stateParams, filteredOrderList) {
+                    return paginationService.registerUrl($stateParams, function() {
+                        return filteredOrderList;
                     });
                 }
             }

@@ -106,6 +106,8 @@
          * Creates a new shipment draft on the OpenLMIS server.
          *
          * @param  {Object}  json the JSON representation of the shipment draft
+         * @param  {Object}  order the order
+         * @param  {Array}  stockCardSummaries stockCardSummaries of all products from api
          * @return {Promise}      the promise resolving to combined JSON which can be used for
          *                        creating instance of the Shipment class
          */
@@ -175,7 +177,8 @@
          * @description
          * Retrieves a shipment draft for order with given ID from the OpenLMIS server.
          *
-         * @param  {Object}  orderId the order ID
+         * @param  {Object}  order the order
+         * @param  {Array}  stockCardSummaries stockCardSummaries of all products from api
          * @return {Promise}         the promise resolving to combined JSON which can be used for
          *                           creating instance of the Shipment class
          */

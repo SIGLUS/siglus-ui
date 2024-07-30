@@ -29,34 +29,25 @@
         .controller('ShipmentViewController', ShipmentViewController);
 
     ShipmentViewController.$inject = [
-        'shipment', 'loadingModalService', '$state', '$window', '$scope', '$stateParams', 'fulfillmentUrlFactory',
-        'messageService', 'accessTokenFactory', 'updatedOrder', 'QUANTITY_UNIT', 'tableLineItems',
-        'displayTableLineItems', 'VVM_STATUS',
-        // #264: warehouse clerk can add product to orders
-        'selectProductsModalService', 'OpenlmisArrayDecorator', 'alertService', '$q',
-        'stockCardSummaries', 'ShipmentViewLineItemFactory', 'orderService', 'ShipmentLineItem',
-        // #264: ends here
-        // #287: Warehouse clerk can skip some products in order
-        'ShipmentViewLineItemGroup', 'suggestedQuatity', 'localStorageService', 'shipmentViewService',
-        // #287: ends here
-        'StockCardSummaryRepositoryImpl'
+        'shipment', 'loadingModalService', '$state', '$window', '$stateParams', 'updatedOrder',
+        'QUANTITY_UNIT', 'tableLineItems', 'displayTableLineItems', 'selectProductsModalService',
+        'OpenlmisArrayDecorator', 'alertService', '$q', 'stockCardSummaries', 'ShipmentViewLineItemFactory',
+        'ShipmentLineItem', 'ShipmentViewLineItemGroup', 'suggestedQuantity', 'localStorageService',
+        'shipmentViewService', 'StockCardSummaryRepositoryImpl'
     ];
 
     function ShipmentViewController(
-        shipment, loadingModalService, $state, $window, $scope, $stateParams,
-        fulfillmentUrlFactory, messageService, accessTokenFactory,
-        updatedOrder, QUANTITY_UNIT, tableLineItems, displayTableLineItems, VVM_STATUS,
-        selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
-        stockCardSummaries, ShipmentViewLineItemFactory, orderService,
-        ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuatity,
-        localStorageService, shipmentViewService, StockCardSummaryRepositoryImpl
+        shipment, loadingModalService, $state, $window, $stateParams, updatedOrder,
+        QUANTITY_UNIT, tableLineItems, displayTableLineItems, selectProductsModalService,
+        OpenlmisArrayDecorator, alertService, $q, stockCardSummaries, ShipmentViewLineItemFactory,
+        ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuantity, localStorageService,
+        shipmentViewService, StockCardSummaryRepositoryImpl
     ) {
         var vm = this;
 
         vm.$onInit = onInit;
         vm.showInDoses = showInDoses;
         vm.getSelectedQuantityUnitKey = getSelectedQuantityUnitKey;
-        vm.getVvmStatusLabel = VVM_STATUS.$getDisplayName;
         vm.save = save;
         vm.confirm = confirm;
         vm.printShipment = printShipment;
@@ -127,11 +118,11 @@
         function onInit() {
             vm.order = updatedOrder;
             vm.shipment = shipment;
-            vm.tableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
+            vm.tableLineItems = suggestedQuantity.orderableIdToSuggestedQuantity ?
                 setSuggestedQuantity(tableLineItems) :
                 tableLineItems;
-            vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
-            vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
+            vm.isShowSuggestedQuantity = suggestedQuantity.showSuggestedQuantity;
+            vm.orderableIdToSuggestedQuantity = suggestedQuantity.orderableIdToSuggestedQuantity;
             vm.displayTableLineItems = displayTableLineItems;
             shipmentViewService.addRefreshListener(updateLineItemsReservedAndTotalStock);
         }
@@ -170,7 +161,7 @@
         }
 
         function setSuggestedQuantity(items) {
-            var suggestedQuantityMap = suggestedQuatity.orderableIdToSuggestedQuantity;
+            var suggestedQuantityMap = suggestedQuantity.orderableIdToSuggestedQuantity;
             _.forEach(items, function(item) {
                 item.suggestedQuantity =
                     _.includes([null, undefined], suggestedQuantityMap[item.id]) ?
