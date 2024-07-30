@@ -16,7 +16,7 @@
 describe('physicalInventoryFactory', function() {
 
     var $q, $rootScope, physicalInventoryService, physicalInventoryFactory,
-        summaries, draft, draftToSave, StockCardSummaryRepository;
+        summaries, draftToSave, StockCardSummaryRepository;
 
     beforeEach(function() {
         module('stock-physical-inventory', function($provide) {
@@ -83,29 +83,6 @@ describe('physicalInventoryFactory', function() {
                 }
             ]
         };
-        draft = {
-            programId: 'program-id',
-            facilityId: 'facility-id',
-            lineItems: [
-                {
-                    quantity: 4,
-                    extraData: {
-                        vvmStatus: 'STAGE_1'
-                    },
-                    lotId: 'lot-1',
-                    orderableId: 'orderable-1'
-                },
-                {
-                    quantity: 4,
-                    extraData: {
-                        vvmStatus: 'STAGE_2'
-                    },
-                    lotId: 'lot-2',
-                    orderableId: 'orderable-2'
-                }
-            ],
-            $status: 200
-        };
 
         draftToSave = {
             id: 'draft-1',
@@ -151,10 +128,6 @@ describe('physicalInventoryFactory', function() {
 
         it('should expose getDrafts method', function() {
             expect(angular.isFunction(physicalInventoryFactory.getDrafts)).toBe(true);
-        });
-
-        it('should expose getPhysicalInventory method', function() {
-            expect(angular.isFunction(physicalInventoryFactory.getPhysicalInventory)).toBe(true);
         });
 
         it('should expose saveDraft method', function() {
@@ -293,65 +266,6 @@ describe('physicalInventoryFactory', function() {
             expect(returnedDraft.programId).toEqual(programId);
             expect(returnedDraft.facilityId).toEqual(facilityId);
             expect(returnedDraft.lineItems).toEqual([]);
-        });
-    });
-
-    describe('getPhysicalInventory', function() {
-        var id;
-
-        beforeEach(function() {
-            id = 'some-id';
-        });
-
-        it('should return promise', function() {
-            var result = physicalInventoryFactory.getPhysicalInventory(id);
-
-            expect(result.then).not.toBeUndefined();
-            expect(angular.isFunction(result.then)).toBe(true);
-        });
-
-        it('should call StockCardSummaryRepository after resolve physicalInventoryService.getPhysicalInventory',
-            function() {
-                physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
-                physicalInventoryFactory.getPhysicalInventory(id);
-                $rootScope.$apply();
-
-                expect(StockCardSummaryRepository.query).toHaveBeenCalledWith({
-                    programId: draft.programId,
-                    facilityId: draft.facilityId,
-                    // #225: cant view detail page when not have stock view right
-                    rightName: 'STOCK_INVENTORIES_EDIT'
-                    // #225: ends here
-                });
-            });
-
-        it('should call physicalInventoryService', function() {
-            physicalInventoryFactory.getPhysicalInventory(id);
-
-            expect(physicalInventoryService.getPhysicalInventory).toHaveBeenCalledWith(id);
-        });
-
-        it('should get proper response', function() {
-            var returnedDraft;
-
-            physicalInventoryService.getPhysicalInventory.andReturn($q.when(draft));
-
-            physicalInventoryFactory.getPhysicalInventory(id).then(function(response) {
-                returnedDraft = response;
-            });
-            $rootScope.$apply();
-
-            expect(returnedDraft).toBeDefined();
-            expect(returnedDraft.programId).toEqual(draft.programId);
-            expect(returnedDraft.facilityId).toEqual(draft.facilityId);
-            expect(returnedDraft.lineItems.length).toEqual(2);
-            angular.forEach(returnedDraft.lineItems, function(lineItem, index) {
-                expect(lineItem.stockOnHand).toEqual(summaries.content[0].canFulfillForMe[index].stockOnHand);
-                expect(lineItem.lot).toEqual(summaries.content[0].canFulfillForMe[index].lot);
-                expect(lineItem.orderable).toEqual(summaries.content[0].canFulfillForMe[index].orderable);
-                expect(lineItem.quantity).toEqual(draft.lineItems[index].quantity);
-                expect(lineItem.vvmStatus).toEqual(draft.lineItems[index].extraData.vvmStatus);
-            });
         });
     });
 

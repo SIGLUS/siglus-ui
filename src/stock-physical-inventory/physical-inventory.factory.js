@@ -47,8 +47,6 @@
             getDrafts: getDrafts,
             getDraft: getDraft,
             getDraftByProgramAndFacility: getDraftByProgramAndFacility,
-            getPhysicalInventory: getPhysicalInventory,
-            getPhysicalInventorySubDraft: getPhysicalInventorySubDraft,
             getPhysicalInventorySubDraftWithoutSummary: getPhysicalInventorySubDraftWithoutSummary,
             saveDraft: saveDraft,
             getLocationPhysicalInventorySubDraft: getLocationPhysicalInventorySubDraft,
@@ -144,63 +142,6 @@
                 }
                 return draftToReturn;
             });
-        }
-
-        /**
-         * @ngdoc method
-         * @methodOf stock-physical-inventory.physicalInventoryFactory
-         * @name getPhysicalInventory
-         *
-         * @description
-         * Retrieves physical inventory by id.
-         *
-         * @param  {String}  id       Draft UUID
-         * @return {Promise}          Physical inventory promise
-         */
-        function getPhysicalInventory(id) {
-            return physicalInventoryService.getPhysicalInventory(id)
-                .then(function(physicalInventory) {
-                    return getStockProducts(physicalInventory.programId, physicalInventory.facilityId)
-                        .then(function(summaries) {
-                            var draftToReturn = {
-                                programId: physicalInventory.programId,
-                                facilityId: physicalInventory.facilityId,
-                                lineItems: []
-                            };
-                            prepareLineItems(physicalInventory, summaries, draftToReturn);
-                            draftToReturn.id = physicalInventory.id;
-
-                            return draftToReturn;
-                        });
-                });
-        }
-
-        function getPhysicalInventorySubDraft(subDraftIds) {
-            return physicalInventoryService.getPhysicalInventorySubDraft(subDraftIds)
-                .then(function(physicalInventory) {
-                    var allLineOrderableIds = physicalInventory.lineItems.map(function(line) {
-                        return line.orderableId;
-                    });
-                    return getStockProducts(
-                        physicalInventory.programId, physicalInventory.facilityId, subDraftIds, allLineOrderableIds
-                    )
-                        .then(function(summaries) {
-                            var draftToReturn = {
-                                programId: physicalInventory.programId,
-                                facilityId: physicalInventory.facilityId,
-                                lineItems: []
-                            };
-                            prepareLineItems(
-                                physicalInventory,
-                                summaries,
-                                draftToReturn,
-                                false,
-                                'product'
-                            );
-                            draftToReturn.id = physicalInventory.id;
-                            return draftToReturn;
-                        });
-                });
         }
 
         function  getLocationPhysicalInventorySubDraft(subDraftIdList, locationManagementOption) {

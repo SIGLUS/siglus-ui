@@ -58,22 +58,15 @@
                 },
                 draft: function($state, facility, $stateParams, physicalInventoryFactory, program, subDraftIds) {
                     var draft = $state.params.draft;
-                    var isMerged = $stateParams.isMerged;
                     $stateParams.draft = undefined;
                     $state.params.draft = undefined;
                     if (draft) {
                         return draft;
                     }
 
-                    if (subDraftIds.length > 0 && !isMerged) {
-                        return physicalInventoryFactory.getPhysicalInventorySubDraftWithoutSummary(subDraftIds)
-                            .then(function(subDraft) {
-                                return subDraft;
-                            });
-                    }
-                    return physicalInventoryFactory.getInitialInventory(program.id, facility.id)
-                        .then(function(draft) {
-                            return draft;
+                    return physicalInventoryFactory.getPhysicalInventorySubDraftWithoutSummary(subDraftIds)
+                        .then(function(subDraft) {
+                            return subDraft;
                         });
                 },
                 rawLineItems: function(draft) {

@@ -37,7 +37,7 @@
     ];
 
     function service($resource, stockmanagementUrlFactory, $filter, messageService, openlmisDateFilter,
-                     productNameFilter, stockEventFactory, siglusStockEventService, STOCKMANAGEMENT_RIGHTS) {
+                     productNameFilter, stockEventFactory, siglusStockEventService) {
         // SIGLUS-REFACTOR: starts here
         var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/physicalInventories'), {}, {
             get: {
@@ -130,8 +130,6 @@
         this.getDraft = getDraft;
         this.createDraft = createDraft;
         this.createLocationDraft = createLocationDraft;
-        this.getConflictDraft = getConflictDraft;
-        this.getPhysicalInventory = getPhysicalInventory;
         this.getPhysicalInventorySubDraft = getPhysicalInventorySubDraft;
         this.search = search;
         this.saveDraft = saveDraft;
@@ -147,7 +145,6 @@
         this.getSohByLocation = getSohByLocation;
         this.validateConflictProgram = validateConflictProgram;
         this.getDraftByLocation = getDraftByLocation;
-        this.getStockProductsByLocation = getStockProductsByLocation;
         this.getApprovedProducts = getApprovedProducts;
         // SIGLUS-REFACTOR: ends here
 
@@ -256,55 +253,6 @@
                 .$promise;
         }
 
-        /**
-         * @ngdoc method
-         * @methodOf stock-physical-inventory.physicalInventoryService
-         * @name getPhysicalInventory
-         *
-         * @description
-         * Retrieves physical inventory by id from server.
-         *
-         * @param  {String}  programId  program id
-         * @param  {String}  facilityId  current facility id
-         * @param  {Array}  subDraftIds  subDraft id list
-         * @param  {Boolean}  flag  deprecated
-         * @param  {Array}  orderableIds  orderable id list
-         * @return {Promise}     physical inventory promise
-         */
-
-        // TODO: deprecated, nowhere to use
-        function getStockProductsByLocation(
-            programId,
-            facilityId,
-            subDraftIds,
-            flag,
-            orderableIds
-        ) {
-            return locationResource.getProductsByLocation(flag ? {
-                programId: programId,
-                facilityId: facilityId,
-                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
-                subDraftIds: subDraftIds,
-                orderableIds: orderableIds
-            } : {
-                programId: programId,
-                facilityId: facilityId,
-                rightName: STOCKMANAGEMENT_RIGHTS.INVENTORIES_EDIT,
-                subDraftIds: subDraftIds,
-                orderableIds: orderableIds
-            }).$promise;
-        }
-
-        function getPhysicalInventory(id) {
-            return resource.get({
-                id: id
-            })
-                .$promise
-                .then(function(response) {
-                    return siglusStockEventService.formatResponse(response);
-                });
-        }
-
         function getPhysicalInventorySubDraft(subDraftIds) {
             return resource.find({
                 subDraftIds: subDraftIds
@@ -401,13 +349,6 @@
             return locationResource.save(params, {
                 programId: program,
                 facilityId: facility
-            }).$promise;
-        }
-
-        function getConflictDraft(facilityId, programId) {
-            return resource.getConflict({
-                programId: programId,
-                facilityId: facilityId
             }).$promise;
         }
 

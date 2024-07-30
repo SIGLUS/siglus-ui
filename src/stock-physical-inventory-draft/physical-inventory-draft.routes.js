@@ -67,14 +67,7 @@
                     if (draft) {
                         return draft;
                     }
-                    // no existedDraft, call api to get/init draft
-                    if (subDraftIds.length > 0) {
-                        return physicalInventoryFactory.getPhysicalInventorySubDraftWithoutSummary(subDraftIds)
-                            .then(function(draft) {
-                                return draft;
-                            });
-                    }
-                    return physicalInventoryFactory.getInitialInventory(program.id, facility.id)
+                    return physicalInventoryFactory.getPhysicalInventorySubDraftWithoutSummary(subDraftIds)
                         .then(function(draft) {
                             return draft;
                         });
