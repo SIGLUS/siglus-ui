@@ -33,7 +33,8 @@
         'QUANTITY_UNIT', 'tableLineItems', 'displayTableLineItems', 'selectProductsModalService',
         'OpenlmisArrayDecorator', 'alertService', '$q', 'ShipmentViewLineItemFactory',
         'ShipmentLineItem', 'ShipmentViewLineItemGroup', 'suggestedQuantity', 'localStorageService',
-        'shipmentViewService', 'StockCardSummaryRepositoryImpl'
+        'shipmentViewService', 'StockCardSummaryRepositoryImpl', 'SiglusShipmentDraftService',
+        'notificationService'
     ];
 
     function ShipmentViewController(
@@ -41,7 +42,8 @@
         QUANTITY_UNIT, tableLineItems, displayTableLineItems, selectProductsModalService,
         OpenlmisArrayDecorator, alertService, $q, ShipmentViewLineItemFactory,
         ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuantity, localStorageService,
-        shipmentViewService, StockCardSummaryRepositoryImpl
+        shipmentViewService, StockCardSummaryRepositoryImpl, SiglusShipmentDraftService,
+        notificationService
     ) {
         var vm = this;
 
@@ -254,7 +256,16 @@
                 alertService.error('shipmentView.invalidForm');
                 return $q.reject();
             }
-            return vm.shipment.save();
+            loadingModalService.open();
+            return SiglusShipmentDraftService.saveShipmentDraft(vm.shipment)
+                .then(function() {
+                    loadingModalService.close();
+                    notificationService.success('shipmentView.draftHasBeenSaved');
+                })
+                .catch(function(error) {
+                    loadingModalService.close();
+                    notificationService.error(error);
+                });
         }
 
         function saveAndPrintShipment() {
@@ -431,11 +442,6 @@
             return result;
         }
 
-        function isEmpty(value) {
-            return !value || !value.toString().trim();
-        }
-        // #287: ends here
-
         function searchTable() {
             if (!vm.keyword) {
                 return vm.tableLineItems;
@@ -467,12 +473,31 @@
                 if (lineItem instanceof ShipmentViewLineItemGroup) {
                     return false;
                 }
-                return lineItem.isInvalid() !== undefined;
+                var quantityError = getLineItemQuantityInvalidMessage(lineItem);
+                return !isEmpty(quantityError);
             });
         }
 
         function getLineItemQuantityInvalidMessage(tableLineItem) {
+            if (tableLineItem.isSkipped) {
+                return '';
+            }
+            var quantityShipped = _.get(tableLineItem, ['shipmentLineItem', 'quantityShipped']);
+            var stockOnHand = _.get(tableLineItem, ['shipmentLineItem', 'stockOnHand'], 0);
+            var reservedStock = _.get(tableLineItem, ['shipmentLineItem', 'reservedStock'], 0);
+            // check required
+            if (quantityShipped === undefined || quantityShipped === null) {
+                return 'shipment.required';
+            }
+            // check input number valid
+            if (quantityShipped + reservedStock > stockOnHand) {
+                return 'shipment.fillQuantityCannotExceedStockOnHand';
+            }
             return '';
+        }
+
+        function isEmpty(data) {
+            return data === undefined || data === null || data.toString().trim() === '';
         }
     }
 })();

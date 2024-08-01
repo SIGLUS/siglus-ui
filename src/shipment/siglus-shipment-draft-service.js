@@ -21,9 +21,14 @@
         .module('shipment')
         .service('SiglusShipmentDraftService', service);
 
-    service.$inject = ['$resource', 'openlmisUrlFactory', 'ORDER_STATUS'];
+    service.$inject = [
+        '$resource', 'openlmisUrlFactory', 'ORDER_STATUS', 'SiglusShipmentDraftResource', '$q'
+    ];
 
-    function service($resource, openlmisUrlFactory, ORDER_STATUS) {
+    function service(
+        $resource, openlmisUrlFactory, ORDER_STATUS, SiglusShipmentDraftResource, $q
+    ) {
+        var ShipmentDraftResource = new SiglusShipmentDraftResource();
         var resource = $resource(
             openlmisUrlFactory('/api/siglusapi/shipmentDrafts'), {}, {
                 getShipmentDraftByOrderId: {
@@ -34,6 +39,7 @@
         );
 
         this.getShipmentDraftByOrderId = getShipmentDraftByOrderId;
+        this.saveShipmentDraft = saveShipmentDraft;
 
         function getShipmentDraftByOrderId(order) {
             return resource.getShipmentDraftByOrderId({
@@ -52,6 +58,13 @@
             return ORDER_STATUS.ORDERED === order.status
                 || ORDER_STATUS.FULFILLING === order.status
                 || ORDER_STATUS.PARTIALLY_FULFILLED === order.status;
+        }
+
+        function saveShipmentDraft(shipmentDraft) {
+            if (!shipmentDraft.isEditable) {
+                return $q.reject();
+            }
+            return ShipmentDraftResource.update(shipmentDraft);
         }
 
     }
