@@ -89,7 +89,6 @@
         function getSuggestedQuantity(id) {
             var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/orders/:id/suggestedQuantity'), {}, {
                 find: {
-                    url: fulfillmentUrlFactory('/api/siglusapi/orders/:id/suggestedQuantity'),
                     method: 'get'
                 }
             });
@@ -297,6 +296,7 @@
                     });
             };
         }
+
     }
 
 })();

@@ -102,14 +102,16 @@
                 <td ng-if="vm.isShowSuggestedQuantity && tableLineItem.isMainGroup">{{ vm.orderableIdToSuggestedQuantity ? tableLineItem.suggestedQuantity : tableLineItem.getOrderQuantity(vm.showInDoses()) - tableLineItem.partialFulfilledQuantity }}</td>
                 <td ng-if="!vm.isShowSuggestedQuantity || !tableLineItem.isMainGroup"></td>
                 <!-- #400: ends here-->
+                <!-- fill quantity -->
                 <td ng-if="!tableLineItem.shipmentLineItem">{{tableLineItem.getFillQuantity()}}</td>
                 <td ng-if="tableLineItem.shipmentLineItem">
                     <!-- #287: Warehouse clerk can skip some products in order-->
-                    <input ng-show="vm.shipment.isEditable()" positive-integer ng-model="tableLineItem.shipmentLineItem.quantityShipped"
-                        openlmis-invalid="{{tableLineItem.isInvalid().quantityShipped | message}}" ng-disabled="tableLineItem.skipped"/>
+                    <input ng-show="vm.shipment.isEditable" positive-integer ng-model="tableLineItem.shipmentLineItem.quantityShipped"
+                        openlmis-invalid="{{vm.getLineItemQuantityInvalidMessage(tableLineItem) | message}}" ng-disabled="tableLineItem.skipped"/>
                     <!-- #287: ends here-->
-                    <div ng-show="!vm.shipment.isEditable()">{{tableLineItem.shipmentLineItem.quantityShipped}}</div>
+                    <div ng-show="!vm.shipment.isEditable">{{tableLineItem.shipmentLineItem.quantityShipped}}</div>
                 </td>
+                <!-- fill quantity end -->
                 <td>{{tableLineItem.getReservedQuantity()}}</td>
                 <td>{{tableLineItem.getAvailableSoh(vm.showInDoses())}}</td>
                 <td>{{tableLineItem.getItemRemainingSoh(vm.showInDoses())}}</td>
@@ -117,19 +119,19 @@
         </tbody>
     </table>
 </section>
-<div ng-show="vm.shipment.isEditable()" class="openlmis-toolbar">
+<div ng-show="vm.shipment.isEditable" class="openlmis-toolbar">
     <!-- #462: add back to previous button -->
     <siglus-go-back />
     <!-- #462: ends here -->
     <div class="button-group primary">
-        <button ng-show="vm.shipment.canBeConfirmed()" ng-click="vm.confirm()" class="primary">{{'shipmentView.confirmShipment' | message}}</button>
+        <button ng-show="vm.shipment.canBeConfirmed" ng-click="vm.confirm()" class="primary">{{'shipmentView.confirmShipment' | message}}</button>
         <button ng-show="vm.shipment.id" class="danger" ng-click="vm.shipment.delete()">{{'shipmentView.deleteDraftButton' | message}}</button>
     </div>
     <button ng-click="vm.save()">{{'shipmentView.saveDelete' | message}}</button>
-    <button ng-show="vm.shipment.isEditable()" ng-click="vm.saveAndPrintShipment()">{{'shipmentView.generatePickPackList' | message}}</button>
+    <button ng-show="vm.shipment.isEditable" ng-click="vm.saveAndPrintShipment()">{{'shipmentView.generatePickPackList' | message}}</button>
 </div>
 <!-- #462: add back to previous button -->
-<div class="openlmis-toolbar button-group" ng-if="!vm.shipment.isEditable()">
+<div class="openlmis-toolbar button-group" ng-if="!vm.shipment.isEditable">
     <siglus-go-back />
 </div>
 <!-- #462: ends here -->

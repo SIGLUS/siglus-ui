@@ -57,9 +57,10 @@
         function ShipmentViewLineItemGroup(config) {
             this.super(config);
             this.orderQuantity = config.orderQuantity;
-            this.lineItems = config.lineItems;
+            this.lineItems = config.lineItems || 0;
             this.isMainGroup = config.isMainGroup;
-            this.noStockAvailable = this.getAvailableSoh() === 0;
+            this.noStockAvailable = config.noStockAvailable === undefined ?
+                this.getAvailableSoh() === 0 : config.noStockAvailable;
             this.isLot = false;
             this.id = config.id;
             // #400: Facility user partially fulfill an order and create sub-order for an requisition
@@ -80,6 +81,9 @@
          * @return {number}          the sum of all available stock on hand for the whole group
          */
         function getAvailableSoh(inDoses) {
+            if (!this.lineItems) {
+                return 0;
+            }
             return this.lineItems.reduce(function(availableSoh, lineItem) {
                 return availableSoh + lineItem.getAvailableSoh(inDoses);
             }, 0);
@@ -96,6 +100,9 @@
          * @return {number}          the sum of all fill quantities for the whole group
          */
         function getFillQuantity() {
+            if (!this.lineItems) {
+                return 0;
+            }
             return this.lineItems.reduce(function(fillQuantity, lineItem) {
                 return fillQuantity + lineItem.getFillQuantity();
             }, 0);
@@ -112,6 +119,9 @@
          * @return {number}          the sum of all reserved quantities for the whole group
          */
         function getReservedQuantity() {
+            if (!this.lineItems) {
+                return 0;
+            }
             return this.lineItems.reduce(function(reservedQuantity, lineItem) {
                 return reservedQuantity + lineItem.getReservedQuantity();
             }, 0);
@@ -128,6 +138,9 @@
          * @return {number}          the sum of all remaining quantities for the whole group
          */
         function getItemRemainingSoh(inDoses) {
+            if (!this.lineItems) {
+                return 0;
+            }
             return this.lineItems.reduce(function(remainingQuantity, lineItem) {
                 return remainingQuantity + lineItem.getItemRemainingSoh(inDoses);
             }, 0);

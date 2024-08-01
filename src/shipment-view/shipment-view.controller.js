@@ -29,17 +29,17 @@
         .controller('ShipmentViewController', ShipmentViewController);
 
     ShipmentViewController.$inject = [
-        'shipment', 'loadingModalService', '$state', '$window', '$stateParams', 'updatedOrder',
+        'shipment', 'loadingModalService', '$state', '$window', '$stateParams', 'order',
         'QUANTITY_UNIT', 'tableLineItems', 'displayTableLineItems', 'selectProductsModalService',
-        'OpenlmisArrayDecorator', 'alertService', '$q', 'stockCardSummaries', 'ShipmentViewLineItemFactory',
+        'OpenlmisArrayDecorator', 'alertService', '$q', 'ShipmentViewLineItemFactory',
         'ShipmentLineItem', 'ShipmentViewLineItemGroup', 'suggestedQuantity', 'localStorageService',
         'shipmentViewService', 'StockCardSummaryRepositoryImpl'
     ];
 
     function ShipmentViewController(
-        shipment, loadingModalService, $state, $window, $stateParams, updatedOrder,
+        shipment, loadingModalService, $state, $window, $stateParams, order,
         QUANTITY_UNIT, tableLineItems, displayTableLineItems, selectProductsModalService,
-        OpenlmisArrayDecorator, alertService, $q, stockCardSummaries, ShipmentViewLineItemFactory,
+        OpenlmisArrayDecorator, alertService, $q, ShipmentViewLineItemFactory,
         ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuantity, localStorageService,
         shipmentViewService, StockCardSummaryRepositoryImpl
     ) {
@@ -61,6 +61,7 @@
         vm.unskipAllLineItems = unskipAllLineItems;
         vm.canSkip = canSkip;
         // #287: ends here
+        vm.getLineItemQuantityInvalidMessage = getLineItemQuantityInvalidMessage;
 
         /**
          * @ngdoc property
@@ -116,7 +117,9 @@
          * setting data to be available on the view.
          */
         function onInit() {
-            vm.order = updatedOrder;
+            vm.order = order;
+            vm.facility = _.get(vm.order, 'facility');
+            vm.program = _.get(vm.order, 'program');
             vm.shipment = shipment;
             vm.tableLineItems = suggestedQuantity.orderableIdToSuggestedQuantity ?
                 setSuggestedQuantity(tableLineItems) :
@@ -274,105 +277,106 @@
 
         // #264: warehouse clerk can add product to orders
         function addProducts() {
-            var availableProducts = getAvailableProducts();
-            selectProducts({
-                products: availableProducts
-            })
-                .then(function(selectedProducts) {
-                    var addedShipmentLineItems = prepareShipmentLineItems(selectedProducts);
-                    var addedOrderLineItems = prepareOrderLineItems(selectedProducts);
-                    var addedOrderLineItemsShipment = Object.assign({}, shipment, {
-                        lineItems: addedShipmentLineItems,
-                        order: {
-                            orderLineItems: addedOrderLineItems
-                        }
-                    });
-                    var addedTableLineItems = new ShipmentViewLineItemFactory()
-                        .createFrom(addedOrderLineItemsShipment, stockCardSummaries);
-                    addedShipmentLineItems.forEach(function(shipmentLineItem) {
-                        shipment.lineItems.push(shipmentLineItem);
-                    });
-                    vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
-                    vm.tableLineItems = vm.tableLineItems.concat(addedTableLineItems);
-                    vm.displayTableLineItems = vm.displayTableLineItems.concat(addedTableLineItems);
-                });
+            console.log('addProducts');
+            // var availableProducts = getAvailableProducts();
+            // selectProducts({
+            //     products: availableProducts
+            // })
+            //     .then(function(selectedProducts) {
+            //         var addedShipmentLineItems = prepareShipmentLineItems(selectedProducts);
+            //         var addedOrderLineItems = prepareOrderLineItems(selectedProducts);
+            //         var addedOrderLineItemsShipment = Object.assign({}, shipment, {
+            //             lineItems: addedShipmentLineItems,
+            //             order: {
+            //                 orderLineItems: addedOrderLineItems
+            //             }
+            //         });
+            //         var addedTableLineItems = new ShipmentViewLineItemFactory()
+            //             .createFrom(addedOrderLineItemsShipment, stockCardSummaries);
+            //         addedShipmentLineItems.forEach(function(shipmentLineItem) {
+            //             shipment.lineItems.push(shipmentLineItem);
+            //         });
+            //         vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
+            //         vm.tableLineItems = vm.tableLineItems.concat(addedTableLineItems);
+            //         vm.displayTableLineItems = vm.displayTableLineItems.concat(addedTableLineItems);
+            //     });
         }
-
-        function selectProducts(availableProducts) {
-            var decoratedAvailableProducts = new OpenlmisArrayDecorator(availableProducts.products);
-            decoratedAvailableProducts.sortBy('fullProductName');
-
-            if (!availableProducts.products.length) {
-                alertService.error(
-                    'shipmentView.noProductsToAdd.label',
-                    'shipmentView.noProductsToAdd.message'
-                );
-                return $q.reject();
-            }
-
-            return selectProductsModalService.show({
-                products: decoratedAvailableProducts,
-                limit: vm.order.emergency ? {
-                    max: 10 - vm.order.orderLineItems.length,
-                    errorMsg: 'shipmentView.selectTooMany'
-                } : undefined
-            });
-        }
-
-        function getAvailableProducts() {
-            var existedOrderableMap = {};
-            vm.order.orderLineItems.forEach(function(lineItem) {
-                existedOrderableMap[lineItem.orderable.id] = lineItem.orderable;
-            });
-            return vm.order.availableProducts.filter(function(orderable) {
-                return !(orderable.id in existedOrderableMap);
-            });
-        }
-
-        function prepareOrderLineItems(selectedProducts) {
-            return selectedProducts.map(function(orderable) {
-                return {
-                    orderedQuantity: 0,
-                    orderable: orderable,
-                    partialFulfilledQuantity: 0
-                };
-            });
-        }
+        //
+        // function selectProducts(availableProducts) {
+        //     var decoratedAvailableProducts = new OpenlmisArrayDecorator(availableProducts.products);
+        //     decoratedAvailableProducts.sortBy('fullProductName');
+        //
+        //     if (!availableProducts.products.length) {
+        //         alertService.error(
+        //             'shipmentView.noProductsToAdd.label',
+        //             'shipmentView.noProductsToAdd.message'
+        //         );
+        //         return $q.reject();
+        //     }
+        //
+        //     return selectProductsModalService.show({
+        //         products: decoratedAvailableProducts,
+        //         limit: vm.order.emergency ? {
+        //             max: 10 - vm.order.orderLineItems.length,
+        //             errorMsg: 'shipmentView.selectTooMany'
+        //         } : undefined
+        //     });
+        // }
+        //
+        // function getAvailableProducts() {
+        //     var existedOrderableMap = {};
+        //     vm.order.orderLineItems.forEach(function(lineItem) {
+        //         existedOrderableMap[lineItem.orderable.id] = lineItem.orderable;
+        //     });
+        //     return vm.order.availableProducts.filter(function(orderable) {
+        //         return !(orderable.id in existedOrderableMap);
+        //     });
+        // }
+        //
+        // function prepareOrderLineItems(selectedProducts) {
+        //     return selectedProducts.map(function(orderable) {
+        //         return {
+        //             orderedQuantity: 0,
+        //             orderable: orderable,
+        //             partialFulfilledQuantity: 0
+        //         };
+        //     });
+        // }
         // #264: ends here
 
         // #374: confirm shipment effect soh
-        function prepareShipmentLineItems(selectedProducts) {
-            var addedShipmentLineItems = [];
-            var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
-            selectedProducts.forEach(function(orderable) {
-                var canFulfillForMeByOrderable = canFulfillForMeMap[orderable.id];
-                orderable.versionNumber = orderable.meta.versionNumber;
-                Object.values(canFulfillForMeByOrderable).forEach(function(canFulfillForMe) {
-                    addedShipmentLineItems.push(new ShipmentLineItem({
-                        lot: canFulfillForMe.lot,
-                        orderable: orderable,
-                        quantityShipped: 0,
-                        canFulfillForMe: canFulfillForMe
-                    }));
-                });
-            });
-            return addedShipmentLineItems;
-        }
+        // function prepareShipmentLineItems(selectedProducts) {
+        //     var addedShipmentLineItems = [];
+        //     var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
+        //     selectedProducts.forEach(function(orderable) {
+        //         var canFulfillForMeByOrderable = canFulfillForMeMap[orderable.id];
+        //         orderable.versionNumber = orderable.meta.versionNumber;
+        //         Object.values(canFulfillForMeByOrderable).forEach(function(canFulfillForMe) {
+        //             addedShipmentLineItems.push(new ShipmentLineItem({
+        //                 lot: canFulfillForMe.lot,
+        //                 orderable: orderable,
+        //                 quantityShipped: 0,
+        //                 canFulfillForMe: canFulfillForMe
+        //             }));
+        //         });
+        //     });
+        //     return addedShipmentLineItems;
+        // }
 
-        function mapCanFulfillForMe(summaries) {
-            var canFulfillForMeMap = {};
-            summaries.forEach(function(summary) {
-                summary.canFulfillForMe.forEach(function(canFulfillForMe) {
-                    var orderableId = canFulfillForMe.orderable.id,
-                        lotId = canFulfillForMe.lot ? canFulfillForMe.lot.id : undefined;
-                    if (!canFulfillForMeMap[orderableId]) {
-                        canFulfillForMeMap[orderableId] = {};
-                    }
-                    canFulfillForMeMap[orderableId][lotId] = canFulfillForMe;
-                });
-            });
-            return canFulfillForMeMap;
-        }
+        // function mapCanFulfillForMe(summaries) {
+        //     var canFulfillForMeMap = {};
+        //     summaries.forEach(function(summary) {
+        //         summary.canFulfillForMe.forEach(function(canFulfillForMe) {
+        //             var orderableId = canFulfillForMe.orderable.id,
+        //                 lotId = canFulfillForMe.lot ? canFulfillForMe.lot.id : undefined;
+        //             if (!canFulfillForMeMap[orderableId]) {
+        //                 canFulfillForMeMap[orderableId] = {};
+        //             }
+        //             canFulfillForMeMap[orderableId][lotId] = canFulfillForMe;
+        //         });
+        //     });
+        //     return canFulfillForMeMap;
+        // }
         // #374: ends here
 
         // #287: Warehouse clerk can skip some products in order
@@ -395,14 +399,16 @@
         }
 
         function changeSkipStatus(tableLineItem) {
-            tableLineItem.lineItems.forEach(function(lineItem) {
-                lineItem.skipped = tableLineItem.skipped;
-                if (lineItem instanceof ShipmentViewLineItemGroup) {
-                    changeSkipStatus(lineItem);
-                } else {
-                    lineItem.shipmentLineItem.skipped = tableLineItem.skipped;
-                }
-            });
+            if (tableLineItem.lineItems) {
+                tableLineItem.lineItems.forEach(function(lineItem) {
+                    lineItem.skipped = tableLineItem.skipped;
+                    if (lineItem instanceof ShipmentViewLineItemGroup) {
+                        changeSkipStatus(lineItem);
+                    } else {
+                        lineItem.shipmentLineItem.skipped = tableLineItem.skipped;
+                    }
+                });
+            }
             vm.shipment.order.orderLineItems.forEach(function(orderLineItem) {
                 if (orderLineItem.orderable.productCode === tableLineItem.productCode) {
                     orderLineItem.skipped = tableLineItem.skipped;
@@ -411,6 +417,9 @@
         }
 
         function canSkip(tableLineItem) {
+            if (!tableLineItem.lineItems || tableLineItem.lineItems.length === 0) {
+                return true;
+            }
             var result = true;
             tableLineItem.lineItems.forEach(function(lineItem) {
                 if (lineItem instanceof ShipmentViewLineItemGroup) {
@@ -460,6 +469,10 @@
                 }
                 return lineItem.isInvalid() !== undefined;
             });
+        }
+
+        function getLineItemQuantityInvalidMessage(tableLineItem) {
+            return '';
         }
     }
 })();

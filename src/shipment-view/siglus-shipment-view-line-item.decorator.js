@@ -62,7 +62,7 @@
             this.vvmStatus = config.vvmStatus;
             this.shipmentLineItem = config.shipmentLineItem;
             this.netContent = config.netContent;
-            this.isLot = !config.isKit;
+            this.isLot = config.isLot || !config.isKit;
             this.skipped = config.skipped;
             this.reservedStock = config.reservedStock;
         }

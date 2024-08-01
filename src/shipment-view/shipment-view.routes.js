@@ -42,52 +42,57 @@
                 order: function(orderRepository, $stateParams) {
                     return orderRepository.get($stateParams.id);
                 },
-                stockCardSummaries: function(StockCardSummaryRepositoryImpl, order, $stateParams) {
-                    // #264: warehouse clerk can add product to orders
-                    var orderableIds = order.availableProducts.map(function(orderable) {
-                        return orderable.id;
-                    });
-                    // #264: ends here
-
-                    var requestBody = {
-                        programId: order.program.id,
-                        facilityId: order.supplyingFacility.id,
-                        orderableId: orderableIds,
-                        orderId: order.id
-                    };
-                    $stateParams.summaryRequestBody = requestBody;
-
-                    return new StockCardSummaryRepositoryImpl().queryWithStockCards(requestBody);
+                // stockCardSummaries: function(StockCardSummaryRepositoryImpl, order, $stateParams) {
+                //     // #264: warehouse clerk can add product to orders
+                //     var orderableIds = order.availableProducts.map(function(orderable) {
+                //         return orderable.id;
+                //     });
+                //     // #264: ends here
+                //
+                //     var requestBody = {
+                //         programId: order.program.id,
+                //         facilityId: order.supplyingFacility.id,
+                //         orderableId: orderableIds,
+                //         orderId: order.id
+                //     };
+                //     $stateParams.summaryRequestBody = requestBody;
+                //
+                //     return new StockCardSummaryRepositoryImpl().queryWithStockCards(requestBody);
+                // },
+                shipment: function(SiglusShipmentDraftService, order) {
+                    return SiglusShipmentDraftService.getShipmentDraftByOrderId(order);
                 },
                 // #372: Improving Fulfilling Order performance
-                shipment: function(shipmentViewService, order, stockCardSummaries) {
-                    var orderWithoutAvailableProducts = angular.copy(order);
-                    delete orderWithoutAvailableProducts.availableProducts;
-                    return shipmentViewService.getShipmentForOrder(orderWithoutAvailableProducts, stockCardSummaries);
-                },
+                // shipment: function(shipmentViewService, order, stockCardSummaries) {
+                //     var orderWithoutAvailableProducts = angular.copy(order);
+                //     delete orderWithoutAvailableProducts.availableProducts;
+                //     return shipmentViewService.getShipmentForOrder(orderWithoutAvailableProducts);
+                // },
                 suggestedQuantity: function(shipmentViewService, $stateParams) {
                     var id = $stateParams.id;
                     return shipmentViewService.getSuggestedQuantity(id);
                 },
                 // #372: ends here
-                tableLineItems: function(ShipmentViewLineItemFactory, shipment, stockCardSummaries) {
-                    return new ShipmentViewLineItemFactory().createFrom(shipment, stockCardSummaries);
+                tableLineItems: function(ShipmentViewLineItemFactory, shipment, order) {
+                    // return new ShipmentViewLineItemFactory().createFrom(shipment, stockCardSummaries);
+                    return new ShipmentViewLineItemFactory()
+                        .buildLineItemsWithMainGroup(order.orderLineItems, shipment.lineItems);
                 },
                 displayTableLineItems: function(tableLineItems) {
                     return tableLineItems;
-                },
-                // #264: warehouse clerk can add product to orders
-                updatedOrder: function(shipment, order, stockCardSummaries) {
-                    var shipmentOrder = shipment.order;
-
-                    shipmentOrder.availableProducts = order.availableProducts.map(function(orderable) {
-                        var stockCard = stockCardSummaries.find(function(stockCard) {
-                            return stockCard.orderable.id === orderable.id;
-                        });
-                        return stockCard.orderable;
-                    });
-                    return shipmentOrder;
                 }
+                // #264: warehouse clerk can add product to orders
+                // updatedOrder: function(shipment, order, stockCardSummaries) {
+                //     var shipmentOrder = shipment.order;
+                //
+                //     shipmentOrder.availableProducts = order.availableProducts.map(function(orderable) {
+                //         var stockCard = stockCardSummaries.find(function(stockCard) {
+                //             return stockCard.orderable.id === orderable.id;
+                //         });
+                //         return stockCard.orderable;
+                //     });
+                //     return shipmentOrder;
+                // }
                 // #264: ends here
             }
         });

@@ -37,6 +37,7 @@
                                          ShipmentViewLineItem, ShipmentViewLineItemGroup, moment) {
 
         ShipmentViewLineItemFactory.prototype.createFrom = buildFrom;
+        ShipmentViewLineItemFactory.prototype.buildLineItemsWithMainGroup = buildLineItemsWithMainGroup;
 
         return ShipmentViewLineItemFactory;
 
@@ -347,5 +348,72 @@
                 return new Date(lineItem.lot.expirationDate);
             }
         }
+
+        function buildLineItemsWithMainGroup(orderLineItems, draftLineItems) {
+            var draftItemsMapByOrderableId = _.groupBy(draftLineItems, function(lineItem) {
+                return _.get(lineItem, ['orderable', 'id']);
+            });
+            var sortedOrderLineItems = _.sortBy(orderLineItems, function(lineItem) {
+                return _.get(lineItem, ['orderable', 'productCode']);
+            });
+
+            var lineItemsWithMainGroup = [];
+            sortedOrderLineItems.forEach(function(orderLineItem) {
+                var orderableId = _.get(orderLineItem, ['orderable', 'id']);
+                var draftItemsWithSameOrderable = draftItemsMapByOrderableId[orderableId];
+                if (draftItemsWithSameOrderable && draftItemsWithSameOrderable.length > 0) {
+                    var lotLineItems = draftItemsWithSameOrderable.map(function(draftItem) {
+                        return new ShipmentViewLineItem({
+                            productCode: _.get(draftItem, ['orderable', 'productCode']),
+                            productName: _.get(draftItem, ['orderable', 'fullProductName']),
+                            lot: _.get(draftItem, 'lot'),
+                            vvmStatus: _.get(draftItem, ['extraData', 'vvmStatus'], null),
+                            skipped: _.get(orderLineItem, 'skipped'),
+                            reservedStock: _.get(draftItem, 'reservedStock'),
+                            shipmentLineItem: draftItem
+                        });
+                    });
+                    var mainGroup = new ShipmentViewLineItemGroup({
+                        id: orderableId,
+                        productCode: _.get(orderLineItem, ['orderable', 'productCode']),
+                        productName: _.get(orderLineItem, ['orderable', 'fullProductName']),
+                        lineItems: lotLineItems,
+                        isMainGroup: true,
+                        orderQuantity: _.get(orderLineItem, 'orderedQuantity'),
+                        partialFulfilledQuantity: _.get(orderLineItem, 'partialFulfilledQuantity'),
+                        skipped: _.get(orderLineItem, 'skipped'),
+                        noStockAvailable: false
+                    });
+                    lineItemsWithMainGroup.push(mainGroup);
+                    lineItemsWithMainGroup = lineItemsWithMainGroup.concat(lotLineItems);
+                } else {
+                    lineItemsWithMainGroup.push(new ShipmentViewLineItemGroup({
+                        id: orderableId,
+                        productCode: _.get(orderLineItem, ['orderable', 'productCode']),
+                        productName: _.get(orderLineItem, ['orderable', 'fullProductName']),
+                        isMainGroup: true,
+                        orderQuantity: _.get(orderLineItem, 'orderedQuantity'),
+                        partialFulfilledQuantity: _.get(orderLineItem, 'partialFulfilledQuantity'),
+                        skipped: _.get(orderLineItem, 'skipped'),
+                        noStockAvailable: true
+                    }));
+                }
+            });
+            return lineItemsWithMainGroup;
+        }
+
+        // function generateLineItemMainGroup(orderLineItem, draftLineItems) {
+        //     new ShipmentViewLineItemGroup({
+        //         id: orderableId,
+        //         productCode: _.get(orderLineItem, ['orderable', 'productCode']),
+        //         productName: _.get(orderLineItem, ['orderable', 'fullProductName']),
+        //         lineItems: draftItemsWithSameOrderable,
+        //         isMainGroup: true,
+        //         orderQuantity: _.get(orderLineItem, 'orderedQuantity'),
+        //         partialFulfilledQuantity: _.get(orderLineItem, 'partialFulfilledQuantity'),
+        //         skipped: _.get(orderLineItem, 'skipped')
+        //     });
+        // }
+
     }
 })();

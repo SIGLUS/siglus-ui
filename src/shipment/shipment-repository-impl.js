@@ -37,9 +37,10 @@
     ];
     // #287: ends here
 
-    function ShipmentRepositoryImpl(ShipmentResource, ShipmentDraftResource, OrderResource,
-                                    StockCardSummaryRepositoryImpl, SiglusShipmentResource, SiglusShipmentDraftResource,
-                                    SiglusOrderResource) {
+    function ShipmentRepositoryImpl(
+        ShipmentResource, ShipmentDraftResource, OrderResource, StockCardSummaryRepositoryImpl,
+        SiglusShipmentResource, SiglusShipmentDraftResource, SiglusOrderResource
+    ) {
 
         ShipmentRepositoryImpl.prototype.create = create;
         ShipmentRepositoryImpl.prototype.createDraft = createDraft;
