@@ -34,7 +34,8 @@
         'OpenlmisArrayDecorator', 'alertService', '$q', 'ShipmentViewLineItemFactory',
         'ShipmentLineItem', 'ShipmentViewLineItemGroup', 'suggestedQuantity', 'localStorageService',
         'shipmentViewService', 'StockCardSummaryRepositoryImpl', 'SiglusShipmentDraftService',
-        'notificationService'
+        'notificationService', 'confirmService', 'stateTrackerService', 'orderService', 'messageService',
+        'siglusShipmentConfirmModalService', 'alertConfirmModalService'
     ];
 
     function ShipmentViewController(
@@ -43,7 +44,8 @@
         OpenlmisArrayDecorator, alertService, $q, ShipmentViewLineItemFactory,
         ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuantity, localStorageService,
         shipmentViewService, StockCardSummaryRepositoryImpl, SiglusShipmentDraftService,
-        notificationService
+        notificationService, confirmService, stateTrackerService, orderService, messageService,
+        siglusShipmentConfirmModalService, alertConfirmModalService
     ) {
         var vm = this;
 
@@ -51,6 +53,7 @@
         vm.showInDoses = showInDoses;
         vm.getSelectedQuantityUnitKey = getSelectedQuantityUnitKey;
         vm.save = save;
+        vm.deleteShipmentDraft = deleteShipmentDraft;
         vm.confirm = confirm;
         vm.printShipment = printShipment;
         vm.saveAndPrintShipment = saveAndPrintShipment;
@@ -264,8 +267,31 @@
                 })
                 .catch(function(error) {
                     loadingModalService.close();
-                    notificationService.error(error);
+                    if (_.get(error, ['data', 'messageKey']) ===
+                        'siglusapi.error.shipment.order.line items.invalid') {
+                        // TODO: refresh reserved soh
+                    } else {
+                        notificationService.error('shipmentView.failedToSaveDraft');
+                    }
                 });
+        }
+
+        function deleteShipmentDraft() {
+            return confirmService.confirmDestroy(
+                'shipmentView.deleteDraftConfirmation',
+                'shipmentView.deleteDraft'
+            ).then(function() {
+                loadingModalService.open();
+                return SiglusShipmentDraftService.deleteShipmentDraft(vm.shipment)
+                    .then(function() {
+                        notificationService.success('shipmentView.draftHasBeenDeleted');
+                        stateTrackerService.goToPreviousState('openlmis.orders.view');
+                    })
+                    .catch(function() {
+                        notificationService.error('shipmentView.failedToDeleteDraft');
+                        loadingModalService.close();
+                    });
+            });
         }
 
         function saveAndPrintShipment() {
@@ -277,9 +303,75 @@
         function confirm() {
             if (isFormInvalid()) {
                 alertService.error('shipmentView.failedToSaveDraft');
-                return;
+                return $q.reject();
             }
-            return vm.shipment.confirm();
+
+            loadingModalService.open();
+            return orderService.getStatus(vm.order.id)
+                .then(function(orderStatus) {
+                    if (orderStatus.suborder && orderStatus.closed) {
+                        return alertService.error('shipmentView.closed');
+                    }
+
+                    var partiallyFulfilledProductCount = countPartiallyFulfilledProduct();
+                    var isPartialFulfilled = !orderStatus.closed && partiallyFulfilledProductCount > 0;
+                    var confirmModalContent =  isPartialFulfilled ?
+                        messageService.get('shipmentView.confirmPartialFulfilled.message', {
+                            totalPartialLineItems: partiallyFulfilledProductCount
+                        }) : 'shipmentView.confirmShipment.question';
+                    var confirmModalButtonText = isPartialFulfilled ?
+                        'shipmentView.confirmPartialFulfilled.createSuborder' : 'shipmentView.confirmShipment';
+
+                    return siglusShipmentConfirmModalService.confirm(confirmModalContent, confirmModalButtonText)
+                        .then(function(signature) {
+                            return SiglusShipmentDraftService.confirmShipmentDraft(
+                                vm.shipment, signature, isPartialFulfilled
+                            )
+                                .then(function() {
+                                    loadingModalService.close();
+                                    var notificationText = isPartialFulfilled ?
+                                        'shipmentView.suborderHasBeenConfirmed' :
+                                        'shipmentView.shipmentHasBeenConfirmed';
+                                    notificationService.success(notificationText);
+                                    stateTrackerService.goToPreviousState('openlmis.orders.view');
+                                })
+                                .catch(function(err) {
+                                    loadingModalService.close();
+                                    if (_.get(err, ['data', 'messageKey']) === 'siglusapi.error.order.expired') {
+                                        alertConfirmModalService.error(
+                                            'orderFulfillment.expiredMessage', '',
+                                            ['adminFacilityList.close', 'adminFacilityList.confirm']
+                                        )
+                                            .then(function() {
+                                                $state.go('openlmis.orders.fulfillment', $stateParams, {
+                                                    reload: true
+                                                });
+                                            });
+                                    } else if (_.get(err, ['data', 'messageKey']) ===
+                                    'siglusapi.error.shipment.order.line items.invalid') {
+                                    // TODO: refresh reserved soh
+                                    } else {
+                                        var notificationErrorText = isPartialFulfilled ?
+                                            'shipmentView.failedToCreateSuborder' :
+                                            'shipmentView.failedToConfirmShipment';
+                                        notificationService.error(notificationErrorText);
+                                    }
+                                });
+                        });
+                })
+                .catch(loadingModalService.close);
+        }
+
+        function countPartiallyFulfilledProduct() {
+            var unSkippedMainGroupLineItems = vm.tableLineItems.filter(function(lineItem) {
+                return lineItem.isMainGroup && !lineItem.skipped;
+            });
+            var partiallyFulfilledProducts = unSkippedMainGroupLineItems.filter(function(mainGroupItem) {
+                var fillQuantity = mainGroupItem.getFillQuantity();
+                var shippedQuantity = fillQuantity + _.get(mainGroupItem, 'partialFulfilledQuantity', 0);
+                return shippedQuantity < _.get(mainGroupItem, 'orderQuantity', 0);
+            });
+            return partiallyFulfilledProducts.length;
         }
 
         vm.getErrorMsg = function() {

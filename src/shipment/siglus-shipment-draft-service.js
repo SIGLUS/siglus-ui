@@ -34,12 +34,36 @@
                 getShipmentDraftByOrderId: {
                     method: 'GET',
                     isArray: true
+                },
+                createShipmentDraftByOrderId: {
+                    method: 'POST'
+                },
+                confirmShipmentDraft: {
+                    url: openlmisUrlFactory('/api/siglusapi/shipments'),
+                    method: 'POST'
                 }
             }
         );
 
+        this.createShipmentDraftByOrderId = createShipmentDraftByOrderId;
         this.getShipmentDraftByOrderId = getShipmentDraftByOrderId;
         this.saveShipmentDraft = saveShipmentDraft;
+        this.deleteShipmentDraft = deleteShipmentDraft;
+        this.confirmShipmentDraft = confirmShipmentDraft;
+
+        function createShipmentDraftByOrderId(order) {
+            return resource.createShipmentDraftByOrderId({
+                order: {
+                    id: order.id
+                }
+            }).$promise.then(function(shipmentResponse) {
+                return _.assign({}, shipmentResponse, {
+                    isEditable: isShipmentEditable(order),
+                    canBeConfirmed: shipmentResponse.lineItems.length > 0,
+                    order: order
+                });
+            });
+        }
 
         function getShipmentDraftByOrderId(order) {
             return resource.getShipmentDraftByOrderId({
@@ -65,6 +89,28 @@
                 return $q.reject();
             }
             return ShipmentDraftResource.update(shipmentDraft);
+        }
+
+        function deleteShipmentDraft(shipmentDraft) {
+            if (!shipmentDraft.isEditable) {
+                return $q.reject();
+            }
+            return ShipmentDraftResource.delete(shipmentDraft);
+        }
+
+        function confirmShipmentDraft(shipmentDraft, signature, isSubOrder) {
+            if (!shipmentDraft.isEditable || !shipmentDraft.canBeConfirmed) {
+                return $q.reject();
+            }
+
+            var params = isSubOrder ? {
+                isSubOrder: true
+            } : {};
+            var requestBody = _.assign({
+                shipment: shipmentDraft
+            }, signature);
+
+            return resource.confirmShipmentDraft(params, requestBody).$promise;
         }
 
     }

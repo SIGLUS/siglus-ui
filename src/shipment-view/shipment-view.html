@@ -125,7 +125,7 @@
     <!-- #462: ends here -->
     <div class="button-group primary">
         <button ng-show="vm.shipment.canBeConfirmed" ng-click="vm.confirm()" class="primary">{{'shipmentView.confirmShipment' | message}}</button>
-        <button ng-show="vm.shipment.id" class="danger" ng-click="vm.shipment.delete()">{{'shipmentView.deleteDraftButton' | message}}</button>
+        <button ng-show="vm.shipment.id" class="danger" ng-click="vm.deleteShipmentDraft()">{{'shipmentView.deleteDraftButton' | message}}</button>
     </div>
     <button ng-click="vm.save()">{{'shipmentView.saveDelete' | message}}</button>
     <button ng-show="vm.shipment.isEditable" ng-click="vm.saveAndPrintShipment()">{{'shipmentView.generatePickPackList' | message}}</button>

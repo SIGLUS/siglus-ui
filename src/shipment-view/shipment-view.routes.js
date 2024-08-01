@@ -60,6 +60,9 @@
                 //     return new StockCardSummaryRepositoryImpl().queryWithStockCards(requestBody);
                 // },
                 shipment: function(SiglusShipmentDraftService, order) {
+                    if (order.isOrdered() || order.isPartiallyFulfilled()) {
+                        return SiglusShipmentDraftService.createShipmentDraftByOrderId(order);
+                    }
                     return SiglusShipmentDraftService.getShipmentDraftByOrderId(order);
                 },
                 // #372: Improving Fulfilling Order performance
