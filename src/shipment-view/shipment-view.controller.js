@@ -35,7 +35,7 @@
         'ShipmentLineItem', 'ShipmentViewLineItemGroup', 'suggestedQuantity', 'localStorageService',
         'shipmentViewService', 'StockCardSummaryRepositoryImpl', 'SiglusShipmentDraftService',
         'notificationService', 'confirmService', 'stateTrackerService', 'orderService', 'messageService',
-        'siglusShipmentConfirmModalService', 'alertConfirmModalService'
+        'siglusShipmentConfirmModalService', 'alertConfirmModalService', 'siglusOrderableLotListService'
     ];
 
     function ShipmentViewController(
@@ -45,7 +45,7 @@
         ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuantity, localStorageService,
         shipmentViewService, StockCardSummaryRepositoryImpl, SiglusShipmentDraftService,
         notificationService, confirmService, stateTrackerService, orderService, messageService,
-        siglusShipmentConfirmModalService, alertConfirmModalService
+        siglusShipmentConfirmModalService, alertConfirmModalService, siglusOrderableLotListService
     ) {
         var vm = this;
 
@@ -65,6 +65,8 @@
         vm.skipAllLineItems = skipAllLineItems;
         vm.unskipAllLineItems = unskipAllLineItems;
         vm.canSkip = canSkip;
+        vm.search = search;
+        vm.cancelFilter = cancelFilter;
         // #287: ends here
         vm.getLineItemQuantityInvalidMessage = getLineItemQuantityInvalidMessage;
 
@@ -381,6 +383,52 @@
         // #264: warehouse clerk can add product to orders
         function addProducts() {
             console.log('addProducts');
+
+            var productsInOrderIdList = _.map(vm.order.orderLineItems, function(lineItem) {
+                return _.get(lineItem, ['orderable', 'id']);
+            });
+            var availableProductsCanAdd =  _.filter(vm.order.availableProducts, function(product) {
+                return !productsInOrderIdList.includes(product.id);
+            });
+
+            if (availableProductsCanAdd.length === 0) {
+                alertService.error(
+                    'shipmentView.noProductsToAdd.label',
+                    'shipmentView.noProductsToAdd.message'
+                );
+                return;
+            }
+
+            selectProductsModalService.show({
+                products: availableProductsCanAdd,
+                limit: vm.order.emergency ? {
+                    max: 10 - vm.order.orderLineItems.length,
+                    errorMsg: 'shipmentView.selectTooMany'
+                } : undefined
+            }).then(function(selectedProducts) {
+                console.log('selectedProducts', selectedProducts);
+                var orderableIds = selectedProducts.map(function(product) {
+                    return product.id;
+                });
+                // TODO: loading
+                loadingModalService.open();
+                siglusOrderableLotListService.getOrderableLots(vm.facility.id, orderableIds)
+                    .then(function(lotList) {
+                        console.log('lotList', lotList);
+                        var withSohLotList = lotList.filter(function(lot) {
+                            return _.get(lot, 'soh', 0) > 0;
+                        });
+                        var lotsMapByOrderableId =
+                            siglusOrderableLotListService.getLotsMapByOrderableId(withSohLotList);
+
+                        updateOrderLineItemsWithAddedProducts(selectedProducts);
+                        updateShipmentLineItemsWithAddedProducts(selectedProducts, lotsMapByOrderableId);
+                        updateTableLineItemsWithAddedProducts();
+                        loadingModalService.close();
+                    })
+                    .catch(loadingModalService.close);
+            });
+
             // var availableProducts = getAvailableProducts();
             // selectProducts({
             //     products: availableProducts
@@ -404,6 +452,53 @@
             //         vm.displayTableLineItems = vm.displayTableLineItems.concat(addedTableLineItems);
             //     });
         }
+
+        function updateOrderLineItemsWithAddedProducts(addedProducts) {
+            var addedOrderLineItems = addedProducts.map(function(product) {
+                return {
+                    added: true,
+                    id: product.id,
+                    orderable: angular.copy(product),
+                    orderedQuantity: 0,
+                    partialFulfilledQuantity: 0,
+                    totalDispensingUnites: 0,
+                    skipped: false
+                };
+            });
+            vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
+        }
+
+        function updateShipmentLineItemsWithAddedProducts(addedProducts, lotsMapByOrderableId) {
+            var addedShipmentLineItems = [];
+            Object.keys(lotsMapByOrderableId).forEach(function(orderableId) {
+                var orderable = addedProducts.find(function(product) {
+                    return product.id === orderableId;
+                });
+                var lots = lotsMapByOrderableId[orderableId] || [];
+                lots.forEach(function(lot) {
+                    addedShipmentLineItems.push({
+                        id: null,
+                        stockCardId: null,
+                        extraData: null,
+                        location: null,
+                        lot: lot,
+                        orderable: orderable || null,
+                        quantityShipped: 0,
+                        reservedStock: lot.reserved,
+                        stockOnHand: lot.soh
+                    });
+                });
+            });
+            vm.shipment.lineItems = vm.shipment.lineItems.concat(addedShipmentLineItems);
+
+        }
+
+        function updateTableLineItemsWithAddedProducts() {
+            vm.tableLineItems = new ShipmentViewLineItemFactory()
+                .buildLineItemsWithMainGroup(vm.order.orderLineItems, vm.shipment.lineItems);
+            cancelFilter();
+        }
+
         //
         // function selectProducts(availableProducts) {
         //     var decoratedAvailableProducts = new OpenlmisArrayDecorator(availableProducts.products);
@@ -551,14 +646,14 @@
             return displayItems;
         }
 
-        vm.search = function() {
+        function search() {
             vm.displayTableLineItems = searchTable();
-        };
+        }
 
-        vm.cancelFilter = function() {
+        function cancelFilter() {
             vm.keyword = null;
             vm.displayTableLineItems = searchTable();
-        };
+        }
 
         function isFormInvalid() {
             return vm.tableLineItems.some(function(lineItem) {

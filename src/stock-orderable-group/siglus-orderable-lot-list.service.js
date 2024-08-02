@@ -23,6 +23,7 @@
     function service($resource, fulfillmentUrlFactory) {
 
         this.getOrderableLots = getOrderableLots;
+        this.getLotsMapByOrderableId = getLotsMapByOrderableId;
         this.getSimplifyLotsMapByOrderableId = getSimplifyLotsMapByOrderableId;
 
         var resource = $resource(fulfillmentUrlFactory('/api/siglusapi/facility/:id/lots'), {}, {
@@ -37,6 +38,12 @@
                 id: facilityId,
                 orderableIds: orderableIds
             }).$promise;
+        }
+
+        function getLotsMapByOrderableId(lotList) {
+            return _.groupBy(lotList, function(lotInfo) {
+                return _.get(lotInfo, 'orderableId');
+            });
         }
 
         function getSimplifyLotsMapByOrderableId(lotList) {

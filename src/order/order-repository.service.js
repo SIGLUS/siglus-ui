@@ -58,7 +58,9 @@
             }
 
             return orderService.get(orderId)
-                .then(orderFactory.buildFromResponse);
+                .then(function(orderResult) {
+                    return orderResult;
+                });
         }
 
         /**

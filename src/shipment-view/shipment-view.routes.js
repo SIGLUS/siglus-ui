@@ -59,8 +59,10 @@
                 //
                 //     return new StockCardSummaryRepositoryImpl().queryWithStockCards(requestBody);
                 // },
-                shipment: function(SiglusShipmentDraftService, order) {
-                    if (order.isOrdered() || order.isPartiallyFulfilled()) {
+                shipment: function(SiglusShipmentDraftService, order, ORDER_STATUS) {
+                    var needCreateDraft = order.status === ORDER_STATUS.ORDERED
+                        || order.status === ORDER_STATUS.PARTIALLY_FULFILLED;
+                    if (needCreateDraft) {
                         return SiglusShipmentDraftService.createShipmentDraftByOrderId(order);
                     }
                     return SiglusShipmentDraftService.getShipmentDraftByOrderId(order);
@@ -72,8 +74,7 @@
                 //     return shipmentViewService.getShipmentForOrder(orderWithoutAvailableProducts);
                 // },
                 suggestedQuantity: function(shipmentViewService, $stateParams) {
-                    var id = $stateParams.id;
-                    return shipmentViewService.getSuggestedQuantity(id);
+                    return shipmentViewService.getSuggestedQuantity($stateParams.id);
                 },
                 // #372: ends here
                 tableLineItems: function(ShipmentViewLineItemFactory, shipment, order) {
