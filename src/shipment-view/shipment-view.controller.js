@@ -33,7 +33,7 @@
         'QUANTITY_UNIT', 'tableLineItems', 'displayTableLineItems', 'selectProductsModalService',
         'OpenlmisArrayDecorator', 'alertService', '$q', 'ShipmentViewLineItemFactory',
         'ShipmentLineItem', 'ShipmentViewLineItemGroup', 'suggestedQuantity', 'localStorageService',
-        'shipmentViewService', 'StockCardSummaryRepositoryImpl', 'SiglusShipmentDraftService',
+        'StockCardSummaryRepositoryImpl', 'SiglusShipmentDraftService',
         'notificationService', 'confirmService', 'stateTrackerService', 'orderService', 'messageService',
         'siglusShipmentConfirmModalService', 'alertConfirmModalService', 'siglusOrderableLotListService'
     ];
@@ -43,7 +43,7 @@
         QUANTITY_UNIT, tableLineItems, displayTableLineItems, selectProductsModalService,
         OpenlmisArrayDecorator, alertService, $q, ShipmentViewLineItemFactory,
         ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuantity, localStorageService,
-        shipmentViewService, StockCardSummaryRepositoryImpl, SiglusShipmentDraftService,
+        StockCardSummaryRepositoryImpl, SiglusShipmentDraftService,
         notificationService, confirmService, stateTrackerService, orderService, messageService,
         siglusShipmentConfirmModalService, alertConfirmModalService, siglusOrderableLotListService
     ) {
@@ -134,40 +134,6 @@
             vm.isShowSuggestedQuantity = suggestedQuantity.showSuggestedQuantity;
             vm.orderableIdToSuggestedQuantity = suggestedQuantity.orderableIdToSuggestedQuantity;
             vm.displayTableLineItems = displayTableLineItems;
-            shipmentViewService.addRefreshListener(updateLineItemsReservedAndTotalStock);
-        }
-
-        function updateLineItemsReservedAndTotalStock() {
-            loadingModalService.open();
-
-            new StockCardSummaryRepositoryImpl()
-                .queryWithStockCards($stateParams.summaryRequestBody)
-                .then(function(summaries) {
-                    vm.tableLineItems.forEach(function(lineItem) {
-                        if (lineItem instanceof ShipmentViewLineItemGroup) {
-                            return;
-                        }
-                        var currentItemOrderableId = lineItem.shipmentLineItem.orderable.id;
-                        var currentItemLotId = lineItem.lot.id;
-
-                        var summary = summaries.find(function(summary) {
-                            return summary.orderable.id === currentItemOrderableId;
-                        });
-                        var lineItemCardDetail = summary.canFulfillForMe.find(function(stockCardDetail) {
-                            return stockCardDetail.lot.id === currentItemLotId;
-                        });
-
-                        lineItem.shipmentLineItem.stockOnHand = lineItemCardDetail.stockOnHand;
-                        lineItem.reservedStock = lineItemCardDetail.reservedStock;
-                    });
-                    vm.cancelFilter();
-                })
-                .catch(function(error) {
-                    throw new Error(error);
-                })
-                .finally(function() {
-                    loadingModalService.close();
-                });
         }
 
         function setSuggestedQuantity(items) {
@@ -271,7 +237,7 @@
                     loadingModalService.close();
                     if (_.get(error, ['data', 'messageKey']) ===
                         'siglusapi.error.shipment.order.line items.invalid') {
-                        // TODO: refresh reserved soh
+                        stockErrorAndRefreshReservedAndSoh();
                     } else {
                         notificationService.error('shipmentView.failedToSaveDraft');
                     }
@@ -351,7 +317,7 @@
                                             });
                                     } else if (_.get(err, ['data', 'messageKey']) ===
                                     'siglusapi.error.shipment.order.line items.invalid') {
-                                    // TODO: refresh reserved soh
+                                        stockErrorAndRefreshReservedAndSoh();
                                     } else {
                                         var notificationErrorText = isPartialFulfilled ?
                                             'shipmentView.failedToCreateSuborder' :
@@ -379,6 +345,50 @@
         vm.getErrorMsg = function() {
             return 'shipmentView.invalidForm';
         };
+
+        function stockErrorAndRefreshReservedAndSoh() {
+            alertService.error('shipmentView.saveDraftError.label', '', 'OK')
+                .then(function() {
+                    loadingModalService.open();
+                    SiglusShipmentDraftService.getShipmentDraftByOrderId(vm.order)
+                        .then(function(latestShipment) {
+                            var latestLineItems = latestShipment.lineItems;
+                            updateShipmentLineItemsWithLatestLineItems(latestLineItems);
+                            updateTableLineItemsWithLatestLineItems(latestLineItems);
+                            loadingModalService.close();
+                        })
+                        .catch(loadingModalService.close);
+                });
+        }
+
+        function updateShipmentLineItemsWithLatestLineItems(latestLineItems) {
+            latestLineItems.forEach(function(latestLineItem) {
+                var lineItemId = latestLineItem.id;
+                var oldLineItemIndex = _.findIndex(vm.shipment.lineItems, function(lineItem) {
+                    return lineItem.id === lineItemId;
+                });
+                if (oldLineItemIndex !== -1) {
+                    vm.shipment.lineItems[oldLineItemIndex] = latestLineItem;
+                }
+            });
+        }
+
+        function updateTableLineItemsWithLatestLineItems(latestLineItems) {
+            latestLineItems.forEach(function(latestLineItem) {
+                var lineItemId = latestLineItem.id;
+                var latestReservedStock = latestLineItem.reservedStock;
+                var latestStockOnHand = latestLineItem.stockOnHand;
+                var oldTableLineItem = _.find(vm.tableLineItems, function(tableLineItem) {
+                    return !(tableLineItem instanceof ShipmentViewLineItemGroup)
+                            && _.get(tableLineItem, ['shipmentLineItem', 'id']) === lineItemId;
+                });
+                if (oldTableLineItem) {
+                    oldTableLineItem.reservedStock = latestReservedStock;
+                    oldTableLineItem.shipmentLineItem.reservedStock = latestReservedStock;
+                    oldTableLineItem.shipmentLineItem.stockOnHand = latestStockOnHand;
+                }
+            });
+        }
 
         // #264: warehouse clerk can add product to orders
         function addProducts() {
