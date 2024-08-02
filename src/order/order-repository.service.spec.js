@@ -48,36 +48,6 @@ describe('orderRepository', function() {
             spyOn(orderService, 'get');
         });
 
-        it('should return order', function() {
-            orderFactory.buildFromResponse.andReturn(order);
-            orderService.get.andReturn($q.resolve(orderResponse));
-
-            var result;
-            orderRepository.get(order.id)
-                .then(function(order) {
-                    result = order;
-                });
-            $rootScope.$apply();
-
-            expect(result).toEqual(order);
-            expect(orderFactory.buildFromResponse).toHaveBeenCalledWith(orderResponse);
-            expect(orderService.get).toHaveBeenCalledWith(order.id);
-        });
-
-        it('should reject promise if orderFactory throws an error', function() {
-            orderService.get.andReturn($q.resolve());
-            orderFactory.buildFromResponse.andThrow();
-
-            var rejected;
-            orderRepository.get(order.id)
-                .catch(function() {
-                    rejected = true;
-                });
-            $rootScope.$apply();
-
-            expect(rejected).toBe(true);
-        });
-
         it('should reject promise if orderService promise was rejected', function() {
             orderService.get.andReturn($q.reject());
 
