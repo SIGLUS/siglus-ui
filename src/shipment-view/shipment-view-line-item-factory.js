@@ -58,6 +58,7 @@
          * @param  {Array}    summaries the array if stock card summaries
          * @return {Array}              the list of line items
          */
+        // TODO: deprecated, nowhere to use
         function buildFrom(shipment, summaries) {
             var shipmentLineItemMap = mapByOrderableAndLot(shipment.lineItems);
 
