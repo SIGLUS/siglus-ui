@@ -15,7 +15,7 @@
 
 describe('orderRepository', function() {
 
-    var orderRepository, OrderResponseDataBuilder, OrderDataBuilder, orderFactory, orderService, $q, $rootScope,
+    var orderRepository, OrderDataBuilder, orderFactory, orderService, $q, $rootScope,
         PageDataBuilder, BasicOrderResponseDataBuilder, BasicOrderDataBuilder, basicOrderFactory;
 
     beforeEach(function() {
@@ -30,7 +30,6 @@ describe('orderRepository', function() {
             $rootScope = $injector.get('$rootScope');
             PageDataBuilder = $injector.get('PageDataBuilder');
             BasicOrderDataBuilder = $injector.get('BasicOrderDataBuilder');
-            OrderResponseDataBuilder = $injector.get('OrderResponseDataBuilder');
             BasicOrderResponseDataBuilder = $injector.get('BasicOrderResponseDataBuilder');
             basicOrderFactory = $injector.get('basicOrderFactory');
         });
@@ -38,11 +37,10 @@ describe('orderRepository', function() {
 
     describe('get', function() {
 
-        var order, orderResponse;
+        var order;
 
         beforeEach(function() {
             order = new OrderDataBuilder().build();
-            orderResponse = new OrderResponseDataBuilder().build();
 
             spyOn(orderFactory, 'buildFromResponse');
             spyOn(orderService, 'get');
