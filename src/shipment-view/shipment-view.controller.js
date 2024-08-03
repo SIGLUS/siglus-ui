@@ -125,7 +125,7 @@
          */
         function onInit() {
             vm.order = order;
-            vm.facility = _.get(vm.order, 'facility');
+            vm.facility = _.get(vm.order, 'supplyingFacility');
             vm.program = _.get(vm.order, 'program');
             vm.shipment = shipment;
             vm.tableLineItems = suggestedQuantity.orderableIdToSuggestedQuantity ?
@@ -458,6 +458,7 @@
                 });
                 var lots = lotsMapByOrderableId[orderableId] || [];
                 lots.forEach(function(lot) {
+                    lot.id = lot.lotId;
                     addedShipmentLineItems.push({
                         id: null,
                         stockCardId: null,
