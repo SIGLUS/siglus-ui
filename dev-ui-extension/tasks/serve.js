@@ -63,7 +63,7 @@ module.exports = function(grunt) {
                 var valuePrefix = value.substring(0, 4)
                     .toLowerCase();
 
-                if (keySuffix == 'url' && valuePrefix == 'http') {
+                if (keySuffix === 'url' && valuePrefix === 'http') {
                     var proxyPath = '/' + key.substring(0, key.length - 3);
 
                     proxies[proxyPath] = value;

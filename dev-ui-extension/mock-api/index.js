@@ -12,7 +12,6 @@ const useMockAPI = function(req, res, next) {
         if (!isMatch(pattern)(req.url)) {
             continue
         }
-        console.log(`[mock=${pattern}]`, req.method, req.url);
         const typeOfResponseOrRequestHandler = typeof apiResponseOrRequestHandler;
         const isRequestHandler = typeOfResponseOrRequestHandler === 'function';
         if (isRequestHandler) {

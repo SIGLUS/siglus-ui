@@ -102,11 +102,9 @@
                     draft.hasExistInitialDraft = siglusStockUtilsService
                         .isExistInitialDraft(draft, adjustmentType.state);
                 });
+                loadingModalService.close();
             })
-                .catch(function(e) {
-                    console.log('e', e);
-                })
-                .finally(function() {
+                .catch(function() {
                     loadingModalService.close();
                 });
         };

@@ -71,7 +71,6 @@
                 vm.isLocalMachine = isLocalMachine;
                 $rootScope.isLocalMachine = isLocalMachine;
                 if (vm.isLocalMachine) {
-                    console.log('emit isLocationMachine');
                     $rootScope.$emit('isLocationMachine');
                     localStorageService.add('isLocalMachine', true);
                     vm.handleIfLocalMachine();
@@ -94,12 +93,10 @@
                                     var localMachineVersion = _.get(data, 'localMachineVersion');
                                     var connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
                                     if (connectedOnlineWeb) {
-                                        console.log('emit online');
                                         $rootScope.$emit('isLocalMachineOnline', {
                                             localMachineVersion: localMachineVersion
                                         });
                                     } else {
-                                        console.log('emit offline');
                                         $rootScope.$emit('isLocalMachineOffline', {
                                             localMachineVersion: localMachineVersion
                                         });
@@ -107,7 +104,6 @@
                                 })
                                 .catch(function(error) {
                                     console.log(error);
-
                                     $rootScope.$emit('isLocalMachineOffline');
                                 });
                         }

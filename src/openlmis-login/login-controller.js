@@ -45,7 +45,6 @@
             // TODO currentUser not working, cause lots of test failed
             var currencySettings = localStorage.getItem('openlmis.currencySettings');
             if (currencySettings) {
-                console.log('localUserId', currencySettings);
                 location.reload();
             }
             new LocalDatabase('orderables').removeAll();
@@ -84,7 +83,6 @@
                                 loginService.logout();
                                 return;
                             }
-                            console.log('emit isLocationMachine login');
                             $rootScope.$emit('isLocationMachine');
                             localStorageService.add('isLocalMachine', true);
                             var IS_OFFLINE = 'IS_OFFLINE';
@@ -94,13 +92,11 @@
                                     var localMachineVersion = _.get(data, 'localMachineVersion');
                                     var connectedOnlineWeb = _.get(data, 'connectedOnlineWeb');
                                     if (connectedOnlineWeb) {
-                                        console.log('emit online');
                                         $rootScope.$emit('isLocalMachineOnline', {
                                             localMachineVersion: localMachineVersion
                                         });
                                         localStorageService.add(IS_OFFLINE, 'false');
                                     } else {
-                                        console.log('emit offline');
                                         $rootScope.$emit('isLocalMachineOffline',  {
                                             localMachineVersion: localMachineVersion
                                         });
@@ -109,7 +105,6 @@
                                 })
                                 .catch(function(error) {
                                     console.log(error);
-
                                     $rootScope.$emit('isLocalMachineOffline');
                                 })
                                 .finally(function() {
