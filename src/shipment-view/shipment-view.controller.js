@@ -440,7 +440,11 @@
                 return {
                     added: true,
                     id: null,
-                    orderable: angular.copy(product),
+                    orderable: _.assign({}, product, {
+                        meta: {
+                            versionNumber: product.versionNumber
+                        }
+                    }),
                     orderedQuantity: 0,
                     partialFulfilledQuantity: 0,
                     totalDispensingUnites: 0,
