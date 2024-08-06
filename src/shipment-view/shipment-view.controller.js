@@ -439,7 +439,7 @@
             var addedOrderLineItems = addedProducts.map(function(product) {
                 return {
                     added: true,
-                    id: product.id,
+                    id: null,
                     orderable: angular.copy(product),
                     orderedQuantity: 0,
                     partialFulfilledQuantity: 0,
