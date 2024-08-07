@@ -396,25 +396,13 @@
                         orderQuantity: _.get(orderLineItem, 'orderedQuantity'),
                         partialFulfilledQuantity: _.get(orderLineItem, 'partialFulfilledQuantity'),
                         skipped: _.get(orderLineItem, 'skipped'),
-                        noStockAvailable: true
+                        noStockAvailable: true,
+                        lineItems: []
                     }));
                 }
             });
             return lineItemsWithMainGroup;
         }
-
-        // function generateLineItemMainGroup(orderLineItem, draftLineItems) {
-        //     new ShipmentViewLineItemGroup({
-        //         id: orderableId,
-        //         productCode: _.get(orderLineItem, ['orderable', 'productCode']),
-        //         productName: _.get(orderLineItem, ['orderable', 'fullProductName']),
-        //         lineItems: draftItemsWithSameOrderable,
-        //         isMainGroup: true,
-        //         orderQuantity: _.get(orderLineItem, 'orderedQuantity'),
-        //         partialFulfilledQuantity: _.get(orderLineItem, 'partialFulfilledQuantity'),
-        //         skipped: _.get(orderLineItem, 'skipped')
-        //     });
-        // }
 
     }
 })();

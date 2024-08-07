@@ -270,7 +270,7 @@
 
         function confirm() {
             if (isFormInvalid()) {
-                alertService.error('shipmentView.failedToSaveDraft');
+                alertService.error('shipmentView.failedToConfirmShipment');
                 return $q.reject();
             }
 
@@ -565,13 +565,28 @@
         }
 
         function isFormInvalid() {
-            return vm.tableLineItems.some(function(lineItem) {
+            var totalLineItemQuantity = vm.tableLineItems.filter(function(lineItem) {
+                return lineItem instanceof ShipmentViewLineItemGroup;
+            }).reduce(function(sumQuantity, mainGroupLineItem) {
+                return sumQuantity + mainGroupLineItem.getFillQuantity();
+            }, 0);
+            // total quantity is invalid
+            if (totalLineItemQuantity <= 0) {
+                return true;
+            }
+
+            var isLineItemsQuantityInvalid = vm.tableLineItems.some(function(lineItem) {
                 if (lineItem instanceof ShipmentViewLineItemGroup) {
                     return false;
                 }
                 var quantityError = getLineItemQuantityInvalidMessage(lineItem);
                 return !isEmpty(quantityError);
             });
+            if (isLineItemsQuantityInvalid) {
+                return true;
+            }
+
+            return false;
         }
 
         function getLineItemQuantityInvalidMessage(tableLineItem) {
