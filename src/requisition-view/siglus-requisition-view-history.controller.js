@@ -95,6 +95,7 @@
 
         vm.displayExportButton = undefined;
         vm.exportExcel = exportExcel;
+        vm.isPrintAsReport = false;
 
         function onInit() {
             vm.program = program;
@@ -107,6 +108,7 @@
             hideApprovedQuantity(vm.requisition);
             hidePacksToShip(vm.requisition);
             setTypeAndClass();
+            setIsPrintAsReport();
         }
 
         function hideApprovedQuantity(requisition) {
@@ -155,10 +157,20 @@
             );
         }
 
-        function print() {
+        function setIsPrintAsReport() {
             var status = vm.requisition.status;
-            if (status === 'APPROVED' || status === 'IN_APPROVAL' || status === 'RELEASED'
-                || status === 'RELEASED_WITHOUT_ORDER') {
+            if (
+                status === 'APPROVED' ||
+                status === 'IN_APPROVAL' ||
+                status === 'RELEASED' ||
+                status === 'RELEASED_WITHOUT_ORDER'
+            ) {
+                vm.isPrintAsReport = true;
+            }
+        }
+
+        function print() {
+            if (vm.isPrintAsReport) {
                 var programCodeToReportNameMap = {
                     VC: 'Balance Requisition',
                     TR: 'MMIT',
@@ -166,13 +178,11 @@
                     T: 'MMIA',
                     TB: 'MMTB'
                 };
-                var printUrl = '#!/'
-                    + 'analyticsReports/requisitionAndMonthly/'
+                var printUrl = '#!/requisitions/'
                     + programCodeToReportNameMap[vm.program.code]
                     + '/'
                     + vm.requisition.id
-                    + '?'
-                    + 'showBreadCrumb=false';
+                    + '?showBreadCrumb=false';
                 $window.open(accessTokenFactory.addAccessToken(printUrl), '_blank');
             } else {
                 var url = requisitionUrlFactory('/api/siglusapi/requisitions/' + vm.requisition.id + '/print');
