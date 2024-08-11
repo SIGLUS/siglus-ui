@@ -193,6 +193,9 @@
                 );
                 return;
             }
+            if (vm.program.code === 'ML') {
+                return initiate(selectedPeriod, undefined);
+            }
             if (isCurrentSubmitDuration(selectedPeriod) || vm.emergency) {
                 loadingModalService.open();
                 var programId = $stateParams.replaceId || vm.program.id;
