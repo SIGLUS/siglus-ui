@@ -14,21 +14,19 @@ pipeline {
         stage('Build') {
             steps {
                 println "gradle: build"
-                withCredentials([file(credentialsId: 'settings.dev.env', variable: 'ENV_FILE')]) {
-                    sh '''
-                        rm -rf .env node_modules build .tmp lcov.info
-                        cp $ENV_FILE .env
-                        docker-compose pull
-                        docker-compose down --volumes
-                        docker-compose run --entrypoint /dev-ui/build.sh siglus-ui
-                        docker-compose down --volumes
-                        docker build -t ${IMAGE_NAME} .
-                        if [ "$GIT_BRANCH" = "release" ]; then
-                          echo "set latest tag for release image"
-                          docker build -t ${IMAGE_REPO}:latest .
-                        fi
-                    '''
-                }
+                sh '''
+                    rm -rf .env node_modules build .tmp lcov.info
+                    aws ssm get-parameter --with-decryption --name "/secrets/env/dev" | jq -r '.Parameter.Value' > .env
+                    docker-compose pull
+                    docker-compose down --volumes
+                    docker-compose run --entrypoint /dev-ui/build.sh siglus-ui
+                    docker-compose down --volumes
+                    docker build -t ${IMAGE_NAME} .
+                    if [ "$GIT_BRANCH" = "release" ]; then
+                      echo "set latest tag for release image"
+                      docker build -t ${IMAGE_REPO}:latest .
+                    fi
+                '''
                 println "test coverage: check"
                 sh '''
                     coverage_threshold=52.00
