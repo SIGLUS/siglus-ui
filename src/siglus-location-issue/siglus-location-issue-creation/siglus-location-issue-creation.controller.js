@@ -30,7 +30,7 @@
         'messageService', 'isMerge', 'moment', 'siglusStockIssueLocationService',
         'siglusRemainingProductsModalService', 'alertService', 'siglusSignatureWithDateModalService',
         'program', 'confirmDiscardService', 'openlmisDateFilter', 'siglusPrintPalletLabelComfirmModalService',
-        'orderablesPrice', 'SiglusIssueOrReceiveReportService'
+        'orderablesPrice', 'SiglusIssueOrReceiveReportService', '$q'
     ];
 
     function siglusLocationIssueCreationController(
@@ -42,7 +42,7 @@
         messageService, isMerge, moment, siglusStockIssueLocationService,
         siglusRemainingProductsModalService, alertService, siglusSignatureWithDateModalService,
         program, confirmDiscardService, openlmisDateFilter, siglusPrintPalletLabelComfirmModalService,
-        orderablesPrice, SiglusIssueOrReceiveReportService
+        orderablesPrice, SiglusIssueOrReceiveReportService, $q
     ) {
         var vm = this;
         var orderablesPriceMap = orderablesPrice.data;
@@ -545,10 +545,6 @@
             if (isMerge) {
                 siglusPrintPalletLabelComfirmModalService.show()
                     .then(function(shouldDownloadPallet) {
-                        if (shouldDownloadPallet) {
-                            vm.downloadPrint();
-                        }
-
                         siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature')
                             .then(function(signatureInfo) {
                                 loadingModalService.open();
@@ -559,12 +555,21 @@
                                 var fileName = 'Saída_' + vm.destinationName + '_' + momentNow.format('YYYY-MM-DD');
                                 setIssuePDFInfo(signatureInfo, momentNow);
 
-                                ReportService.downloadPdf(
-                                    fileName,
-                                    function() {
-                                        submitMergedDraft(subDrafts, signatureInfo.occurredDate);
+                                submitMergedDraft(subDrafts, signatureInfo.occurredDate, function() {
+                                    if (shouldDownloadPallet) {
+                                        vm.downloadPrint();
                                     }
-                                );
+                                    var deferred = $q.defer();
+                                    ReportService.downloadPdf(
+                                        fileName,
+                                        function() {
+                                            setTimeout(function() {
+                                                deferred.resolve('Print successful');
+                                            }, 2000);
+                                        }
+                                    );
+                                    return deferred.promise;
+                                });
                             });
                     });
             } else {
@@ -664,16 +669,25 @@
             };
         }
 
-        function submitMergedDraft(subDrafts, occurredDate) {
+        function submitMergedDraft(subDrafts, occurredDate, callback) {
             siglusStockIssueLocationService
                 .mergeSubmitDraft($stateParams.programId, getLineItems(),
                     vm.signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
                 .then(function() {
                     $scope.needToConfirm = false;
-                    $state.go('openlmis.locationManagement.stockOnHand', {
-                        facility: facility.id,
-                        program: program
-                    });
+                    if (callback) {
+                        callback().then(function() {
+                            $state.go('openlmis.locationManagement.stockOnHand', {
+                                facility: facility.id,
+                                program: program
+                            });
+                        });
+                    } else {
+                        $state.go('openlmis.locationManagement.stockOnHand', {
+                            facility: facility.id,
+                            program: program
+                        });
+                    }
                 })
                 .catch(function(error) {
                     loadingModalService.close();

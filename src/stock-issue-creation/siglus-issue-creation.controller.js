@@ -36,7 +36,7 @@
         'displayItems', 'siglusSignatureWithDateModalService', 'openlmisDateFilter',
         'siglusRemainingProductsModalService', 'siglusStockIssueService', 'alertConfirmModalService',
         'siglusStockUtilsService', 'localStorageFactory', 'orderablesPrice', 'moment',
-        'SiglusIssueOrReceiveReportService'
+        'SiglusIssueOrReceiveReportService', '$q'
     ];
 
     function controller(
@@ -47,7 +47,7 @@
         displayItems, siglusSignatureWithDateModalService, openlmisDateFilter,
         siglusRemainingProductsModalService, siglusStockIssueService, alertConfirmModalService,
         siglusStockUtilsService, localStorageFactory, orderablesPrice, moment,
-        SiglusIssueOrReceiveReportService
+        SiglusIssueOrReceiveReportService, $q
     ) {
         var vm = this,
             previousAdded = {};
@@ -370,7 +370,7 @@
             obj[property] = null;
         };
 
-        function confirmMergeSubmit(signatureInfo, allLineItemsAdded) {
+        function confirmMergeSubmit(signatureInfo, allLineItemsAdded, callback) {
             var signature = signatureInfo.signature;
             var occurredDate = signatureInfo.occurredDate;
             var subDrafts = _.uniq(_.map(draft.lineItems, function(item) {
@@ -380,10 +380,19 @@
             siglusStockIssueService.mergeSubmitDraft($stateParams.programId, allLineItemsAdded,
                 signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
                 .then(function() {
-                    $state.go('openlmis.stockmanagement.stockCardSummaries', {
-                        facility: facility.id,
-                        program: program
-                    });
+                    if (callback) {
+                        callback().then(function() {
+                            $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                                facility: facility.id,
+                                program: program
+                            });
+                        });
+                    } else {
+                        $state.go('openlmis.stockmanagement.stockCardSummaries', {
+                            facility: facility.id,
+                            program: program
+                        });
+                    }
                 })
                 .catch(function(error) {
                     loadingModalService.close();
@@ -431,10 +440,20 @@
                         .then(function(signatureInfo) {
                             var momentNow = moment();
                             setIssuePDFInfo(signatureInfo, momentNow);
-                            var fileName = 'Saída_' + vm.client + '_' + momentNow.format('YYYY-MM-DD');
-                            ReportService.downloadPdf(fileName, function() {
-                                loadingModalService.open();
-                                confirmMergeSubmit(signatureInfo, addedLineItems);
+                            var fileName = 'Saída_' + vm.destinationName + '_' + momentNow.format('YYYY-MM-DD');
+
+                            loadingModalService.open();
+                            confirmMergeSubmit(signatureInfo, addedLineItems, function() {
+                                var deferred = $q.defer();
+                                ReportService.downloadPdf(
+                                    fileName,
+                                    function() {
+                                        setTimeout(function() {
+                                            deferred.resolve('Print successful');
+                                        }, 2000);
+                                    }
+                                );
+                                return deferred.promise;
                             });
                         });
                 } else {

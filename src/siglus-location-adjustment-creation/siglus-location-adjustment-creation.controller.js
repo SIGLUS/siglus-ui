@@ -586,9 +586,6 @@
 
             siglusPrintPalletLabelComfirmModalService.show()
                 .then(function(shouldDownloadPallet) {
-                    if (shouldDownloadPallet) {
-                        downloadPrint();
-                    }
                     siglusSignatureWithDateModalService.confirm('stockUnpackKitCreation.signature', null, null, true)
                         .then(function(signatureInfo) {
                             loadingModalService.open();
@@ -599,6 +596,9 @@
                             siglusLocationAdjustmentService.submitDraft(baseInfo, getLineItems())
                                 .then(function() {
                                     $scope.needToConfirm = false;
+                                    if (shouldDownloadPallet) {
+                                        downloadPrint();
+                                    }
                                     notificationService.success(vm.key('submitted'));
                                     printPdfForRRIVAndGoStockOnHandPage(signatureInfo);
                                 })
