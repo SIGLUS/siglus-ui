@@ -555,7 +555,7 @@
                                 var fileName = 'Saída_' + vm.destinationName + '_' + momentNow.format('YYYY-MM-DD');
                                 setIssuePDFInfo(signatureInfo, momentNow);
 
-                                submitMergedDraft(subDrafts, signatureInfo.occurredDate, function() {
+                                submitMergedDraft(subDrafts, signatureInfo, function() {
                                     if (shouldDownloadPallet) {
                                         vm.downloadPrint();
                                     }
@@ -669,10 +669,11 @@
             };
         }
 
-        function submitMergedDraft(subDrafts, occurredDate, callback) {
+        function submitMergedDraft(subDrafts, signatureInfo, callback) {
             siglusStockIssueLocationService
                 .mergeSubmitDraft($stateParams.programId, getLineItems(),
-                    vm.signature, vm.initialDraftInfo, facility.id, subDrafts, occurredDate)
+                    signatureInfo.signature, vm.initialDraftInfo, facility.id, subDrafts,
+                    signatureInfo.occurredDate)
                 .then(function() {
                     $scope.needToConfirm = false;
                     if (callback) {
