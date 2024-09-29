@@ -55,7 +55,7 @@
                 <th class="col-{{column.name}}" ng-repeat="column in vm.columns | orderBy : 'displayOrder'"
                     ng-class="{'col-sticky': !column.$canChangeOrder}" popover="{{vm.getDescriptionForColumn(column)}}"
                     popover-trigger-area="element">{{column.label}}</th>
-                <th class="col-sticky sticky-right" ng-if="vm.showDeleteColumn()"></th>
+                <th class="col-sticky sticky-right requisition-line-item-action" ng-if="vm.showDeleteColumn()"></th>
             </tr>
             </thead>
             <tbody ng-repeat="(category, lineItems) in vm.items | groupBy:'$program.orderableCategoryDisplayName'" tbody-title="{{category}}">
@@ -68,7 +68,7 @@
                     user-can-edit="vm.userCanEdit"
                     can-approve="vm.canApproveAndReject">
                 </td>
-                <td ng-if="vm.showDeleteColumn()">
+                <td class="requisition-line-item-action" ng-if="vm.showDeleteColumn()">
                     <button class="hide-line-item"
                             ng-click="vm.deleteLineItem(lineItem)"
                             ng-if="lineItem.$deletable">

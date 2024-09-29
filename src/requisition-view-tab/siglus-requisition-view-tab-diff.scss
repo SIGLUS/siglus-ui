@@ -24,3 +24,13 @@
 .text-center {
     text-align: center;
 }
+
+
+.openlmis-flex-table>table {
+    th.requisition-line-item-action,  td.requisition-line-item-action{
+        padding: 0;
+        .hide-line-item {
+            margin: 8px;
+        }
+    }
+}

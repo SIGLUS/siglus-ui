@@ -116,6 +116,10 @@
             buildDraft: {
                 url: requisitionUrlFactory('/api/siglusapi/requisitions/draft'),
                 method: 'POST'
+            },
+            deleteRequisitionLineItem: {
+                url: requisitionUrlFactory('/api/siglusapi/requisitions/deleteLineItem/:id'),
+                method: 'DELETE'
             }
             // SIGLUS-REFACTOR: ends here
         });
@@ -138,7 +142,8 @@
             batchClose: batchClose,
             closeRequisitionsForApproval: closeRequisitionsForApproval,
             buildDraftWithoutSaving: buildDraftWithoutSaving,
-            extendLineItemsWithOrderablesAndFtaps: extendLineItemsWithOrderablesAndFtaps
+            extendLineItemsWithOrderablesAndFtaps: extendLineItemsWithOrderablesAndFtaps,
+            deleteRequisitionLineItem: deleteRequisitionLineItem
             // SIGLUS-REFACTOR: ends here
         };
 
@@ -420,6 +425,12 @@
         function getStatusMessages(requisition) {
             return resource.getStatusMessages({
                 id: requisition.id
+            }).$promise;
+        }
+
+        function deleteRequisitionLineItem(lineItemId) {
+            return resource.deleteRequisitionLineItem({
+                id: lineItemId
             }).$promise;
         }
 

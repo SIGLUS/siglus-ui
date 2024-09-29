@@ -9,5 +9,6 @@
   "requisitionViewTab.quicklyFill": "Quick Filling",
   "requisitionViewTab.quicklyFill.success": "The empty fields except product fields have been filled with \"0\" successfully",
   "requisitionViewTab.expiredEmergency.title": "Expired Emergency Requisition",
-  "requisitionViewTab.expiredEmergency.message": "This emergency requisition is expired, please delete it and create new one."
+  "requisitionViewTab.expiredEmergency.message": "This emergency requisition is expired, please delete it and create new one.",
+  "requisitionViewTab.removeProductFailed": "Remove product failed"
 }

@@ -234,8 +234,18 @@
          * @param {Object} lineItem the line item to be deleted
          */
         function deleteLineItem(lineItem) {
-            vm.requisition.deleteLineItem(lineItem);
-            refreshLineItems();
+            try {
+                if (_.get(lineItem, ['$program', 'fullSupply'])) {
+                    lineItem.$program.fullSupply = false;
+                }
+                vm.requisition.deleteLineItem(lineItem);
+                if (lineItem.id) {
+                    requisitionService.deleteRequisitionLineItem(lineItem.id);
+                }
+                refreshLineItems();
+            } catch (e) {
+                notificationService.error(e || 'requisitionViewTab.removeProductFailed');
+            }
         }
 
         /**
@@ -253,9 +263,7 @@
             if (vm.requisition.isInitForClient) {
                 return true;
             }
-            return !fullSupply &&
-                vm.userCanEdit &&
-                hasDeletableLineItems();
+            return vm.userCanEdit;
         }
 
         /**
@@ -432,6 +440,7 @@
                             return lineItem.orderable.id === product.id;
                         });
                         lineItem.approvedProduct = result.approvedProduct;
+                        lineItem.$deletable = true;
                         vm.requisition.addProductLineItem(lineItem);
                     });
                 })
