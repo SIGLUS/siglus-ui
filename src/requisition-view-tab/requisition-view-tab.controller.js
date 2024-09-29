@@ -550,16 +550,6 @@
                 requisition.template.hideSkippedLineItems();
         }
 
-        function hasDeletableLineItems() {
-            var hasDeletableLineItems = false;
-
-            vm.requisition.requisitionLineItems.forEach(function(lineItem) {
-                hasDeletableLineItems = hasDeletableLineItems || lineItem.$deletable;
-            });
-
-            return hasDeletableLineItems;
-        }
-
         function isSkippedFullSupply(item) {
             return (item.skipped === true && item.$program.fullSupply === true);
         }
