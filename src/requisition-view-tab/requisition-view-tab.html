@@ -71,7 +71,7 @@
                 <td class="requisition-line-item-action" ng-if="vm.showDeleteColumn()">
                     <button class="hide-line-item"
                             ng-click="vm.deleteLineItem(lineItem)"
-                            ng-if="lineItem.$deletable">
+                            ng-if="lineItem.$deletable || !lineItem.id">
                         <i class="fa fa-remove"></i>
                     </button>
                 </td>
