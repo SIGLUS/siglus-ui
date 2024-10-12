@@ -28,11 +28,13 @@
 
     controller.$inject = [
         '$stateParams', '$state', 'REQUISITION_STATUS', 'localStorageService',
-        'SiglusRequisitionInitiateForClientService', 'loadingModalService', 'notificationService', 'moment'
+        'SiglusRequisitionInitiateForClientService', 'loadingModalService', 'notificationService', 'moment',
+        'requisitionService'
     ];
 
     function controller($stateParams, $state, REQUISITION_STATUS, localStorageService,
-                        SiglusRequisitionInitiateForClientService, loadingModalService, notificationService, moment) {
+                        SiglusRequisitionInitiateForClientService, loadingModalService, notificationService, moment,
+                        requisitionService) {
         var vm = this;
         var CREATE_FOR_CLIENT_ID = 'create_for_client_facility_id';
 
@@ -43,6 +45,7 @@
         vm.$onInit = onInit;
         vm.selectedClientChanged = selectedClientChanged;
         vm.periodHasRequisition = periodHasRequisition;
+        vm.periodHasRequisitionInitiated = periodHasRequisitionInitiated;
         vm.checkProceedButton = checkProceedButton;
         vm.loadPeriods = loadPeriods;
         vm.initRnr = initRnr;
@@ -87,8 +90,14 @@
             return !!period.rnrId;
         }
 
+        function periodHasRequisitionInitiated(period) {
+            return !!period.rnrId && period.rnrStatus === REQUISITION_STATUS.INITIATED;
+        }
+
         function checkProceedButton(period, idx) {
-            return idx === 0 && !vm.periodHasRequisition(period) && vm.isAfterSubmitStartDate(period);
+            return idx === 0
+                && (!vm.periodHasRequisition(period) || vm.periodHasRequisitionInitiated(period))
+                && vm.isAfterSubmitStartDate(period);
         }
 
         vm.isAfterSubmitStartDate = function(period) {
@@ -104,12 +113,20 @@
         }
 
         function initRnr(selectedPeriod) {
-            $state.go('openlmis.requisitions.requisition.fullSupply', {
-                facility: selectedPeriod.facility,
-                period: selectedPeriod.id,
-                program: selectedPeriod.program,
-                emergency: false,
-                forClient: true
+            if (periodHasRequisition(selectedPeriod)) {
+                return $state.go('openlmis.requisitions.requisition.fullSupply', {
+                    rnr: selectedPeriod.rnrId,
+                    forClient: true
+                });
+            }
+            loadingModalService.open();
+            return requisitionService.buildDraftWithoutSaving(selectedPeriod.facility,
+                selectedPeriod.id, selectedPeriod.program).then(function(requisition) {
+                loadingModalService.close();
+                return $state.go('openlmis.requisitions.requisition.fullSupply', {
+                    rnr: requisition.id,
+                    forClient: true
+                });
             });
         }
     }

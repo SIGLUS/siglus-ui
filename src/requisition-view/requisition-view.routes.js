@@ -45,6 +45,15 @@
                 },
                 requisition: function($stateParams, requisitionService, programService) {
                     if ($stateParams.forClient === 'true') {
+                        if ($stateParams.rnr) {
+                            return requisitionService.getWithoutStatusMessages($stateParams.rnr)
+                                .then(function(requisition) {
+                                    var result = requisitionService.setOrderableUnitForRequisition(requisition);
+                                    requisition.$isEditable = true;
+                                    requisition.isInitForClient = true;
+                                    return result;
+                                });
+                        }
                         return requisitionService.buildDraftWithoutSaving($stateParams.facility,
                             $stateParams.period, $stateParams.program).then(function(requisition) {
                             requisition.$isEditable = true;

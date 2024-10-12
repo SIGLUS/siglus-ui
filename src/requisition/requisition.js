@@ -397,7 +397,7 @@
         }
 
         function createForClient() {
-            this.id = null;
+            // this.id = null;
             this.requisitionLineItems.forEach(function(lineItem) {
                 lineItem[TEMPLATE_COLUMNS.AUTHORIZED_QUANTITY] = lineItem.requestedQuantity;
             });

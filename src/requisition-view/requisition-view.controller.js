@@ -278,12 +278,17 @@
             if (vm.requisition.isInitForClient) {
                 vm.commentsRequired = false;
                 vm.forceOpen = false;
-                vm.displaySubmitButton = true;
+                vm.displaySubmitButton = vm.requisition.status === REQUISITION_STATUS.INITIATED;
+                vm.displaySyncButton = vm.requisition.status === REQUISITION_STATUS.INITIATED;
             }
+            // TODO from API response
             if (isCreateForClient) {
                 vm.displayRejectButton = false;
-                vm.displayDeleteButton = vm.requisition.status === REQUISITION_STATUS.IN_APPROVAL;
-                vm.displaySubmitButton = false;
+                vm.displayDeleteButton = vm.requisition.status === REQUISITION_STATUS.IN_APPROVAL
+                    || vm.requisition.status === REQUISITION_STATUS.INITIATED;
+                vm.displaySubmitButton = vm.requisition.status === REQUISITION_STATUS.INITIATED;
+                vm.displaySyncButton = vm.requisition.status === REQUISITION_STATUS.IN_APPROVAL
+                    || vm.requisition.status === REQUISITION_STATUS.INITIATED;
             }
         }
 
