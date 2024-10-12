@@ -48,6 +48,7 @@
         vm.displayItems = [];
         vm.enableLocation = false;
         vm.orderablesPrice = undefined;
+        vm.isHighLevel = false;
         vm.$onInit = onInit;
         vm.skipAllLineItems = skipAllLineItems;
         vm.unskipAllLineItems = unskipAllLineItems;
@@ -61,6 +62,10 @@
             vm.enableLocation = angular.copy(
                 facility.enableLocationManagement
             );
+            var type = _.get(facility, ['type', 'code']);
+            if (type === 'DPM' || type === 'AI') {
+                vm.isHighLevel = true;
+            }
         }
 
         function reloadPage() {

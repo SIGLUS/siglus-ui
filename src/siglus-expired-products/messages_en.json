@@ -1,6 +1,7 @@
 {
   "expiredProducts.title": "Expired Products",
   "expiredProducts.confirmRemove": "Confirm Return / Remove",
+  "expiredProducts.confirmRemoveHighLevel": "Confirm Return / Remove",
   "expiredProducts.expiredProductList": "Expired Product List",
   "expiredProducts.generateExpiredProductList": "Generate Expired Product List"
 }

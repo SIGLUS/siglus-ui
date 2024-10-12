@@ -85,7 +85,7 @@
 <div class="openlmis-toolbar">
     <div class="button-group primary">
         <button type="submit" ng-click="vm.confirmRemove()" class="danger">
-            {{'expiredProducts.confirmRemove' | message}}
+            {{(vm.isHighLevel ? 'expiredProducts.confirmRemoveHighLevel' : 'expiredProducts.confirmRemove') | message}}
         </button>
     </div>
     <button ng-click="vm.generatePickPackList()">
