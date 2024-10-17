@@ -1,4 +1,4 @@
-{   
+{
     "tb.title": "MMTB",
     "tb.month": "Month",
     "tb.year": "Year",
@@ -12,6 +12,7 @@
     "tb.entries":"Entries",
     "tb.issues":"Issues",
     "tb.lossAndAdjustments":"Loss & Adjustments",
+    "tb.approvedQuantity":"Approved Quantity",
     "tb.inventory":"Inventory",
     "tb.expireDate":"Expire date",
 

@@ -46,13 +46,14 @@
       <tr id="calcTr">
           <th class="banner-text" style="width: 30px;"></th>
           <th style="width: 100px;" class="border-bottom-bold" openlmis-message="view.rnr.fnm">{{ 'mmia.fnm' | message }}</th>
-          <th style="width: 460px;" class="col-4" openlmis-message="view.rnr.mmia.medicine">{{ 'mmia.medicine' | message }}</th>
+          <th style="width: 300px;" class="col-4" openlmis-message="view.rnr.mmia.medicine">{{ 'mmia.medicine' | message }}</th>
           <th style="width: 80px;" style="padding: 0 2px;" openlmis-message="view.rnr.mmia.issuedUnit">{{ 'mmia.issuedUnit' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.initialAmount">{{ 'mmia.initialAmount' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.entries">{{ 'mmia.entries' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.issues">{{ 'mmia.issues' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.adjustments">{{ 'mmia.loss_adjustments' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.inventory">{{ 'mmia.inventory' | message }}</th>
+          <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.inventory">{{ 'mmia.approvedQuantity' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.validate">{{ 'mmia.validate' | message }}</th>
       </tr>
       </thead>
@@ -69,6 +70,7 @@
             <td>{{item.totalConsumedQuantity}}</td>
             <td>{{item.totalLossesAndAdjustments}}</td>
             <td>{{item.stockOnHand}}</td>
+            <td>{{item.approvedQuantity}}</td>
             <td><span ng-show="item.expirationDate">{{item.expirationDate}}</span></td>
         </tr>
       </tbody>
@@ -108,7 +110,7 @@
                     <td></td>
                     <td></td>
                 </tr>
-                
+
                 <tr ng-repeat="itm in vm.regimensPaediatrics">
                     <td class="banner-text" style="width: 30px;">{{vm.regimensAdults.length + $index + 1}}</td>
                     <td class="bg-color-lightyellow rotateContainer" ng-if="$index === 0" rowspan="{{ vm.regimensPaediatrics.length + 2 }}" style="width: 90px;">

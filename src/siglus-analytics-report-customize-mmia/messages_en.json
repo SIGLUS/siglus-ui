@@ -17,6 +17,7 @@
     "mmia.issues": "Issues",
     "mmia.loss_adjustments": "Loss & Adjustments",
     "mmia.inventory": "Inventory",
+    "mmia.approvedQuantity": "Approved Quantity",
     "mmia.validate": "Expire date",
     "mmia.therapeuticRegiment": "THERAPEUTIC REGIMEN",
     "mmia.totalPatients": "Total patients",
