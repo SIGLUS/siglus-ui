@@ -94,13 +94,27 @@
                 SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations));
         };
 
+        function sortLineItemLotsByExpiryDate(displayLineItems) {
+            return displayLineItems.map(function(lineItemGroup) {
+                if (lineItemGroup.length === 1) {
+                    return lineItemGroup;
+                }
+                var sortedLineItems = lineItemGroup.slice(1).sort(function(item1, item2) {
+                    var item1Date = _.get(item1, ['lot', 'expirationDate'], 0);
+                    var item2Date = _.get(item2, ['lot', 'expirationDate'], 0);
+                    return new Date(item1Date) - new Date(item2Date);
+                });
+                return [lineItemGroup[0]].concat(sortedLineItems);
+            });
+        }
+
         function onInit() {
             vm.order = updatedOrder;
             vm.shipment = _.clone(shipment);
             vm.displayTableLineItems = suggestedQuatity.orderableIdToSuggestedQuantity ?
                 setSuggestedQuantity(displayTableLineItems) :
                 displayTableLineItems;
-            vm.filterDisplayTableLineItems = filterDisplayTableLineItems;
+            vm.filterDisplayTableLineItems = sortLineItemLotsByExpiryDate(filterDisplayTableLineItems);
             vm.isShowSuggestedQuantity = suggestedQuatity.showSuggestedQuantity;
             vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
             vm.facility = facility;
