@@ -128,12 +128,13 @@
             vm.facility = _.get(vm.order, 'supplyingFacility');
             vm.program = _.get(vm.order, 'program');
             vm.shipment = shipment;
-            vm.tableLineItems = suggestedQuantity.orderableIdToSuggestedQuantity ?
+            var lineItemsWithSuggestedQuantity = suggestedQuantity.orderableIdToSuggestedQuantity ?
                 setSuggestedQuantity(tableLineItems) :
                 tableLineItems;
+            vm.tableLineItems = sortLineItemLotsByExpirationDate(lineItemsWithSuggestedQuantity);
             vm.isShowSuggestedQuantity = suggestedQuantity.showSuggestedQuantity;
             vm.orderableIdToSuggestedQuantity = suggestedQuantity.orderableIdToSuggestedQuantity;
-            vm.displayTableLineItems = displayTableLineItems;
+            vm.displayTableLineItems = sortLineItemLotsByExpirationDate(displayTableLineItems);
         }
 
         function setSuggestedQuantity(items) {
@@ -145,6 +146,28 @@
                         suggestedQuantityMap[item.id];
             });
             return items;
+        }
+
+        function sortLineItemLotsByExpirationDate(displayLineItems) {
+            var sortedLineItems = [];
+            var lineItemsMapByProductCode = _.groupBy(displayLineItems, function(lineItem) {
+                return lineItem.productCode;
+            });
+
+            for (var key in lineItemsMapByProductCode) {
+                if (lineItemsMapByProductCode[key].length === 1) {
+                    sortedLineItems = sortedLineItems.concat(lineItemsMapByProductCode[key]);
+                    continue;
+                }
+                var sortedLotLineItems = lineItemsMapByProductCode[key].slice(1).sort(function(item1, item2) {
+                    var item1Date = _.get(item1, ['lot', 'expirationDate'], 0);
+                    var item2Date = _.get(item2, ['lot', 'expirationDate'], 0);
+                    return new Date(item1Date) - new Date(item2Date);
+                });
+                sortedLineItems.push(lineItemsMapByProductCode[key][0]);
+                sortedLineItems = sortedLineItems.concat(sortedLotLineItems);
+            }
+            return sortedLineItems;
         }
 
         /**
