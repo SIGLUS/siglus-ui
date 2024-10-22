@@ -20,6 +20,8 @@
                     <th>{{ 'stockPhysicalInventoryHistory.currentStock' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.reasons' | message }}</th>
                     <th>{{ 'stockPhysicalInventoryHistory.comments' | message }}</th>
+                    <th>{{ 'proofOfDeliveryView.price' | message}}</th>
+                    <th>{{ 'proofOfDeliveryView.value' | message}}</th>
                 </tr>
             </thead>
 
@@ -38,6 +40,17 @@
                         <p ng-style="{'color' : 'red'}">{{ item.reasons ? vm.service.buildDiffReasonMessage(item) : '' }}</p>
                     </td>
                     <td>{{ item.comments }}</td>
+                    <!-- cell for price -->
+                    <td style="white-space: nowrap">
+                        {{ item.price ? item.price + ' MZM' : ''}}
+                    </td>
+                    <!-- cell for price end -->
+
+                    <!-- cell for value -->
+                    <td style="white-space: nowrap">
+                        {{ vm.calculateTotalValue(item) }}
+                    </td>
+                    <!-- cell for value end -->
                 </tr>
             </tbody>
 

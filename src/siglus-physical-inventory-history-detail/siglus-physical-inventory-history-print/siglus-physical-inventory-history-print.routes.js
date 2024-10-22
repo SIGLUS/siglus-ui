@@ -35,11 +35,18 @@
                     }
                 },
                 resolve: {
-                    historyData: function($stateParams, SiglusPhysicalInventoryHistoryService, localStorageService) {
+                    orderablesPrice: function(siglusOrderableLotService) {
+                        return siglusOrderableLotService.getOrderablesPrice();
+                    },
+                    historyData: function($stateParams, SiglusPhysicalInventoryHistoryService, localStorageService,
+                        orderablesPrice) {
                         var historyData = JSON.parse(localStorageService.get('historyData'));
                         return historyData ? historyData :
                             SiglusPhysicalInventoryHistoryService.getHistoryDetail($stateParams.historyId)
                                 .then(function(detail) {
+                                    detail.lineItemsData.forEach(function(line) {
+                                        line.price = orderablesPrice.data[_.get(line, 'orderableId')] || null;
+                                    });
                                     return detail;
                                 });
                     }

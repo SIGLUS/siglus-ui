@@ -916,6 +916,7 @@
                         lineItemsData.push({
                             productCode: currentProduct.productCode,
                             productName: currentProduct.fullProductName,
+                            orderableId: currentProduct.id,
                             lotCode: null,
                             expirationDate: null,
                             stockOnHand: stockOnHandSum,
@@ -928,7 +929,8 @@
                         var lineItem = buildLotItemListData(displayLineItems)[0];
                         lineItemsData.push(_.assign(lineItem, {
                             productCode: currentProduct.productCode,
-                            productName: currentProduct.fullProductName
+                            productName: currentProduct.fullProductName,
+                            orderableId: currentProduct.id
                         }));
                     }
                 });

@@ -37,6 +37,7 @@
         vm.inventoryByProduct = vm.historyData.withLocation && vm.historyData.isByProduct;
         vm.inventoryByLocation = vm.historyData.withLocation && !vm.historyData.isByProduct;
         vm.service = SiglusPhysicalInventoryHistoryDetailService;
+        vm.calculateTotalValue = calculateTotalValue;
 
         vm.print = print;
         vm.formatDate = formatDate;
@@ -48,6 +49,11 @@
         function print() {
             localStorageService.add('historyData', JSON.stringify(historyData));
             $window.open('#!/stockmanagement/physicalInventory/history/detail/print/' + historyId, '_blank');
+        }
+
+        function calculateTotalValue(lineItem) {
+            return _.get(lineItem, ['price']) ?
+                (lineItem.stockOnHand * (lineItem.price * 100).toFixed(2)) / 100 + ' MZM' : '';
         }
     }
 })();

@@ -69,6 +69,8 @@
 				<th class="text-center grey" style="width: 90px;">{{'stockPhysicalInventoryHistory.currentStock' | message}}</th>
 				<th class="text-center grey" colspan="4">{{'stockPhysicalInventoryHistory.reasons' | message}}</th>
 				<th class="text-center grey">{{'stockPhysicalInventoryHistory.comments' | message}}</th>
+				<th class="text-center grey">{{ 'proofOfDeliveryView.price' | message}}</th>
+				<th class="text-center grey">{{ 'proofOfDeliveryView.value' | message}}</th>
 			</tr>
 		</thead>
 
@@ -87,6 +89,17 @@
 					<p ng-style="{'color' : 'red'}">{{ item.reasons ? vm.service.buildDiffReasonMessage(item) : '' }}</p>
 				</td>
 				<td class="normal-td">{{item.comments}}</td>
+				<!-- cell for price -->
+				<td class="normal-td" style="white-space: nowrap">
+					{{ item.price ? item.price + ' MZM' : ''}}
+				</td>
+				<!-- cell for price end -->
+
+				<!-- cell for value -->
+				<td class="normal-td" style="white-space: nowrap">
+					{{ vm.calculateTotalValue(item) }}
+				</td>
+				<!-- cell for value end -->
 			</tr>
 		</tbody>
 
@@ -98,7 +111,7 @@
 			<td style="vertical-align: top;" colspan="3">
 				{{'stockPhysicalInventoryHistory.signature' | message}}: {{vm.historyData.signature}}
 			</td>
-			<td style="vertical-align: top;" colspan="7">
+			<td style="vertical-align: top;" colspan="8">
 				{{'stockPhysicalInventoryHistory.inventoryDate' | message}}: {{vm.creationDate.dateInShort}}
 			</td>
 		</tr>

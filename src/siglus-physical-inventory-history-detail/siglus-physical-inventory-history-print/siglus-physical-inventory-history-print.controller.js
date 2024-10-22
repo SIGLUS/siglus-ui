@@ -35,6 +35,7 @@
         vm.inventoryByLocation = vm.historyData.withLocation && !vm.historyData.isByProduct;
         vm.service = SiglusPhysicalInventoryHistoryDetailService;
         vm.creationDate = buildDetailDate();
+        vm.calculateTotalValue = calculateTotalValue;
 
         vm.$onInit = onInit;
         vm.downloadPdf = downloadPdf;
@@ -75,6 +76,11 @@
             DownloadPdfService.downloadPdf(
                 headerNode, lineItemHeaderNode, lineItemNodeList, footerNode, outerNode, fileName
             );
+        }
+
+        function calculateTotalValue(lineItem) {
+            return _.get(lineItem, ['price']) ?
+                (lineItem.stockOnHand * (lineItem.price * 100).toFixed(2)) / 100 + ' MZM' : '';
         }
     }
 })();

@@ -1325,6 +1325,7 @@
                         lineItemsData.push({
                             productCode: isByProduct ? currentProduct.productCode : null,
                             productName: isByProduct ? currentProduct.fullProductName : null,
+                            orderableId: isByProduct ? currentProduct.id : null,
                             location: isByProduct ? null : currentLocation,
                             lotCode: null,
                             expirationDate: null,
@@ -1338,7 +1339,8 @@
                         var lineItem = buildLotItemListData(displayLineItems, isByProduct)[0];
                         var assignData = isByProduct ? {
                             productCode: currentProduct.productCode,
-                            productName: currentProduct.fullProductName
+                            productName: currentProduct.fullProductName,
+                            orderableId: currentProduct.id
                         } : {
                             location: currentLocation
                         };

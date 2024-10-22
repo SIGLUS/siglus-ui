@@ -50,9 +50,15 @@
                     historyId: function($stateParams) {
                         return $stateParams.historyId;
                     },
-                    historyData: function(historyId, SiglusPhysicalInventoryHistoryService) {
+                    orderablesPrice: function(siglusOrderableLotService) {
+                        return siglusOrderableLotService.getOrderablesPrice();
+                    },
+                    historyData: function(historyId, SiglusPhysicalInventoryHistoryService, orderablesPrice) {
                         return SiglusPhysicalInventoryHistoryService.getHistoryDetail(historyId)
                             .then(function(detail) {
+                                detail.lineItemsData.forEach(function(line) {
+                                    line.price = orderablesPrice.data[_.get(line, 'orderableId')] || null;
+                                });
                                 return detail;
                             });
                     }
@@ -84,9 +90,15 @@
                     historyId: function($stateParams) {
                         return $stateParams.historyId;
                     },
-                    historyData: function(historyId, SiglusPhysicalInventoryHistoryService) {
+                    orderablesPrice: function(siglusOrderableLotService) {
+                        return siglusOrderableLotService.getOrderablesPrice();
+                    },
+                    historyData: function(historyId, SiglusPhysicalInventoryHistoryService, orderablesPrice) {
                         return SiglusPhysicalInventoryHistoryService.getHistoryDetail(historyId)
                             .then(function(detail) {
+                                detail.lineItemsData.forEach(function(line) {
+                                    line.price = orderablesPrice.data[_.get(line, 'orderableId')] || null;
+                                });
                                 return detail;
                             });
                     }
