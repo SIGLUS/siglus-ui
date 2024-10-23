@@ -45,7 +45,11 @@
                     isExpiredEmergency: false
                 },
                 resolve: {
-                    lineItems: function($filter, requisition, $stateParams) {
+                    program: function(programService, requisitionService, requisition) {
+                        return programService.get(requisition.program.id);
+                    },
+                    lineItems: function($filter, requisition, $stateParams, program) {
+                        var mProgram = program;
                         var filterObject = requisition.template.hideSkippedLineItems() ?
                             {
                                 skipped: '!true',
@@ -67,16 +71,20 @@
                                 return productName.includes(keyword) || productCode.includes(keyword);
                             });
                         }
-                        return $filter('orderBy')(fullSupplyLineItems, [
-                            // eslint-disable-next-line max-len
-                            // SIGLUS-REFACTOR: starts here :after add product or change page number, the product order will restore by this filter
-                            //, just order by the display the order will not change when page number change
+                        var programNeedSortByProductCode = ['VC', 'MMC'];
+                        var sortOrder = programNeedSortByProductCode.includes(program.code) ?  [
                             '$program.orderableCategoryDisplayOrder',
                             '$program.orderableCategoryDisplayName',
                             '$program.displayOrder',
+                            'orderable.productCode',
                             'orderable.fullProductName'
-                            // SIGLUS-REFACTOR: ends here
-                        ]);
+                        ] : [
+                            '$program.orderableCategoryDisplayOrd er',
+                            '$program.orderableCategoryDisplayName',
+                            '$program.displayOrder',
+                            'orderable.fullProductName'
+                        ];
+                        return $filter('orderBy')(fullSupplyLineItems, sortOrder);
                     },
                     items: function(paginationService, lineItems, $stateParams, requisitionValidator,
                         paginationFactory, requisition) {
