@@ -49,7 +49,6 @@
                         return programService.get(requisition.program.id);
                     },
                     lineItems: function($filter, requisition, $stateParams, program) {
-                        var mProgram = program;
                         var filterObject = requisition.template.hideSkippedLineItems() ?
                             {
                                 skipped: '!true',

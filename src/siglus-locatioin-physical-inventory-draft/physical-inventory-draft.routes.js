@@ -133,13 +133,19 @@
                     var searchedLineItems =  physicalInventoryService.search(
                         $stateParams.keyword, draft.lineItems
                     );
-                    return _.chain(searchedLineItems)
+
+                    var isByProduct =  $stateParams.locationManagementOption === 'product';
+                    var lineItemsGroupList = _.chain(searchedLineItems)
                         .groupBy(function(lineItem) {
-                            return $stateParams.locationManagementOption === 'product' ?
-                                lineItem.orderable.id : lineItem.locationCode;
+                            return isByProduct ? lineItem.orderable.id : lineItem.locationCode;
                         })
                         .values()
                         .value();
+
+                    return isByProduct ?
+                        _.sortBy(lineItemsGroupList, function(group) {
+                            return _.get(group, [0, 'orderable', 'productCode']);
+                        }) : lineItemsGroupList;
                 },
                 displayLineItemsGroup: function(paginationService, $stateParams, groupedLineItems) {
                     var validator = function(items) {
