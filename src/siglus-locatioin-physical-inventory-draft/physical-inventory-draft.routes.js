@@ -145,7 +145,11 @@
                     return isByProduct ?
                         _.sortBy(lineItemsGroupList, function(group) {
                             return _.get(group, [0, 'orderable', 'productCode']);
-                        }) : lineItemsGroupList;
+                        }) : _.map(lineItemsGroupList, function(group) {
+                            return _.sortBy(group, function(item) {
+                                return _.get(item, ['orderable', 'productCode']);
+                            });
+                        });
                 },
                 displayLineItemsGroup: function(paginationService, $stateParams, groupedLineItems) {
                     var validator = function(items) {
