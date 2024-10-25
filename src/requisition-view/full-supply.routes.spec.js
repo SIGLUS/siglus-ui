@@ -43,7 +43,9 @@ describe('openlmis.requisitions.requisition.fullSupply state', function() {
 
         this.user = new this.UserDataBuilder().build();
         this.$stateParams = {};
-        this.program = new this.ProgramDataBuilder().build();
+        this.program = {
+            code: 'VC'
+        };
         this.facility = new this.FacilityDataBuilder().build();
         this.period = new this.PeriodDataBuilder().build();
 

@@ -40,8 +40,9 @@
         // #147: starts here
         'referencedata-facility',
         'siglus-add-regimen-model',
-        'siglus-go-back'
-        // #147: ends here
+        'siglus-go-back',
+        // #147: ends here,
+        'referencedata-user'
     ]);
 
 })();
