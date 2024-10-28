@@ -78,7 +78,7 @@
                             'orderable.productCode',
                             'orderable.fullProductName'
                         ] : [
-                            '$program.orderableCategoryDisplayOrd er',
+                            '$program.orderableCategoryDisplayOrder',
                             '$program.orderableCategoryDisplayName',
                             '$program.displayOrder',
                             'orderable.fullProductName'

@@ -69,7 +69,6 @@
             vm.facility = facility;
             vm.requisition = requisition;
             vm.productLineItems = requisition.requisitionLineItems;
-            // requisition.requisitionLineItems;
             services = requisition.testConsumptionLineItems;
             vm.showBreadCrumb = $stateParams.showBreadCrumb === 'false';
             if (vm.showBreadCrumb) {
