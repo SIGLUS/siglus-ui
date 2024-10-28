@@ -64,7 +64,7 @@
     <table cellpadding="0" cellspacing="0">
       <tr>
         <td class="background-black black-width"></td>
-        <td colspan="9" class="report--title height-50">
+        <td colspan="10" class="report--title height-50">
           <span class="report--title-font">
             {{ 'rapid.sencond_title' | message }}
           </span>
@@ -90,8 +90,11 @@
         <td openlmis-message="view.rnr.rapid.test.lossandadjustment">
           {{ 'rapid.loss_and_adjustment' | message }}
         </td>
-        <td openlmis-message="view.rnr.rapid.test.approvedQuantity">
-          {{ 'rapid.approved_quantity' | message }}
+        <td openlmis-message="view.rnr.rapid.test.requestedQuantity">
+          {{ 'rapid.requestedQuantity' | message }}
+        </td>
+        <td openlmis-message="view.rnr.rapid.test.authorizedQuantity">
+          {{ 'rapid.authorizedQuantity' | message }}
         </td>
         <td openlmis-message="view.rnr.rapid.test.inverntory">
           {{ 'rapid.inverntory' | message }}
@@ -109,7 +112,8 @@
         <td>{{product.totalReceivedQuantity}}</td>
         <td>{{product.totalConsumedQuantity}}</td>
         <td>{{product.totalLossesAndAdjustments}}</td>
-        <td>{{product.approvedQuantity}}</td>
+        <td>{{product.requestedQuantity}}</td>
+        <td>{{product.authorizedQuantity ? product.authorizedQuantity : 0}}</td>
         <td>{{product.stockOnHand}}</td>
         <td>{{product.expirationDate}}</td>
       </tr>
