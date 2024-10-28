@@ -12,7 +12,8 @@
     "tb.entries":"Entries",
     "tb.issues":"Issues",
     "tb.lossAndAdjustments":"Loss & Adjustments",
-    "tb.approvedQuantity":"Approved Quantity",
+    "tb.requestedQuantity":"Requested Quantity",
+    "tb.authorizedQuantity":"Authorized Quantity",
     "tb.inventory":"Inventory",
     "tb.expireDate":"Expire date",
 
