@@ -1,4 +1,4 @@
-{   
+{
     "via.title":"Balance Requisition",
     "via.triplicate":"Triplicate",
     "via.double":"Double",
@@ -39,7 +39,8 @@
     "via.product.stockMovements":"Stock Movements",
     "via.product.inventory":"Inventory",
     "via.product.quantityRequested":"Quantity Requested",
+    "via.product.quantityAuthorized":"Quantity Authorized",
     "via.createBy": "Create by",
-    "via.visa": "Visa Approved", 
+    "via.visa": "Visa Approved",
     "via.download.button": "Download PDF"
 }

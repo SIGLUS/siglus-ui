@@ -2311,6 +2311,7 @@
   "via.product.stockMovements": "Movimento de stocks",
   "via.product.inventory": "Controlo de Inventário",
   "via.product.quantityRequested": "Quantidade requisitada",
+  "via.product.quantityAuthorized": "Quantidade autorizada",
   "via.createBy": "Elaborado por",
   "via.visa": "Visto do Responsável Clínico",
   "via.download.button": "Baixar PDF",
