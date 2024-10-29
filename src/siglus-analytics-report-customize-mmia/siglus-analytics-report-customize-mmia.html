@@ -76,7 +76,7 @@
             <td ng-if="!item.orderable.productCode"></td>
             <td ng-if="item.orderable.productCode">{{item.authorizedQuantity ? item.authorizedQuantity : 0}}</td>
             <!-- authorizedQuantity -->
-            <td><span ng-show="item.expirationDate">{{item.expirationDate}}</span></td>
+            <td><span ng-show="item.expirationDate">{{item.expirationDate === 'Invalid date' ? '-' : item.expirationDate}}</span></td>
         </tr>
       </tbody>
   </table>
