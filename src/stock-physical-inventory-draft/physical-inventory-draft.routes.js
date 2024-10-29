@@ -104,13 +104,20 @@
                     var matchedLineItems = physicalInventoryService.search(
                         $stateParams.keyword, rawLineItems
                     );
-                    // SIGLUS-REFACTOR: starts here
-                    return _.chain(matchedLineItems)
-                        .groupBy(function(lineItem) {
-                            return lineItem.orderable.id;
-                        })
-                        .values()
-                        .value();
+                    var mapByOrderableId = _.groupBy(matchedLineItems, function(lineItem) {
+                        return lineItem.orderable.productCode;
+                    });
+
+                    var sortedLineItemsGroup = [];
+                    for (var key in mapByOrderableId) {
+                        var sortedLotLineItems = mapByOrderableId[key].sort(function(item1, item2) {
+                            var item1Date = _.get(item1, ['lot', 'expirationDate'], 0);
+                            var item2Date = _.get(item2, ['lot', 'expirationDate'], 0);
+                            return new Date(item1Date) - new Date(item2Date);
+                        });
+                        sortedLineItemsGroup.push(sortedLotLineItems);
+                    }
+                    return sortedLineItemsGroup;
                 },
                 displayLineItemsGroup: function(paginationService, groupedLineItems, $stateParams) {
                     var validator = function(items) {
