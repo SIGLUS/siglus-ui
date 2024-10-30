@@ -142,14 +142,28 @@
                         .values()
                         .value();
 
-                    return isByProduct ?
-                        _.sortBy(lineItemsGroupList, function(group) {
+                    if (isByProduct) {
+                        // sort product group by product code
+                        var sortedProductGroup = _.sortBy(lineItemsGroupList, function(group) {
                             return _.get(group, [0, 'orderable', 'productCode']);
-                        }) : _.map(lineItemsGroupList, function(group) {
+                        });
+                        // sort lots by expiry date
+                        return _.map(sortedProductGroup, function(group) {
                             return _.sortBy(group, function(item) {
-                                return _.get(item, ['orderable', 'productCode']);
+                                return _.get(item, ['lot', 'expirationDate']);
                             });
                         });
+                    }
+                    // Physical Inventory by location
+                    return _.map(lineItemsGroupList, function(group) {
+                        // for one product, sort lots by productCode then expirationDate
+                        var lotsSortedByExpirationDate = _.sortBy(group, function(lot) {
+                            return _.get(lot, ['lot', 'expirationDate']);
+                        });
+                        return _.sortBy(lotsSortedByExpirationDate, function(lot) {
+                            return _.get(lot, ['orderable', 'productCode']);
+                        });
+                    });
                 },
                 displayLineItemsGroup: function(paginationService, $stateParams, groupedLineItems) {
                     var validator = function(items) {
