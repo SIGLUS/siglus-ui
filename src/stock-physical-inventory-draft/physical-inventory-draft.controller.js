@@ -235,6 +235,9 @@
                                             programId: _.get(item, ['program', 'id'])
                                         });
                                     });
+                                    lineItemsToAdd.forEach(function(item) {
+                                        quantityChanged(item);
+                                    });
                                     draft.lineItems = draft.lineItems.concat(lineItemsToAdd);
                                     $stateParams.isAddProduct = true;
                                     reload($state.current.name);
