@@ -204,7 +204,7 @@
                 )
                     .then(function(result) {
                         var today = dateUtils.toStringDate(new Date());
-                        if (result.occurredDate === today) {
+                        if (result.occurredDate === today || vm.emergency) {
                             initiate(selectedPeriod, today);
                         } else {
                             confirmService.confirm(
@@ -222,14 +222,10 @@
                                         }
                                     );
 
-                                }, function() {
-                                    loadingModalService.close();
-                                });
+                                }, loadingModalService.close);
                         }
                     })
-                    .catch(function() {
-                        loadingModalService.close();
-                    });
+                    .catch(loadingModalService.close);
             } else {
                 pickInventoryDate(selectedPeriod);
             }
@@ -320,15 +316,12 @@
         }
 
         function shouldShowProceedButton(period, idx) {
-            var canProceed = checkProceedButton(period, idx);
-            if (!canProceed) {
-                return false;
-            }
             // P2 cannot proceed INITIATED RNR
             if (hasAuthorizeRight && period.rnrStatus === REQUISITION_STATUS.INITIATED) {
                 return false;
             }
-            return true;
+
+            return checkProceedButton(period, idx);
         }
 
     }
