@@ -18,11 +18,21 @@
       text-align: center;
     }
 
+    .ape-line-tr {
+      border-right: 1px solid black;
+    }
+
     td {
       border: 1px solid black;
       word-wrap: break-word;
       word-break: break-all;
       white-space: nowrap;
+    }
+
+    .no-border-td {
+      border-left: 0 !important;
+      border-right: 0 !important;
+      background-color: white;
     }
 
     .commit-td {

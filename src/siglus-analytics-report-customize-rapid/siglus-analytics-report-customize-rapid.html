@@ -256,20 +256,20 @@
 
       <tr class="black-tr"></tr>
 
-      <tr ng-if="service.service == 'APES'" ng-repeat="service in vm.services">
+      <tr ng-if="service.service == 'APES'" ng-repeat="service in vm.services" class="ape-line-tr">
         <td class="background-black black-width">a</td>
         <td class="table--subtitle-dark-gray">{{ 'rapid.APEs' | message }}</td>
-        <td>{{service.projects.hivDetermine.outcomes.consumo.value}}</td>
-        <td colspan="2">{{service.projects.hivDetermine.outcomes.positive.value}}</td>
-        <td>{{service.projects.hivDetermine.outcomes.unjustified.value}}</td>
+        <td class="no-border-td" colspan="2"></td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
 
-        <td>{{service.projects.newColumn0.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn0.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn0.outcomes.unjustified.value}}</td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
 
-        <td>{{service.projects.newColumn1.outcomes.consumo.value}}</td>
-        <td>{{service.projects.newColumn1.outcomes.positive.value}}</td>
-        <td>{{service.projects.newColumn1.outcomes.unjustified.value}}</td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
 
         <td>{{service.projects.newColumn2.outcomes.consumo.value}}</td>
         <td>{{service.projects.newColumn2.outcomes.positive.value}}</td>
@@ -413,26 +413,26 @@
 
       <tr class="black-tr"></tr>
 
-      <tr ng-if="service.service == 'APES'" ng-repeat="service in vm.services">
+      <tr ng-if="service.service == 'APES'" ng-repeat="service in vm.services" class="ape-line-tr">
         <td class="background-black black-width">a</td>
         <td class="table--subtitle-dark-gray">{{ 'rapid.APEs' | message }}</td>
 
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'consumo', 'value']) }}</td>
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'positive_hiv', 'value']) }}</td>
-                <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'positive_syphilis', 'value']) }}</td>
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn3', 'outcomes', 'unjustified', 'value']) }}</td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
 
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'consumo', 'value']) }}</td>
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'positive', 'value']) }}</td>
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn4', 'outcomes', 'unjustified', 'value']) }}</td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
 
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'consumo', 'value']) }}</td>
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'positive', 'value']) }}</td>
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn5', 'outcomes', 'unjustified', 'value']) }}</td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
 
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'consumo', 'value']) }}</td>
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'positive', 'value']) }}</td>
-        <td>{{ vm.getDataFromField(service, ['projects', 'newColumn6', 'outcomes', 'unjustified', 'value']) }}</td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
+        <td class="no-border-td"></td>
       </tr>
       <!-- new 4 columns end -->
 
