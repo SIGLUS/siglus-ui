@@ -40,11 +40,13 @@
         vm.testProjectColspan = getTestProjectColspan;
         vm.programColspan = undefined;
         vm.replenishArray = replenishArray;
+        vm.isMalaria = isMalaria;
 
         var POSITIVE_HIV_NAME = 'positive_hiv';
         var POSITIVE_HIV_LABEL = 'Positivo HIV';
         var POSITIVE_SYPHILIS_NAME = 'positive_syphilis';
         var POSITIVE_SYPHILIS_LABEL = 'Positivo Sifilis';
+        var MALARIA_LABEL = 'Malaria';
 
         function onInit() {
             vm.testProject = siglusTemplateConfigureService.getSectionByName(vm.sections, SIGLUS_SECTION_TYPES.PROJECT);
@@ -167,6 +169,10 @@
             }, 0);
             count = getProgramColspan() - count - 1;
             return Array(count).fill(0);
+        }
+
+        function isMalaria(project) {
+            return _.get(project, ['columnDefinition', 'label'], false) === MALARIA_LABEL;
         }
     }
 })();

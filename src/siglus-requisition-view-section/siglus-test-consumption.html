@@ -39,19 +39,35 @@
                     {{lineItem.label}}
                 </td>
                 <td ng-repeat-start="project in lineItem.projects | orderObjectBy : 'displayOrder'" ng-if="false"></td>
+                <!-- not user input -->
+                <td ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
+                    ng-if="vm.isAPES(lineItem) && !vm.isMalaria(project) && !(vm.canEdit && vm.isUserInput(lineItem))"
+                    class="no-left-right-border-td"
+                ></td>
                 <td ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
                     openlmis-invalid="{{outcome.$error}}"
-                    ng-if="!(vm.canEdit && vm.isUserInput(lineItem))"
+                    ng-if="(!vm.isAPES(lineItem) || vm.isMalaria(project)) && !(vm.canEdit && vm.isUserInput(lineItem))"
+                    ng-class="{'left-right-border-td': $last && vm.isMalaria(project) && vm.isAPES(lineItem)}"
                 >
                     <div ng-if="vm.canEdit && vm.isCalculated(lineItem)">{{vm.getTotal(project, outcome)}}</div>
                     <div ng-if="vm.canEdit && !vm.isCalculated(lineItem)">{{outcome.value}}</div>
                     <div ng-if="!vm.canEdit">{{outcome.value}}</div>
                 </td>
+                <!-- not user input end -->
                 <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
                     siglus-requisition-grid-cell line-item-field="outcome" on-update="vm.validateOnUpdate"
                     ng-if="vm.canEdit && vm.isUserInput(lineItem)">
                 </td>
-                <td ng-repeat-end ng-repeat="n in vm.replenishArray(lineItem) track by $index"></td>
+
+                <!-- additional four projects -->
+                <td ng-repeat-end ng-repeat="n in vm.replenishArray(lineItem) track by $index"
+                    ng-if="vm.isAPES(lineItem) && !vm.isMalaria(project)"
+                    style="border-left: 0; border-right: 0;"
+                ></td>
+                <td ng-repeat-end ng-repeat="n in vm.replenishArray(lineItem) track by $index"
+                    ng-if="!vm.isAPES(lineItem) || vm.isMalaria(project)"
+                ></td>
+                <!-- additional four projects end -->
             </tr>
         </tbody>
     </table>
