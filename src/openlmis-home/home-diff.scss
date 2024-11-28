@@ -66,11 +66,12 @@
 
         .sync-button-and-tips {
             display: flex;
-            align-items: baseline;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 30vw;
 
             .sync-tips {
                 margin-top: 10px;
-                margin-left: 10px;
                 font-family: 'Arial';
                 font-style: normal;
                 font-weight: 600;
@@ -83,14 +84,12 @@
                     max-height: 300px;
                     overflow: scroll;
                     -ms-overflow-style: none;
-                    width: 668px;
                 }
                 .error {
                     color: #d25555;
                     max-height: 300px;
                     overflow: scroll;
                     -ms-overflow-style: none;
-                    width: 668px;
                 }
                 .warning::-webkit-scrollbar,
                 .error::-webkit-scrollbar {
