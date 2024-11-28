@@ -293,14 +293,17 @@
         }
 
         function validateAPES(lineItems, project, outcome) {
-            var isValid = true;
             var totalLineItem = lineItems.find(siglusColumnUtils.isTotal);
             var apesLineItem = lineItems.find(siglusColumnUtils.isAPES);
             if (_.isUndefined(apesLineItem)) {
-                return isValid;
+                return true;
             }
-            var apesField = apesLineItem.projects[project.name].outcomes[outcome.name];
+            if (project.label !== 'Malaria') {
+                return true;
+            }
 
+            var isValid = true;
+            var apesField = apesLineItem.projects[project.name].outcomes[outcome.name];
             if (isNotEmpty(getTestConsumptionFieldValue(totalLineItem, project, outcome))
                 && !isNotEmpty(getTestConsumptionFieldValue(apesLineItem, project, outcome))) {
                 isValid = validateSiglusLineItemField(apesField) && isValid;

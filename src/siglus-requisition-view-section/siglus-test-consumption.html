@@ -54,10 +54,18 @@
                     <div ng-if="!vm.canEdit">{{outcome.value}}</div>
                 </td>
                 <!-- not user input end -->
+
+                <!-- user input -->
+                <td ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
+                    ng-if="vm.isAPES(lineItem) && !vm.isMalaria(project) && (vm.canEdit && vm.isUserInput(lineItem))"
+                    class="no-left-right-border-td"
+                ></td>
                 <td ng-repeat-end ng-repeat="outcome in project.outcomes | orderObjectBy : 'displayOrder'"
                     siglus-requisition-grid-cell line-item-field="outcome" on-update="vm.validateOnUpdate"
-                    ng-if="vm.canEdit && vm.isUserInput(lineItem)">
-                </td>
+                    ng-if="(!vm.isAPES(lineItem) || vm.isMalaria(project)) && (vm.canEdit && vm.isUserInput(lineItem))"
+                    ng-class="{'left-right-border-td': $last && vm.isMalaria(project) && vm.isAPES(lineItem)}"
+                ></td>
+                <!-- user input end -->
 
                 <!-- additional four projects -->
                 <td ng-repeat-end ng-repeat="n in vm.replenishArray(lineItem) track by $index"
