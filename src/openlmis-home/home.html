@@ -36,21 +36,24 @@
 <!--            <i class="fa fa-check-circle"></i>-->
 <!--            Auto synced successfully at 30/08/2022 11:23:12-->
 <!--        </div>-->
-        <button class="primary" ng-click="vm.sync()" ng-disabled="!vm.connectedOnlineWeb">{{'openlmisHome.sync' | message}}</button>
-        <div ng-if="vm.syncMessage" class="sync-tips">
-            <div ng-if="vm.syncMessage === 'localmachine.sync.success'">
-                <i class="fa fa-check-circle"></i>
-                {{vm.syncMessage | message}}
-            </div>
-            <div ng-if="vm.syncMessage === 'localmachine.sync.noInternet' || vm.syncMessage === 'localmachine.sync.syncing'"
-                 class="warning"
-            >
-                <i class="fa fa-info-circle"></i>
-                {{vm.syncMessage | message}}
-            </div>
-            <div ng-if="vm.syncMessage === 'localmachine.sync.failed'" class="error">
-                <i class="fa fa-times-circle"></i>
-                {{vm.syncMessage | message}}
+
+        <div class="sync-button-and-tips">
+            <button class="primary" ng-click="vm.sync()" ng-disabled="!vm.connectedOnlineWeb">{{'openlmisHome.sync' | message}}</button>
+            <div ng-if="vm.syncMessage" class="sync-tips">
+                <div ng-if="vm.syncMessage === 'localmachine.sync.success'">
+                    <i class="fa fa-check-circle"></i>
+                    {{vm.syncMessage | message}}
+                </div>
+                <div ng-if="vm.syncMessage === 'localmachine.sync.noInternet' || vm.syncMessage === 'localmachine.sync.syncing'"
+                     class="warning"
+                >
+                    <i class="fa fa-info-circle"></i>
+                    {{vm.syncMessage | message}}
+                </div>
+                <div ng-if="vm.syncMessage === 'localmachine.sync.failed'" class="error">
+                    <i class="fa fa-times-circle"></i>
+                    {{vm.syncMessage | message}}
+                </div>
             </div>
         </div>
     </div>

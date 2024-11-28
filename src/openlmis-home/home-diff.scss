@@ -63,32 +63,39 @@
         font-style: normal;
         font-weight: 700;
         font-size: 14px;
-        .sync-tips {
-            margin-top: 10px;
-            font-family: 'Arial';
-            font-style: normal;
-            font-weight: 400;
-            font-size: 14px;
-            color: #2FCF3F;
-            margin-bottom: 10px;
-            padding: 10px;
-            .warning {
-                color: #bdb84e;
-                max-height: 300px;
-                overflow: scroll;
-                -ms-overflow-style: none;
-                width: 668px;
-            }
-            .error {
-                color: #d25555;
-                max-height: 300px;
-                overflow: scroll;
-                -ms-overflow-style: none;
-                width: 668px;
-            }
-            .warning::-webkit-scrollbar,
-            .error::-webkit-scrollbar {
-                display: none;
+
+        .sync-button-and-tips {
+            display: flex;
+            align-items: baseline;
+
+            .sync-tips {
+                margin-top: 10px;
+                margin-left: 10px;
+                font-family: 'Arial';
+                font-style: normal;
+                font-weight: 600;
+                font-size: 16px;
+                color: #2FCF3F;
+                margin-bottom: 10px;
+                padding: 10px;
+                .warning {
+                    color: #f7941d;
+                    max-height: 300px;
+                    overflow: scroll;
+                    -ms-overflow-style: none;
+                    width: 668px;
+                }
+                .error {
+                    color: #d25555;
+                    max-height: 300px;
+                    overflow: scroll;
+                    -ms-overflow-style: none;
+                    width: 668px;
+                }
+                .warning::-webkit-scrollbar,
+                .error::-webkit-scrollbar {
+                    display: none;
+                }
             }
         }
 
