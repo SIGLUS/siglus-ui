@@ -34,10 +34,10 @@
     }
 
     decorator.$inject = ['$delegate', '$filter', 'siglusRequisitionUtils', 'messageService', 'COLUMN_TYPES',
-        'MAX_INTEGER_VALUE', 'siglusColumnUtils', 'SIGLUS_SERVICE_TYPES'];
+        'MAX_INTEGER_VALUE', 'siglusColumnUtils', 'SIGLUS_SERVICE_TYPES', 'REQUISITION_STATUS'];
 
     function decorator($delegate, $filter, siglusRequisitionUtils, messageService, COLUMN_TYPES, MAX_INTEGER_VALUE,
-                       siglusColumnUtils, SIGLUS_SERVICE_TYPES) {
+                       siglusColumnUtils, SIGLUS_SERVICE_TYPES, REQUISITION_STATUS) {
         $delegate.validateTotalEqualOfRegimen = validateTotalEqualOfRegimen;
         $delegate.validateSiglusLineItemField = validateSiglusLineItemField;
         $delegate.validateTestConsumptionLineItems = validateTestConsumptionLineItems;
@@ -169,6 +169,11 @@
 
         function validatePatient(requisition) {
             if (requisition.template.extension.enablePatient && !requisition.emergency) {
+                if (requisition.status === REQUISITION_STATUS.IN_APPROVAL) {
+                    return validateBasicLineItems(requisition.patientLineItems.filter(function(p) {
+                        return p.name !== 'newSection9';
+                    }));
+                }
                 return validateBasicLineItems(requisition.patientLineItems);
             }
             return true;
