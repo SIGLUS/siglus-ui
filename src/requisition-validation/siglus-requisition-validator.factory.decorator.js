@@ -298,12 +298,16 @@
             if (_.isUndefined(apesLineItem)) {
                 return true;
             }
+
+            var apesField = apesLineItem.projects[project.name].outcomes[outcome.name];
             if (project.label !== 'Malaria') {
+                if (apesField.value === null) {
+                    apesField.value = 0;
+                }
                 return true;
             }
 
             var isValid = true;
-            var apesField = apesLineItem.projects[project.name].outcomes[outcome.name];
             if (isNotEmpty(getTestConsumptionFieldValue(totalLineItem, project, outcome))
                 && !isNotEmpty(getTestConsumptionFieldValue(apesLineItem, project, outcome))) {
                 isValid = validateSiglusLineItemField(apesField) && isValid;
