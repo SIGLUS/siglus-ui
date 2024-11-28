@@ -71,15 +71,22 @@
             font-size: 14px;
             color: #2FCF3F;
             margin-bottom: 10px;
-            .error {
-                color: #d25555;
-                //background: rgba(0,0,0,0.8);
+            padding: 10px;
+            .warning {
+                color: #bdb84e;
                 max-height: 300px;
                 overflow: scroll;
                 -ms-overflow-style: none;
                 width: 668px;
-                padding: 10px;
             }
+            .error {
+                color: #d25555;
+                max-height: 300px;
+                overflow: scroll;
+                -ms-overflow-style: none;
+                width: 668px;
+            }
+            .warning::-webkit-scrollbar,
             .error::-webkit-scrollbar {
                 display: none;
             }

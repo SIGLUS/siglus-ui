@@ -38,21 +38,19 @@
 <!--        </div>-->
         <button class="primary" ng-click="vm.sync()" ng-disabled="!vm.connectedOnlineWeb">{{'openlmisHome.sync' | message}}</button>
         <div ng-if="vm.syncMessage" class="sync-tips">
-            <div ng-if="vm.syncMessage === 'openlmisHome.syncedSuccessfully'">
+            <div ng-if="vm.syncMessage === 'localmachine.sync.success'">
                 <i class="fa fa-check-circle"></i>
-                {{vm.syncMessage | message}} {{'openlmisHome.at' | message}} {{vm.syncFinishTime}}
+                {{vm.syncMessage | message}}
             </div>
-            <div ng-if="vm.syncMessage === 'openlmisHome.syncedFailed'" class="error">
-                <div>
-                    <i class="fa fa-warning"></i>
-                    {{vm.syncMessage | message}} {{'openlmisHome.at' | message}} {{vm.syncFinishTime}}
-                </div>
-                <div ng-if="vm.error" class="sync-error-item">
-                    <div ng-if="vm.error.errorPayload.messageKey" class="sync-error-item-line">{{vm.error.errorPayload.messageKey | message}}</div>
-                    <div ng-if="!vm.error.errorPayload.messageKey" class="sync-error-item-line">{{vm.error.type}} {{'localmachine.failed' | message}}</div>
-<!--                    <div class="sync-error-item-line">{{error.errorPayload.errorName}}</div>-->
-<!--                    <div class="sync-error-item-line">{{error.errorPayload.rootStackTrace}}</div>-->
-                </div>
+            <div ng-if="vm.syncMessage === 'localmachine.sync.noInternet' || vm.syncMessage === 'localmachine.sync.syncing'"
+                 class="warning"
+            >
+                <i class="fa fa-info-circle"></i>
+                {{vm.syncMessage | message}}
+            </div>
+            <div ng-if="vm.syncMessage === 'localmachine.sync.failed'" class="error">
+                <i class="fa fa-times-circle"></i>
+                {{vm.syncMessage | message}}
             </div>
         </div>
     </div>

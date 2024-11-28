@@ -39,6 +39,7 @@
         var vm = this;
 
         var IS_OFFLINE = 'IS_OFFLINE';
+        var FULLY_SYNC_STATUS = 'FULLY_SYNCED';
         vm.$onInit = onInit;
         vm.localMachineVersion = undefined;
         vm.connectedOnlineWeb = localStorageService.get(IS_OFFLINE)
@@ -83,6 +84,7 @@
                 vm.isLocalMachine = true;
                 vm.sync();
             }
+            vm.syncUpInterval();
         }
 
         $rootScope.$on('isLocationMachine', function() {
@@ -155,21 +157,47 @@
 
         vm.sync = function() {
             loadingModalService.open();
+            syncUp();
+        };
+
+        function syncUp() {
             homeImportAndExportService.getSyncResults()
                 .then(function(res) {
                     vm.syncFinishTime = moment().format('YYYY-MM-DD HH:mm:ss');
                     var error = _.get(res, ['data', 'error']);
+                    var syncStatus = _.get(res, ['data', 'syncStatus']);
                     if (error) {
-                        vm.syncMessage = 'openlmisHome.syncedFailed';
+                        vm.syncMessage = 'localmachine.sync.failed';
                         vm.error = error;
                     } else {
-                        vm.syncMessage = 'openlmisHome.syncedSuccessfully';
+                        if (syncStatus === FULLY_SYNC_STATUS) {
+                            vm.syncMessage = 'localmachine.sync.success';
+                        } else {
+                            vm.syncMessage = vm.connectedOnlineWeb ?
+                                'localmachine.sync.syncing' : 'localmachine.sync.noInternet';
+                        }
                         vm.lastSyncTime = moment(_.get(res, ['data', 'latestSyncedTime']))
                             .format('YYYY-MM-DD HH:mm:ss');
                     }
                 })
                 .finally(loadingModalService.close);
+        }
+
+        vm.syncUpInterval = function() {
+            if ($rootScope.isLocalMachine) {
+                if ($rootScope.syncUpTimer === undefined) {
+                    $rootScope.syncUpTimer = setInterval(function() {
+                        syncUp();
+                    }, 30000);
+                }
+
+                $rootScope.$on('$stateChangeStart', function() {
+                    clearInterval($rootScope.syncUpTimer);
+                    $rootScope.syncUpTimer = undefined;
+                });
+            }
         };
+
     }
 
 })();

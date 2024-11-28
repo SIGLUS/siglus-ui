@@ -2765,6 +2765,10 @@
   "localmachine.invalid.file.type.or.file.may.be.modified": "File may be modified",
 
   "localmachine.network.error": "Network Error, por favor verifique a sua rede e tente de novo.",
+  "localmachine.sync.success": "Todos os dados foram sincronizados com sucesso para a web online.",
+  "localmachine.sync.noInternet": "Há dados por sincronizar com a web. Por favor, conecte-se à internet e tente sincronizar.",
+  "localmachine.sync.syncing": "Os dados estão sendo sincronizados. Por favor, não desligue o computador ou desconecte-se da internet.",
+  "localmachine.sync.failed": "A sincronização falhou. Por favor, entre em contato com o administrador para obter assistência.",
 
   "product.empty":"Vazio",
   "product.archived":"Arquivado",
