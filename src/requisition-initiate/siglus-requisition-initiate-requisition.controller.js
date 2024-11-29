@@ -317,7 +317,7 @@
 
         function shouldShowProceedButton(period, idx) {
             // P2 cannot proceed INITIATED RNR
-            if (hasAuthorizeRight && period.rnrStatus === REQUISITION_STATUS.INITIATED) {
+            if (hasAuthorizeRight && !canInitiateRnr && period.rnrStatus === REQUISITION_STATUS.INITIATED) {
                 return false;
             }
 
