@@ -183,33 +183,27 @@
                         // eslint-disable-next-line complexity
                         $scope.fillLotCode = function() {
                             var lineItem = $scope.lineItem;
-                            if (
-                                _.get(lineItem, ['lot', 'lotCode']) &&
-                                _.get(lineItem, ['lot', 'expirationDate']) &&
-                                !_.get(lineItem, ['lot', 'id'])
-                            ) {
+                            var hasLotCode = _.get(lineItem, ['lot', 'lotCode']);
+                            var hasExpirationDate = _.get(lineItem, ['lot', 'expirationDate']);
+                            var hasLotId = _.get(lineItem, ['lot', 'id']);
+                            lineItem.lot.lotCode = removeHyphensAtEnd(lineItem.lot.lotCode);
+
+                            if (hasLotCode && hasExpirationDate && !hasLotId) {
                                 if (!SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode)) {
                                     lineItem.lot.lotCode = lineItem.lot.lotCode +
                                     moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
                                 }
-                            } else if (
-                                _.get(lineItem, ['lot', 'lotCode']) &&
-                                !_.get(lineItem, ['lot', 'expirationDate']) &&
-                                !_.get(lineItem, ['lot', 'id'])
-                            ) {
-                                if (SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode)
-                                && moment(lineItem.lot.lotCode.slice(-10), SIGLUS_LOT_CODE_DATE_ISVALID).isValid()) {
+                            } else if (hasLotCode && !hasExpirationDate && !hasLotId) {
+                                if (SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode) &&
+                                    moment(lineItem.lot.lotCode.slice(-10), SIGLUS_LOT_CODE_DATE_ISVALID).isValid()) {
                                     lineItem.lot.expirationDate =
-                                    moment(lineItem.lot.lotCode.slice(-10), SIGLUS_LOT_CODE_DATE_ISVALID)
-                                        .format('YYYY-MM-DD');
+                                        moment(
+                                            lineItem.lot.lotCode.slice(-10), SIGLUS_LOT_CODE_DATE_ISVALID
+                                        ).format('YYYY-MM-DD');
                                 }
-                            } else if (
-                                _.get(lineItem, ['lot', 'lotCode']) &&
-                                _.get(lineItem, ['lot', 'expirationDate']) &&
-                                _.get(lineItem, ['lot', 'id'])) {
-                                lineItem.lot.lotCode =
-                                lineItem.lot.lotCode +
-                                        moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
+                            } else if (hasLotCode && hasExpirationDate && hasLotId) {
+                                lineItem.lot.lotCode = lineItem.lot.lotCode +
+                                    moment(lineItem.lot.expirationDate).format(SIGLUS_LOT_CODE_DATE_FORMATE);
                             }
                         };
 
@@ -221,7 +215,6 @@
                                     return  messageService.get('siglusStockInputSelect.lotExpired');
                                 }
                             }
-
                         };
 
                         function validateRequiredLot(lineItem) {
@@ -245,9 +238,24 @@
                         }
 
                         function validateInputLotCode(inputContent) {
+                            inputContent = inputContent.trim();
+                            inputContent = validateInputCharacters(inputContent);
+                            inputContent = removeConsecutiveHyphens(inputContent);
+                            return inputContent;
+                        }
+                        function validateInputCharacters(inputContent) {
                             var VALID_CHARS = /^[a-zA-Z0-9-]*$/;
                             if (!VALID_CHARS.test(inputContent)) {
                                 return inputContent.replace(/[^a-zA-Z0-9-]/g, '');
+                            }
+                            return inputContent;
+                        }
+                        function removeConsecutiveHyphens(inputContent) {
+                            return inputContent.replace(/-+/g, '-');
+                        }
+                        function removeHyphensAtEnd(inputContent) {
+                            if (inputContent.endsWith('-')) {
+                                inputContent = inputContent.slice(0, -1);
                             }
                             return inputContent;
                         }
