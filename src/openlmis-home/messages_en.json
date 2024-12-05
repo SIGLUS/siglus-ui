@@ -19,6 +19,8 @@
 	"localmachine.file.receiver.not.match.current.facility": "The receiver of the file you imported is not your facility, please import the file with your facility as the receiver.",
 	"openlmisHome.at": "at",
 	"localmachine.failed": "failed",
+
+	"localmachine.sync.failedType": "Sync failed(${errorType}).",
 	"localmachine.sync.success": "All data has been successfully synced to the web online.",
 	"localmachine.sync.noInternet": "Some data has not yet been synced to the web online. Please connect to the internet and try syncing again.",
 	"localmachine.sync.syncing": "Data is currently syncing. Please do not shut down or disconnect from the internet.",

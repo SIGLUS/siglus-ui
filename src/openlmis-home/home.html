@@ -52,7 +52,9 @@
                 </div>
                 <div ng-if="vm.syncMessage === 'localmachine.sync.failed'" class="error">
                     <i class="fa fa-times-circle"></i>
-                    {{vm.syncMessage | message}}
+                    {{ 'localmachine.sync.failedType' | message: {
+                        errorType: vm.error.type || '' }
+                    }} {{vm.syncMessage | message}}
                 </div>
             </div>
         </div>
