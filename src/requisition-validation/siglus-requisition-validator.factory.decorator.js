@@ -171,7 +171,7 @@
             if (requisition.template.extension.enablePatient && !requisition.emergency) {
                 if (requisition.status === REQUISITION_STATUS.IN_APPROVAL) {
                     return validateBasicLineItems(requisition.patientLineItems.filter(function(p) {
-                        return p.name !== 'newSection9';
+                        return p.name !== 'newSection9' && p.name !== 'newSection6' && p.name !== 'newSection5';
                     }));
                 }
                 return validateBasicLineItems(requisition.patientLineItems);
