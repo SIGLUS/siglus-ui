@@ -143,13 +143,30 @@
             closeRequisitionsForApproval: closeRequisitionsForApproval,
             buildDraftWithoutSaving: buildDraftWithoutSaving,
             extendLineItemsWithOrderablesAndFtaps: extendLineItemsWithOrderablesAndFtaps,
-            deleteRequisitionLineItem: deleteRequisitionLineItem
+            deleteRequisitionLineItem: deleteRequisitionLineItem,
+            getStatusDateByIds: getStatusDateByIds
             // SIGLUS-REFACTOR: ends here
         };
 
         return service;
 
         // SIGLUS-REFACTOR: starts here
+        function getStatusDateByIds(requisitionIds) {
+            if (requisitionIds && requisitionIds.length === 0) {
+                return $q.resolve([]);
+            }
+            return $http.get(requisitionUrlFactory('api/siglusapi/requisitions/statusDate?requisitionIds='
+                + requisitionIds.join(',')))
+                .then(function(response) {
+                    return response.data.map(function(statusDate) {
+                        return {
+                            requisitionId: statusDate.requisitionId,
+                            initiatedDate: dateUtils.toDate(statusDate.initiatedDate)
+                        };
+                    });
+                });
+        }
+
         function getOrderableLineItem(requisitionId, orderableIds) {
             return resource.getOrderableLineItem({
                 requisitionId: requisitionId

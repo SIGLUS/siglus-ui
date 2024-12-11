@@ -47,7 +47,22 @@
                             var offlineFlag = stateParams.offline;
                             delete stateParams.offline;
                             // SIGLUS-REFACTOR: starts here
-                            return requisitionService.searchOriginal(offlineFlag === 'true', stateParams);
+                            return requisitionService.searchOriginal(offlineFlag === 'true', stateParams)
+                                .then(function(requisitionResponses) {
+                                    var ids = requisitionResponses.content.map(function(response) {
+                                        return response.id;
+                                    });
+                                    return requisitionService.getStatusDateByIds(ids).then(function(statusDates) {
+                                        var statusDatesMap = {};
+                                        statusDates.map(function(statusDate) {
+                                            statusDatesMap[statusDate.requisitionId] = statusDate.initiatedDate;
+                                        });
+                                        requisitionResponses.content.forEach(function(response) {
+                                            response.createdDate = statusDatesMap[response.id];
+                                        });
+                                        return requisitionResponses;
+                                    });
+                                });
                             // SIGLUS-REFACTOR: ends here
                         }
                         return undefined;

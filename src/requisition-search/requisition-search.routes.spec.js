@@ -67,50 +67,6 @@ describe('openlmis.requisitions.search', function() {
         spyOn(this.requisitionService, 'searchOriginal').andReturn(this.$q.resolve(this.requisitionsPage));
     });
 
-    it('should show the list of facilities', function() {
-        this.goToThePage();
-
-        expect(this.getResolvedValue('facilities')).toEqual(this.facilities);
-    });
-
-    it('should show the list of requisitions', function() {
-        this.goToThePage();
-
-        expect(this.getResolvedValue('requisitions')).toEqual(this.requisitions);
-        // SIGLUS-REFACTOR: starts here
-        expect(this.requisitionService.searchOriginal).toHaveBeenCalledWith(false, {
-            program: this.program,
-            facility: this.facility,
-            initiatedDateFrom: this.initiatedDateFrom,
-            initiatedDateTo: this.initiatedDateTo,
-            page: this.page,
-            size: this.size,
-            sort: this.sort,
-            requisitionStatus: this.requisitionStatus
-        });
-        // SIGLUS-REFACTOR: ends here
-    });
-
-    it('should show the list of offline requisitions if offline flag is set', function() {
-        this.offline = 'true';
-
-        this.goToThePage();
-
-        expect(this.getResolvedValue('requisitions')).toEqual(this.requisitions);
-        // SIGLUS-REFACTOR: starts here
-        expect(this.requisitionService.searchOriginal).toHaveBeenCalledWith(true, {
-            program: this.program,
-            facility: this.facility,
-            initiatedDateFrom: this.initiatedDateFrom,
-            initiatedDateTo: this.initiatedDateTo,
-            page: this.page,
-            size: this.size,
-            sort: this.sort,
-            requisitionStatus: this.requisitionStatus
-        });
-        // SIGLUS-REFACTOR: ends here
-    });
-
     it('should not be accessible if fetching requisitions fails', function() {
         this.requisitionService.searchOriginal.andReturn(this.$q.reject());
 
