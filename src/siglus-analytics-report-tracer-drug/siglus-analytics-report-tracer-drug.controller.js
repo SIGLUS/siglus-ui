@@ -152,12 +152,13 @@
         }
 
         function exportData() {
+            loadingModalService.open();
             analyticsReportMetabaseService.exportTracerDrugReport(
                 vm.drugCode,
                 buildRequestDistrictNameList(),
                 vm.startDate,
                 vm.endDate
-            );
+            ).$promise.finally(loadingModalService.close);
         }
 
         function buildRequestDistrictNameList() {
