@@ -47,6 +47,10 @@
             name: 'ALL',
             code: ALL_CODE
         };
+        var ALL_PRODUCT = {
+            productCode: 'ALL',
+            productName: 'ALL'
+        };
         var REPORT_VIEW_ALL_CODE = '00000000-0000-0000-0000-000000000000';
 
         vm.$onInit = onInit;
@@ -81,7 +85,7 @@
             vm.analyticsReportMetabase = analyticsReportMetabase;
             loadingModalService.open();
 
-            vm.drugList = angular.copy(filterInfo.tracerDrugs);
+            vm.drugList = buildDragList();
 
             var geographicZones = angular.copy(_.get(filterInfo, 'geographicZones', []));
             vm.allProvinceList = geographicZones.filter(function(zoneItem) {
@@ -154,11 +158,20 @@
         function exportData() {
             loadingModalService.open();
             analyticsReportMetabaseService.exportTracerDrugReport(
-                vm.drugCode,
+                buildDragCodeListForRequest(vm.drugCode),
                 buildRequestDistrictNameList(),
                 vm.startDate,
                 vm.endDate
             ).$promise.finally(loadingModalService.close);
+        }
+
+        function buildDragCodeListForRequest(selectedDrugCode) {
+            if (selectedDrugCode === ALL_PRODUCT.productCode) {
+                return _.map(filterInfo.tracerDrugs, function(drug) {
+                    return drug.productCode;
+                }) || [];
+            }
+            return [selectedDrugCode];
         }
 
         function buildRequestDistrictNameList() {
@@ -182,6 +195,12 @@
             // eslint-disable-next-line no-undef
             iFrameResize({}, '#metabase-iframe');
             loadingModalService.close();
+        }
+
+        function buildDragList() {
+            var drugs = angular.copy(filterInfo.tracerDrugs);
+            drugs.push(ALL_PRODUCT);
+            return drugs;
         }
 
         function buildProvinceSelectList(geographicList) {

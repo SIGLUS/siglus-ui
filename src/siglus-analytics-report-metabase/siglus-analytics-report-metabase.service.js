@@ -89,10 +89,10 @@
         }
 
         function exportTracerDrugReport(
-            productCode, districtList, startDate, endDate
+            productCodes, districtList, startDate, endDate
         ) {
             return resource.exportTracerDrugReport({
-                productCode: productCode,
+                productCodes: productCodes,
                 districtList: districtList,
                 startDate: startDate,
                 endDate: endDate
