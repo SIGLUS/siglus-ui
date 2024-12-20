@@ -173,7 +173,12 @@
                 vm.currentDate, facility.id
             ).then(
                 function(result) {
-                    vm.minDate = result;
+                    var shippedDate = _.get(proofOfDelivery, ['shipment', 'shippedDate'], result);
+                    var shippedDateMoment = moment(shippedDate);
+                    var movementDateMoment = moment(result);
+                    var laterDateMovement = shippedDateMoment.isAfter(movementDateMoment) ?
+                        shippedDateMoment : movementDateMoment;
+                    vm.minDate = laterDateMovement.format('YYYY-MM-DD');
                 }
             );
             vm.isMerge = $stateParams.actionType === 'MERGE' || $stateParams.actionType === 'VIEW';
