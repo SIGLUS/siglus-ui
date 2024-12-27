@@ -186,7 +186,9 @@
                             var hasLotCode = _.get(lineItem, ['lot', 'lotCode']);
                             var hasExpirationDate = _.get(lineItem, ['lot', 'expirationDate']);
                             var hasLotId = _.get(lineItem, ['lot', 'id']);
-                            lineItem.lot.lotCode = removeHyphensAtEnd(lineItem.lot.lotCode);
+                            if (hasLotCode) {
+                                lineItem.lot.lotCode = removeHyphensAtEnd(_.get(lineItem, ['lot', 'lotCode'], ''));
+                            }
 
                             if (hasLotCode && hasExpirationDate && !hasLotId) {
                                 if (!SIGLUS_LOT_CODE_REGEXP.test(lineItem.lot.lotCode)) {
