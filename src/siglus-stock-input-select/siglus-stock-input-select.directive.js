@@ -219,6 +219,14 @@
                             }
                         };
 
+                        $scope.filterLotOptions = function(originalOptions) {
+                            return _.filter(originalOptions, function(option) {
+                                var isExpired = moment().isAfter(moment(option.expirationDate).add(1, 'd'));
+                                var soh = getLotSOH(option);
+                                return !isExpired || soh > 0;
+                            });
+                        };
+
                         function validateRequiredLot(lineItem) {
                             if (!lineItem.isKit) {
                                 if ((lineItem.lot && lineItem.lot.lotCode) || lineItem.lotId) {
@@ -260,6 +268,14 @@
                                 inputContent = inputContent.slice(0, -1);
                             }
                             return inputContent;
+                        }
+                        function getLotSOH(lot) {
+                            var orderableId = _.get($scope.lineItem, ['orderable', 'id'], '');
+                            var selectedOrderableGroup = siglusOrderableLotMapping
+                                .findSelectedOrderableGroupsByOrderableId(orderableId);
+                            var selectedItem = orderableGroupService
+                                .findByLotInOrderableGroup(selectedOrderableGroup, lot);
+                            return selectedItem ? _.get(selectedItem, 'stockOnHand', 0) : 0;
                         }
                     }],
                 replace: true,
