@@ -36,7 +36,8 @@
         'siglusLocationAdjustmentModifyLineItemService', 'siglusLocationCommonApiService',
         'areaLocationInfo', 'siglusLocationAdjustmentService', 'alertConfirmModalService',
         'locations', 'program', 'siglusPrintPalletLabelComfirmModalService', 'SIGLUS_TIME',
-        'productList', 'SiglusIssueOrReceiveReportService', 'moment', 'orderablesPrice'
+        'productList', 'SiglusIssueOrReceiveReportService', 'moment', 'orderablesPrice',
+        'siglusOrderableLotMapping', 'orderableGroups'
     ];
 
     function controller(
@@ -48,10 +49,12 @@
         siglusLocationAdjustmentModifyLineItemService, siglusLocationCommonApiService,
         areaLocationInfo, siglusLocationAdjustmentService, alertConfirmModalService,
         locations, program, siglusPrintPalletLabelComfirmModalService, SIGLUS_TIME,
-        productList, SiglusIssueOrReceiveReportService, moment, orderablesPrice
+        productList, SiglusIssueOrReceiveReportService, moment, orderablesPrice,
+        siglusOrderableLotMapping, orderableGroups
     ) {
         var vm = this;
         var ReportService = new SiglusIssueOrReceiveReportService();
+        siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
 
         var IGNORE_REASONS = [
             'Consumido',

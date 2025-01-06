@@ -270,7 +270,7 @@
                             return inputContent;
                         }
                         function getLotSOH(lot) {
-                            var orderableId = _.get($scope.lineItem, ['orderable', 'id'], '');
+                            var orderableId = _.get($scope.lineItem, ['orderableId'], '');
                             var selectedOrderableGroup = siglusOrderableLotMapping
                                 .findSelectedOrderableGroupsByOrderableId(orderableId);
                             var selectedItem = orderableGroupService

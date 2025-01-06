@@ -117,6 +117,18 @@
                 displayItems: function($stateParams, siglusLocationDisplayItemFilterService, allLineItemsAdded) {
                     return siglusLocationDisplayItemFilterService
                         .filterList($stateParams.keyword || '', allLineItemsAdded);
+                },
+                orderableGroups: function($stateParams, facility, draftInfo, orderableGroupService) {
+                    if (!$stateParams.orderableGroups) {
+                        var allLineOrderableIds = draftInfo[0].lineItems.map(function(line) {
+                            return line.orderableId;
+                        });
+                        return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
+                            $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
+                            $stateParams.draftId, allLineOrderableIds
+                        );
+                    }
+                    return $stateParams.orderableGroups;
                 }
             }
         });
