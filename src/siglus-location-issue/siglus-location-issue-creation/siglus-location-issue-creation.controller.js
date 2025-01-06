@@ -30,7 +30,8 @@
         'messageService', 'isMerge', 'moment', 'siglusStockIssueLocationService',
         'siglusRemainingProductsModalService', 'alertService', 'siglusSignatureWithDateModalService',
         'program', 'confirmDiscardService', 'openlmisDateFilter', 'siglusPrintPalletLabelComfirmModalService',
-        'orderablesPrice', 'SiglusIssueOrReceiveReportService', '$q'
+        'orderablesPrice', 'SiglusIssueOrReceiveReportService', '$q',
+        'siglusOrderableLotMapping', 'orderableGroups'
     ];
 
     function siglusLocationIssueCreationController(
@@ -42,7 +43,8 @@
         messageService, isMerge, moment, siglusStockIssueLocationService,
         siglusRemainingProductsModalService, alertService, siglusSignatureWithDateModalService,
         program, confirmDiscardService, openlmisDateFilter, siglusPrintPalletLabelComfirmModalService,
-        orderablesPrice, SiglusIssueOrReceiveReportService, $q
+        orderablesPrice, SiglusIssueOrReceiveReportService, $q,
+        siglusOrderableLotMapping, orderableGroups
     ) {
         var vm = this;
         var orderablesPriceMap = orderablesPrice.data;
@@ -65,6 +67,8 @@
         vm.destinationName = '';
 
         vm.isMerge = isMerge;
+
+        siglusOrderableLotMapping.setOrderableGroups(orderableGroups);
 
         vm.$onInit = function() {
             $state.current.label = isMerge
