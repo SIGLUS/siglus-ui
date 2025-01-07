@@ -116,10 +116,21 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
 
     function prepareTestData() {
         state = $state.get('openlmis.stockmanagement.stockCardSummaries');
-        stockCardSummaries = [
-            new StockCardSummaryDataBuilder().build(),
-            new StockCardSummaryDataBuilder().build()
-        ];
+        stockCardSummaries = [ {
+            orderable: {
+                id: 'object-id-1',
+                href: 'http://localhost/api/api/orderables/object-id-1'
+            },
+            stockOnHand: 0,
+            stockCardDetails: [  ]
+        }, {
+            orderable: {
+                id: 'object-id-5',
+                href: 'http://localhost/api/api/orderables/object-id-5'
+            },
+            stockOnHand: 0,
+            stockCardDetails: [  ]
+        } ];
         filteredStockCardSummaries = stockCardSummaries;
         // SIGLUS-REFACTOR: starts here
         homeFacility = new MinimalFacilityDataBuilder().build();
