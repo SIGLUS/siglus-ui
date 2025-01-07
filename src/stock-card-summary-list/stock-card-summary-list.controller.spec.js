@@ -15,7 +15,7 @@
 
 describe('StockCardSummaryListController', function() {
     // SIGLUS-REFACTOR: add programs, facility
-    var $controller, $state, implMock, $stateParams, vm, stockCardSummaries, stateParams,
+    var $controller, $state, implMock, $stateParams, vm, filteredStockCardSummaries, stateParams,
         programs, facility, stockCardDataService, $scope, $rootScope;
     // SIGLUS-REFACTOR: ends here
 
@@ -40,7 +40,7 @@ describe('StockCardSummaryListController', function() {
             stockCardDataService = $injector.get('stockCardDataService');
         });
 
-        stockCardSummaries = [
+        filteredStockCardSummaries = [
             {
                 orderable: {
                     isKit: true,
@@ -71,7 +71,7 @@ describe('StockCardSummaryListController', function() {
         };
 
         vm = $controller('StockCardSummaryListController', {
-            stockCardSummaries: stockCardSummaries,
+            filteredStockCardSummaries: filteredStockCardSummaries,
             $stateParams: stateParams,
             user: {},
             programs: programs,
@@ -95,7 +95,7 @@ describe('StockCardSummaryListController', function() {
         it('should expose stockCardSummaries', function() {
             $stateParams.isArchivedProducts = false;
 
-            expect(vm.stockCardSummaries).toEqual([{
+            expect(vm.filteredStockCardSummaries).toEqual([{
                 orderable: {
                     isKit: true,
                     fullProductName: 'Levofloxacina; 100mg; Comp',
