@@ -78,7 +78,7 @@
                 </button>
             </td>
         </tr>
-        <tr ng-repeat="stockCardDetail in summary.stockCardDetails | orderBy:'lot?lot.lotCode:\'\''" ng-repeat-end>
+        <tr ng-repeat="stockCardDetail in summary.stockCardDetails" ng-repeat-end>
             <td>{{stockCardDetail.orderable.productCode}}</td>
             <td class="white-space-pre">{{stockCardDetail.orderable.fullProductName}}</td>
             <td>{{stockCardDetail.lot && !stockCardDetail.orderable.isKit ? stockCardDetail.lot.lotCode : ''}}</td>

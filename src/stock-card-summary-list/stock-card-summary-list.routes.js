@@ -86,8 +86,8 @@
                             loadingModalService.open();
                             return siglusProductOrderableGroupService.queryStockOnHandsInfo(paramsCopy)
                                 .then(
-                                    function(summary) {
-                                        _.forEach(summary, function(item) {
+                                    function(summaries) {
+                                        _.forEach(summaries, function(item) {
                                             _.forEach(item.stockCardDetails, function(stockCard) {
                                                 stockCard.occurredDate = dateUtils.toDate(stockCard.occurredDate);
                                                 if (stockCard.lot && stockCard.lot.expirationDate) {
@@ -97,9 +97,27 @@
                                             });
                                         });
 
+                                        // sort by Product code and expiration date
+                                        var sortedSummariesByProductCode = _.sortBy(summaries, function(summary) {
+                                            return _.get(summary, ['orderable', 'productCode'], '');
+                                        });
+                                        var summariesWithSortedLots =
+                                            _.map(sortedSummariesByProductCode, function(summary) {
+                                                return {
+                                                    orderable: summary.orderable,
+                                                    stockOnHand: summary.stockOnHand,
+                                                    stockCardDetails: _.sortBy(summary.stockCardDetails,
+                                                        function(stockCard) {
+                                                            var expirationDate =
+                                                                _.get(stockCard, ['lot', 'expirationDate'], new Date());
+                                                            return expirationDate.getTime();
+                                                        })
+                                                };
+                                            });
+
                                         stockCardDataService.setSummary(paramsCopy, {
-                                            content: summary,
-                                            totalElements: summary.length
+                                            content: summariesWithSortedLots,
+                                            totalElements: summariesWithSortedLots.length
                                         });
                                         return stockCardDataService.getDisplaySummary(stateParams);
                                     }
