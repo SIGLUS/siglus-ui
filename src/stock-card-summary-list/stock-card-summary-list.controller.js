@@ -28,17 +28,16 @@
         .module('stock-card-summary-list')
         .controller('StockCardSummaryListController', controller);
 
-    // SIGLUS-REFACTOR: add 'user', 'facility', 'programs', 'SIGLUS_TIME', '$q'
     controller.$inject = [
-        'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'stockCardSummaries',
+        'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'filteredStockCardSummaries',
         'user', 'facility', 'programs', '$scope', 'stockCardDataService', 'SIGLUS_TIME', '$q', 'localStorageService',
         '$window'
     ];
-    // SIGLUS-REFACTOR: ends here
-    //
-    function controller(loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, stockCardSummaries,
-                        user, facility, programs, $scope, stockCardDataService, SIGLUS_TIME, $q,
-                        localStorageService, $window) {
+    function controller(
+        loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, filteredStockCardSummaries,
+        user, facility, programs, $scope, stockCardDataService, SIGLUS_TIME, $q, localStorageService,
+        $window
+    ) {
         var vm = this;
 
         vm.$onInit = onInit;
@@ -79,19 +78,7 @@
             vm.keyword = $stateParams.keyword;
             vm.isArchivedProducts = $stateParams.isArchivedProducts;
             vm.isLocationManagement = $stateParams.isLocationManagement;
-            vm.stockCardSummaries = angular.copy(stockCardSummaries);
-            if (!vm.isArchivedProducts) {
-                _.forEach(vm.stockCardSummaries, function(stockCardSummary) {
-                    if (stockCardSummary.orderable.isKit) {
-                        stockCardSummary.occurredDate = _.get(stockCardSummary.stockCardDetails, [0, 'occurredDate']);
-                        stockCardSummary.stockCardDetails = [];
-                    }
-
-                    stockCardSummary.stockCardDetails = _.filter(stockCardSummary.stockCardDetails, function(item) {
-                        return item.stockOnHand !== 0;
-                    });
-                });
-            }
+            vm.stockCardSummaries = filteredStockCardSummaries;
 
             vm.programs = _.filter(programs, function(program) {
                 return program.code !== 'MMC' && program.code !== 'ML';
