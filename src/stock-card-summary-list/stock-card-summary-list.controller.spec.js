@@ -15,8 +15,8 @@
 
 describe('StockCardSummaryListController', function() {
     // SIGLUS-REFACTOR: add programs, facility
-    var $controller, $state, implMock, $stateParams, vm, filteredStockCardSummaries, stateParams,
-        programs, facility, stockCardDataService, $scope, $rootScope;
+    var $controller, $state, implMock, $stateParams, vm, stockCardSummaries, stateParams,
+        programs, facility, stockCardDataService, $scope, $rootScope, filteredStockCardSummaries;
     // SIGLUS-REFACTOR: ends here
 
     beforeEach(function() {
@@ -40,7 +40,7 @@ describe('StockCardSummaryListController', function() {
             stockCardDataService = $injector.get('stockCardDataService');
         });
 
-        filteredStockCardSummaries = [
+        stockCardSummaries = [
             {
                 orderable: {
                     isKit: true,
@@ -71,7 +71,8 @@ describe('StockCardSummaryListController', function() {
         };
 
         vm = $controller('StockCardSummaryListController', {
-            filteredStockCardSummaries: filteredStockCardSummaries,
+            stockCardSummaries: stockCardSummaries,
+            filteredStockCardSummaries: stockCardSummaries,
             $stateParams: stateParams,
             user: {},
             programs: programs,
@@ -95,15 +96,16 @@ describe('StockCardSummaryListController', function() {
         it('should expose stockCardSummaries', function() {
             $stateParams.isArchivedProducts = false;
 
-            expect(vm.filteredStockCardSummaries).toEqual([{
+            expect(vm.stockCardSummaries).toEqual([{
                 orderable: {
                     isKit: true,
                     fullProductName: 'Levofloxacina; 100mg; Comp',
                     id: 'c965909b-431b-4cfd-98ae-1bf475420560'
                 },
-                stockCardDetails: [],
-                stockOnHand: 300,
-                occurredDate: '2022-08-24'
+                stockCardDetails: [ {
+                    occurredDate: '2022-08-24'
+                } ],
+                stockOnHand: 300
             }]);
         });
     });

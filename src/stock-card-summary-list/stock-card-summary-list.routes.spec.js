@@ -19,7 +19,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
     var $q, $state, $rootScope, $location, $templateCache, state, STOCKMANAGEMENT_RIGHTS, authorizationService,
         stockCardRepositoryMock, StockCardSummaryDataBuilder, stockCardSummaries, facilityFactory,
         MinimalFacilityDataBuilder, homeFacility, UserDataBuilder, user, programService, stockProgramUtilService,
-        stockCardDataService, siglusProductOrderableGroupService;
+        stockCardDataService, siglusProductOrderableGroupService, filteredStockCardSummaries;
     // SIGLUS-REFACTOR: ends here
     /*eslint-enable */
 
@@ -120,6 +120,7 @@ describe('openlmis.stockmanagement.stockCardSummaries state', function() {
             new StockCardSummaryDataBuilder().build(),
             new StockCardSummaryDataBuilder().build()
         ];
+        filteredStockCardSummaries = stockCardSummaries;
         // SIGLUS-REFACTOR: starts here
         homeFacility = new MinimalFacilityDataBuilder().build();
         user = new UserDataBuilder()
