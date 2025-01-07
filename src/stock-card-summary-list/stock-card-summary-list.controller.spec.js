@@ -55,6 +55,7 @@ describe('StockCardSummaryListController', function() {
                 stockOnHand: 300
             }
         ];
+        filteredStockCardSummaries = stockCardSummaries;
 
         stateParams = {
             param: 'param'
@@ -72,7 +73,7 @@ describe('StockCardSummaryListController', function() {
 
         vm = $controller('StockCardSummaryListController', {
             stockCardSummaries: stockCardSummaries,
-            filteredStockCardSummaries: stockCardSummaries,
+            filteredStockCardSummaries: filteredStockCardSummaries,
             $stateParams: stateParams,
             user: {},
             programs: programs,
