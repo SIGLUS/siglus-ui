@@ -28,9 +28,9 @@
         .module('siglus-location-stock-on-hand')
         .service('prepareStockOnHandRowService', prepareStockOnHandRowService);
 
-    prepareStockOnHandRowService.$inject = [];
+    prepareStockOnHandRowService.$inject = ['moment'];
 
-    function prepareStockOnHandRowService() {
+    function prepareStockOnHandRowService(moment) {
 
         function prepareRowData(data) {
             var rowData = {
@@ -94,20 +94,34 @@
         }
 
         this.prepareLines = function(stockCardSummaries) {
+            // 1-level sort by product code
+            var sortedSummariesByProductCode = _.sortBy(stockCardSummaries, function(summary) {
+                return _.get(summary, ['orderable', 'productCode'], '');
+            });
+
             var lines = [];
-            _.forEach(stockCardSummaries, function(stockCardSummary) {
+            _.forEach(sortedSummariesByProductCode, function(stockCardSummary) {
                 lines.push(addGroupRow(stockCardSummary));
-                _.forEach(stockCardSummary.stockCardDetails, function(stockCard) {
+                // 2-level sort by expiration date
+                var sortedDetailsByExpirationDate = _.sortBy(stockCardSummary.stockCardDetails, function(stockCard) {
+                    var expirationDate = _.get(stockCard, ['lot', 'expirationDate'], '');
+                    return moment(expirationDate, 'YYYY-MM-DD');
+                });
+
+                _.forEach(sortedDetailsByExpirationDate, function(stockCard) {
                     if (!stockCard.orderable.isKit) {
                         lines.push(addLotRow(stockCard));
                     }
-                    _.forEach(stockCard.lotLocationSohDtoList, function(location) {
+                    // 3-level sort by location code
+                    var sortedItemsByLocationCode = _.sortBy(stockCard.lotLocationSohDtoList, function(location) {
+                        return _.get(location, ['locationCode'], '');
+                    });
+                    _.forEach(sortedItemsByLocationCode, function(location) {
                         lines.push(addLocationRow(location, stockCard));
                     });
                 });
             });
-            var result =  _.values(_.groupBy(lines, 'orderableId'));
-            return result;
+            return _.values(_.groupBy(lines, 'orderableId'));
         };
     }
 })();
