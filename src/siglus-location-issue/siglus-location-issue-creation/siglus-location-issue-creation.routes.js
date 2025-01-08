@@ -69,8 +69,11 @@
                         return $stateParams.initialDraftInfo;
                     }
                     var type = DRAFT_TYPE[$stateParams.moduleType][$stateParams.draftType];
-                    return siglusStockDispatchService.queryInitialDraftInfo($stateParams.programId,
-                        type, $stateParams.moduleType, facility.id);
+                    return siglusStockDispatchService.queryInitialDraftInfo(
+                        $stateParams.programId, type, $stateParams.moduleType, facility.id
+                    ).then(function(result) {
+                        return result[0];
+                    });
                 },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
