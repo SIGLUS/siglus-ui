@@ -82,8 +82,8 @@
             <td>{{stockCardDetail.orderable.productCode}}</td>
             <td class="white-space-pre">{{stockCardDetail.orderable.fullProductName}}</td>
             <td>{{stockCardDetail.lot && !stockCardDetail.orderable.isKit ? stockCardDetail.lot.lotCode : ''}}</td>
-            <td>{{stockCardDetail.lot && !stockCardDetail.orderable.isKit ? (stockCardDetail.lot.expirationDate | openlmisDate) : ''}}</td>
-            <td>{{stockCardDetail.occurredDate | openlmisDate}}</td>
+            <td>{{stockCardDetail.lot && !stockCardDetail.orderable.isKit ? vm.formatDate(stockCardDetail.lot.expirationDate) : ''}}</td>
+            <td>{{vm.formatDate(stockCardDetail.occurredDate)}}</td>
             <td class="text-align-right">{{stockCardDetail.stockOnHand}}</td>
             <!-- SIGLUS-REFACTOR: ends here -->
             <td>

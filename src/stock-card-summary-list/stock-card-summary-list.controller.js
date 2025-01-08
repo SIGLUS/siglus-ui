@@ -31,12 +31,12 @@
     controller.$inject = [
         'loadingModalService', '$state', '$stateParams', 'StockCardSummaryRepositoryImpl', 'filteredStockCardSummaries',
         'user', 'facility', 'programs', '$scope', 'stockCardDataService', 'SIGLUS_TIME', '$q', 'localStorageService',
-        '$window'
+        '$window', 'moment'
     ];
     function controller(
         loadingModalService, $state, $stateParams, StockCardSummaryRepositoryImpl, filteredStockCardSummaries,
         user, facility, programs, $scope, stockCardDataService, SIGLUS_TIME, $q, localStorageService,
-        $window
+        $window, moment
     ) {
         var vm = this;
 
@@ -277,5 +277,9 @@
             return deferred.promise;
         }
         // SIGLUS-REFACTOR: ends here
+
+        vm.formatDate = function(date) {
+            return moment(date).format('YYYY-MM-DD');
+        };
     }
 })();
