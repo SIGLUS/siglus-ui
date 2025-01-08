@@ -132,12 +132,16 @@
 
         function validateLocationDuplicatedForRemove(lineItems) {
             _.forEach(lineItems, function(item, index) {
-                item.$error.locationError = '';
+                item.$error = _.assign(item.$error, {
+                    locationError: ''
+                });
                 if (lineItems.length > 1 && index === 0) {
                     return;
                 }
                 if (_.isEmpty(item.location)) {
-                    item.$error.locationError = 'openlmisForm.required';
+                    item.$error = _.assign(item.$error, {
+                        locationError: 'openlmisForm.required'
+                    });
                     return;
                 }
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
@@ -145,7 +149,9 @@
                       && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
                 })) > 1;
                 if (hasDuplicated) {
-                    item.$error.locationError = 'issueLocationCreation.locationDuplicated';
+                    item.$error = _.assign(item.$error, {
+                        locationError: 'issueLocationCreation.locationDuplicated'
+                    });
                 }
             });
         }
@@ -167,7 +173,9 @@
                 validateLocationDuplicatedForRemove(lineItems);
             } else {
                 validateBase(lineItems, function(item) {
-                    item.$error.lotCodeError = '';
+                    item.$error = _.assign(item.$error, {
+                        lotCodeError: ''
+                    });
                     item.$hint.lotCodeHint = '';
                 });
             }
@@ -178,16 +186,18 @@
         };
 
         function validateLotExpired(item) {
-            if (!item.$error.lotCodeError && item.lot) {
+            if (!_.get(item, ['$errors', 'lotCodeError'], undefined) && item.lot) {
                 var lotExpiredDate = moment(item.lot.expirationDate);
                 if (moment().isAfter(lotExpiredDate)) {
-                    item.$error.lotCodeError = 'issueLocationCreation.lotExpired';
+                    item.$error = _.assign(item.$error, {
+                        lotCodeError: 'issueLocationCreation.lotExpired'
+                    });
                 }
             }
         }
 
         function validateNotFirstToExpire(item) {
-            if (!item.$error.lotCodeError) {
+            if (!_.get(item, ['$errors', 'lotCodeError'])) {
                 var lotOptions = _.filter(SiglusLocationCommonUtilsService.getLotList(item,
                     SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations)), function(lot) {
                     return moment().isBefore(moment(lot.expirationDate));
@@ -214,7 +224,9 @@
                 })) > 1;
 
                 if (hasDuplicated) {
-                    item.$error.lotCodeError = 'issueLocationCreation.lotDuplicated';
+                    item.$error = _.assign(item.$error, {
+                        lotCodeError: 'issueLocationCreation.lotDuplicated'
+                    });
                 } else {
                     callback(item, $index);
 
@@ -236,15 +248,21 @@
         }
 
         function validateQuantity(currentItem) {
-            currentItem.$error.quantityError = '';
+            currentItem.$error = _.assign(currentItem.$error, {
+                quantityError: ''
+            });
             var quantity = currentItem.quantity;
             if (!_.isNumber(currentItem.quantity) || currentItem.quantity === 0) {
-                currentItem.$error.quantityError = 'issueLocationCreation.inputPositiveNumber';
+                currentItem.$error = _.assign(currentItem.$error, {
+                    quantityError: 'issueLocationCreation.inputPositiveNumber'
+                });
                 return;
             }
             var orderableLocationLotsMap = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(locations);
             if (quantity > getSoh(currentItem, orderableLocationLotsMap)) {
-                currentItem.$error.quantityError = 'issueLocationCreation.moreThanSoh';
+                currentItem.$error = _.assign(currentItem.$error, {
+                    quantityError: 'issueLocationCreation.moreThanSoh'
+                });
             }
         }
 
@@ -253,14 +271,20 @@
         };
 
         function validateLot(lineItem, lineItems, index) {
-            lineItem.$error.lotCodeError = '';
+            lineItem.$error = _.assign(lineItem.$error, {
+                lotCodeError: ''
+            });
 
             validateBase(lineItems, function(item, $index) {
                 if (index === $index && _.isEmpty(item.lot)) {
-                    item.$error.lotCodeError = 'openlmisForm.required';
+                    item.$error = _.assign(item.$error, {
+                        lotCodeError: 'openlmisForm.required'
+                    });
                     return ;
                 }
-                item.$error.lotCodeError = '';
+                item.$error = _.assign(item.$error, {
+                    lotCodeError: ''
+                });
                 item.$hint.lotCodeHint = '';
             });
             lotOrLocationChangeEmitValidation(lineItem);
@@ -272,22 +296,32 @@
         };
 
         vm.changeLocation = function(lineItem, lineItems, index) {
-            lineItem.$error.locationError = '';
+            lineItem.$error = _.assign(lineItem.$error, {
+                locationError: ''
+            });
             if (lineItem.isKit) {
                 if (_.isEmpty(_.get(lineItem.location, 'locationCode'))) {
-                    lineItem.$error.locationError = 'openlmisForm.required';
+                    lineItem.$error = _.assign(lineItem.$error, {
+                        locationError: 'openlmisForm.required'
+                    });
                 }
                 validateLocationDuplicated(lineItems);
             } else {
                 validateBase(lineItems, function(item, $index) {
                     if (_.isEmpty(lineItem.location) && $index === index) {
-                        lineItem.$error.locationError = 'openlmisForm.required';
+                        lineItem.$error = _.assign(lineItem.$error, {
+                            locationError: 'openlmisForm.required'
+                        });
                     }
-                    item.$error.lotCodeError = '';
+                    item.$error = _.assign(item.$error, {
+                        lotCodeError: ''
+                    });
                     item.$hint.lotCodeHint = '';
 
                     if (_.isEmpty(item.lot) && $index === index) {
-                        item.$error.lotCodeError = 'openlmisForm.required';
+                        item.$error = _.assign(item.$error, {
+                            lotCodeError: 'openlmisForm.required'
+                        });
                     }
                 });
             }
@@ -302,16 +336,20 @@
 
         function validateLocationDuplicated(lineItems) {
             _.forEach(lineItems, function(item) {
-                if (item.$error.locationError === 'openlmisForm.required') {
+                if (_.get(item, ['$errors', 'locationError'], '') === 'openlmisForm.required') {
                     return;
                 }
-                item.$error.locationError = '';
+                item.$error = _.assign(item.$error, {
+                    locationError: ''
+                });
                 var hasDuplicated = _.size(_.filter(lineItems, function(data) {
                     return data.location
                       && _.get(item, ['location', 'locationCode']) === data.location.locationCode;
                 })) > 1;
                 if (hasDuplicated) {
-                    item.$error.locationError = 'issueLocationCreation.locationDuplicated';
+                    item.$error = _.assign(item.$error, {
+                        locationError: 'issueLocationCreation.locationDuplicated'
+                    });
                 }
             });
         }
@@ -448,13 +486,16 @@
 
         function validateRequired(lineItem) {
             if (_.isEmpty(lineItem.lot) && !lineItem.isKit) {
-                lineItem.$error.lotCodeError = 'openlmisForm.required';
+                lineItem.$error = _.assign(lineItem.$error, {
+                    lotCodeError: 'openlmisForm.required'
+                });
             }
 
             if (_.isEmpty(lineItem.location)) {
-                lineItem.$error.locationError = 'openlmisForm.required';
+                lineItem.$error = _.assign(lineItem.$error, {
+                    locationError: 'openlmisForm.required'
+                });
             }
-
         }
 
         function validateDuplicated(lineItems, item) {
@@ -464,7 +505,9 @@
             })) > 1;
 
             if (hasDuplicated) {
-                item.$error.lotCodeError = 'issueLocationCreation.lotDuplicated';
+                item.$error = _.assign(item.$error, {
+                    lotCodeError: 'issueLocationCreation.lotDuplicated'
+                });
             }
         }
 
@@ -475,7 +518,9 @@
             })) > 1;
 
             if (hasKitLocationDuplicated) {
-                item.$error.locationError = 'issueLocationCreation.locationDuplicated';
+                item.$error = _.assign(item.$error, {
+                    locationError: 'issueLocationCreation.locationDuplicated'
+                });
             }
         }
 

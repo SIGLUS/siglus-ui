@@ -114,7 +114,6 @@
             initViewModel();
             initStateParams();
             vm.isLocation = $stateParams.moduleType === 'locationManagement';
-            vm.isIssue = adjustmentType.state === 'issue';
         }
 
         function initViewModel() {
