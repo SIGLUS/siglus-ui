@@ -2639,6 +2639,7 @@
   "receiveLocationCreation.locationDuplicated": "a localização para receber o Kit não pode ser repetida, por favor insira uma nova localização.",
   "receiveLocationCreation.lotDuplicated": "a localização para receber o mesmo lote não pode ser repetidas, por favor insira uma nova localização.",
   "receiveLocationCreation.lotExpired": "Este lote expirou, não pode ser recebido.",
+  "receiveLocationView.receiveFromTitle": "Receber de ${destination} - ${document}",
   "stockAdjustmentCreation.location": "Localização",
   "locationShipmentView.inputPositiveNumber": "Por favor, insira  um número positivo ou ignore/remova o registo.",
   "stockAddProductsModalWithLocation.title": "Adicionar Produto à Localização ${locationCode}",

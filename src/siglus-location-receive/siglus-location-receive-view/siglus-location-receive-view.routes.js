@@ -17,7 +17,7 @@
     'use strict';
 
     angular
-        .module('siglus-stock-issue-view')
+        .module('siglus-location-receive')
         .config(routes);
 
     routes.$inject = ['$stateProvider', 'STOCKMANAGEMENT_RIGHTS', 'SEARCH_OPTIONS', 'ADJUSTMENT_TYPE'];
@@ -27,8 +27,9 @@
             url: '/:draftId/view?page&size&keyword',
             views: {
                 '@openlmis': {
-                    controller: 'SiglusStockIssueViewController',
-                    templateUrl: 'siglus-stock-issue-view/siglus-issue-view.html',
+                    controller: 'SiglusLocationReceiveViewController',
+                    templateUrl: 'siglus-location-receive/siglus-location-receive-view/' +
+                        'siglus-location-receive-view.html',
                     controllerAs: 'vm'
                 }
             },
@@ -54,7 +55,10 @@
                         return $stateParams.initialDraftInfo;
                     }
 
-                    return siglusStockIssueLocationService.queryInitialDraftInfo($stateParams.programId, type);
+                    return siglusStockIssueLocationService.queryInitialDraftInfo($stateParams.programId, type)
+                        .then(function(result) {
+                            return result[0];
+                        });
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.RECEIVE;

@@ -1,5 +1,7 @@
 {
   "receiveLocationCreation.locationDuplicated": "The locations to receive Kit cannot be repeated, please enter a new one.",
   "receiveLocationCreation.lotDuplicated": "The locations to receive the same lot cannot be repeated, please enter a new one.",
-  "receiveLocationCreation.lotExpired": "This lot has expired, it cannot be received."
+  "receiveLocationCreation.lotExpired": "This lot has expired, it cannot be received.",
+
+  "receiveLocationView.receiveFromTitle": "Receive from ${destination} - ${document}"
 }

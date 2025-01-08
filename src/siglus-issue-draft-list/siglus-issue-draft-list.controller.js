@@ -191,27 +191,24 @@
         };
 
         vm.proceed = function(draft) {
-            if (draft.status === 'NOT_YET_STARTED') {
-                siglusStockDispatchService.updateDraftStatus(draft.id, user.username, $stateParams.moduleType)
-                    .then(function() {
-                        $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.creation', {
-                            programId: programId,
-                            draftId: _.get(draft, 'id', ''),
-                            initialDraftInfo: vm.initialDraftInfo,
-                            initialDraftId: _.get(vm.initialDraftInfo, 'id'),
-                            facility: facility
-                        });
-                    });
-                return;
-            }
-
-            $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.creation', {
+            var stateParams = {
                 programId: programId,
                 draftId: _.get(draft, 'id', ''),
                 initialDraftInfo: vm.initialDraftInfo,
                 initialDraftId: _.get(vm.initialDraftInfo, 'id'),
                 facility: facility
-            });
+            };
+            if (draft.status === 'NOT_YET_STARTED') {
+                siglusStockDispatchService.updateDraftStatus(draft.id, user.username, $stateParams.moduleType)
+                    .then(function() {
+                        $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.creation',
+                            stateParams);
+                    });
+                return;
+            }
+
+            $state.go('openlmis.' + $stateParams.moduleType + '.' + vm.draftType + '.draft.creation',
+                stateParams);
         };
 
         vm.view = function(draft) {

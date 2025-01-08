@@ -25,7 +25,8 @@
    */
     angular.module('siglus-issue-draft-list', [
         'siglus-alert-confirm-modal',
-        'siglus-stock-issue-view'
+        'siglus-stock-issue-view',
+        'siglus-location-receive'
     ]);
 
 })();
