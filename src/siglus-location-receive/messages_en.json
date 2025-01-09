@@ -4,5 +4,5 @@
   "receiveLocationCreation.lotExpired": "This lot has expired, it cannot be received.",
   "receiveLocationCreation.receiveQuantity": "Receive Quantity",
 
-  "receiveLocationView.receiveFromTitle": "Receive from ${destination} - ${document}"
+  "receiveView.receiveFromTitle": "Receive from ${destination} - ${document}"
 }

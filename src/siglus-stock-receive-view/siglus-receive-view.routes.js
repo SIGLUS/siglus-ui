@@ -28,8 +28,8 @@
             views: {
                 '@openlmis': {
                     // SIGLUS-REFACTOR: starts here
-                    controller: 'SiglusStockIssueViewController',
-                    templateUrl: 'siglus-stock-issue-view/siglus-issue-view.html',
+                    controller: 'SiglusStockReceiveViewController',
+                    templateUrl: 'siglus-stock-receive-view/siglus-receive-view.html',
                     controllerAs: 'vm'
                 }
             },
@@ -49,9 +49,11 @@
                     if ($stateParams.initialDraftInfo) {
                         return $stateParams.initialDraftInfo;
                     }
-                    return siglusStockIssueService.queryInitialDraftInfo($stateParams.programId,
-                        facility.id,
-                        ADJUSTMENT_TYPE.RECEIVE.state);
+                    return siglusStockIssueService.queryInitialDraftInfo(
+                        $stateParams.programId, facility.id, ADJUSTMENT_TYPE.RECEIVE.state
+                    ).then(function(result) {
+                        return result[0];
+                    });
                 },
                 adjustmentType: function() {
                     return ADJUSTMENT_TYPE.RECEIVE;
