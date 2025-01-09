@@ -72,7 +72,7 @@
                     return siglusStockDispatchService.queryInitialDraftInfo(
                         $stateParams.programId, type, $stateParams.moduleType, facility.id
                     ).then(function(result) {
-                        return result;
+                        return result[0];
                     });
                 },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
