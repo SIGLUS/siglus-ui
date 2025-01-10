@@ -418,9 +418,14 @@
             var productsInOrderIdList = _.map(vm.order.orderLineItems, function(lineItem) {
                 return _.get(lineItem, ['orderable', 'id']);
             });
-            var availableProductsCanAdd =  _.filter(vm.order.availableProducts, function(product) {
-                return !productsInOrderIdList.includes(product.id);
-            });
+            var availableProductsCanAdd = _.sortBy(
+                _.filter(vm.order.availableProducts, function(product) {
+                    return !productsInOrderIdList.includes(product.id);
+                }),
+                function(product) {
+                    return _.get(product, ['productCode'], '');
+                }
+            );
 
             if (availableProductsCanAdd.length === 0) {
                 alertService.error(
