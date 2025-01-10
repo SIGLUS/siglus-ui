@@ -69,7 +69,7 @@
           <th ng-if="vm.canEdit">{{'proofOfDeliveryView.actions' | message}}</th>
         </tr>
       </thead>
-      <tbody ng-repeat="orderLineItem in vm.orderLineItems | orderBy : 'orderable.fullProductName'">
+      <tbody ng-repeat="orderLineItem in vm.orderLineItems">
         <tr class="is-secondary">
           <td>{{orderLineItem.orderable.productCode}}</td>
           <td class="white-space-pre">{{orderLineItem.orderable.fullProductName}}</td>
