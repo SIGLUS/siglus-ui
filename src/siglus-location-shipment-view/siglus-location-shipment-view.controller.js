@@ -483,7 +483,7 @@
 
         function selectProducts(availableProducts) {
             var decoratedAvailableProducts = new OpenlmisArrayDecorator(availableProducts.products);
-            decoratedAvailableProducts.sortBy('fullProductName');
+            decoratedAvailableProducts.sortBy('productCode');
 
             if (!availableProducts.products.length) {
                 alertService.error(

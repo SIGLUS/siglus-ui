@@ -117,9 +117,13 @@
                         return shipmentViewService.getSuggestedQuantity(id);
                     },
                     displayTableLineItems: function($stateParams, shipment, order, locations, prepareRowDataService) {
-                        return $stateParams.displayTableLineItems
-                            ? $stateParams.displayTableLineItems
-                            : prepareRowDataService.prepareGroupLineItems(shipment, locations, order);
+                        if ($stateParams.displayTableLineItems) {
+                            return $stateParams.displayTableLineItems;
+                        }
+                        var lineItems = prepareRowDataService.prepareGroupLineItems(shipment, locations, order);
+                        return _.sortBy(lineItems, function(itemGroup) {
+                            return _.get(itemGroup, [0, 'productCode'], '');
+                        });
                     },
                     filterDisplayTableLineItems: function(paginationService, displayTableLineItems, $stateParams,
                         siglusLocationCommonFilterService) {
