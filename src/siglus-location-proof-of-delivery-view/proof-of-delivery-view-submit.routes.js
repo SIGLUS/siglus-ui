@@ -77,7 +77,9 @@
                                             : '';
                                     });
                                 });
-                                return result;
+                                return _.sortBy(result, function(product) {
+                                    return _.get(product, ['orderable', 'productCode'], '');
+                                });
                             });
                         },
                         canEdit: function($stateParams, authorizationService,
