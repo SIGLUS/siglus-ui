@@ -591,6 +591,11 @@
                     hidden: '!true'
                 }
             );
+            if (requisition.patientLineItems) {
+                requisition.patientLineItems = requisition.patientLineItems.filter(function(p) {
+                    return p.name !== 'newSection6';
+                });
+            }
         }
 
         function getIdempotencyKey(config) {

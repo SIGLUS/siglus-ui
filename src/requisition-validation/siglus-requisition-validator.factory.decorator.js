@@ -75,7 +75,7 @@
                 requisition.$error = messageService.get('requisitionView.rnrHasErrors');
             }
             isValid = isValid && !areAllLineItemsSkipped(requisition);
-            isValid = isValid && validateTotalEqualOfRegimen(requisition);
+            // isValid = isValid && validateTotalEqualOfRegimen(requisition);
             isValid = isValid && !isUsageInformationEmpty(requisition);
             isValid = isValid && !isTestConsumptionEmpty(requisition);
             isValid = isValid && !isTotalWithoutServices(requisition);
@@ -174,7 +174,9 @@
                         return p.name !== 'newSection9' && p.name !== 'newSection6' && p.name !== 'newSection5';
                     }));
                 }
-                return validateBasicLineItems(requisition.patientLineItems);
+                return validateBasicLineItems(requisition.patientLineItems.filter(function(p) {
+                    return p.name !== 'newSection6';
+                }));
             }
             return true;
         }

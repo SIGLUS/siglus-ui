@@ -113,13 +113,20 @@
                 summerySection.columns
             );
             var patients = patientTemplateFactory();
-            vm.patientList = patients.normalPatientList;
+            vm.patientList = ignoreSection6(patients.normalPatientList);
             vm.mergedPatientMap = patients.mergedPatientMap;
             vm.getValueByKey = getValueByKey;
             vm.getHistoryComments = getHistoryComments;
             vm.getSignaure = getSignaure;
             vm.patientTemplateFactory = patientTemplateFactory;
             calculatePatientValues();
+        }
+
+        function ignoreSection6(patientList) {
+            // Ticket#729 newSection6 Tipo de Dispensa - Total de pacientes com tratamento
+            return patientList.filter(function(p) {
+                return p.name !== 'newSection6';
+            });
         }
 
         function calculatePatientValues() {
