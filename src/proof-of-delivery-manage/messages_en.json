@@ -5,8 +5,10 @@
     "proofOfDeliveryManage.orderDate": "Order Date",
     "proofOfDeliveryManage.shipDate": "Voucher Date",
     "proofOfDeliveryManage.orderNumber": "Order No.",
+    "proofOfDeliveryManage.voucherNumber": "Voucher No.",
     "proofOfDeliveryManage.issueVoucherNumber": "Issue Voucher Number",
     "proofOfDeliveryManage.orderStatus": "Order Status",
+    "proofOfDeliveryManage.voucherStatus": "Voucher Status",
     "proofOfDeliveryManage.supplyingDepot": "Supplying Depot",
     "proofOfDeliveryManage.invalidForm": "This form is invalid"
 }

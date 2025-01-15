@@ -8,6 +8,11 @@
   "proofOfDeliveryView.preparedBy":"Prepared By",
   "proofOfDeliveryView.conferredBy":"Conferred By",
 
+  "proofOfDeliveryView.orderNumber": "Order No.",
+  "proofOfDeliveryView.voucherNumber": "Voucher No.",
+  "proofOfDeliveryView.orderStatus": "Order Status",
+  "proofOfDeliveryView.voucherStatus": "Voucher Status",
+
   "proofOfDeliveryView.dosage": "Dosage",
   "proofOfDeliveryView.designation": "Designation",
   "proofOfDeliveryView.expiringDate": "Expiring Date",
@@ -32,7 +37,6 @@
   "proofOfDeliveryView.duplicateLocation": "The locations to receive the same lot cannot be repeated, please enter a new one.",
   "proofOfDeliveryView.duplicateLocationForKit": "The locations to receive Kit cannot be repeated, please enter a new one.",
   "proofOfDeliveryView.proofOfDeliveryHasBeenSubmitted": "Submit Successfully!",
-
 
   "stockPhysicalInventoryDraft.mergeApprove": "Merge"
 }
