@@ -55,10 +55,10 @@
         <tbody>
             <tr ng-repeat="order in vm.pods | orderBy:'-createdDate' ">
                 <td>
-                    {{order.orderCode}}
+                    {{vm.updateOrderNumber(order.orderCode, order.facility)}}
                     <br ng-if="order.issueVoucherNumber">
                     <br ng-if="order.issueVoucherNumber">
-                    {{order.issueVoucherNumber ? order.issueVoucherNumber :''}}
+                    {{order.issueVoucherNumber ? vm.updateVoucherNumber(order.issueVoucherNumber, order.facility) :''}}
                 </td>
                 <!-- SIGLUS-REFACTOR: starts here -->
                 <td>{{order.status | orderStatus}}</td>

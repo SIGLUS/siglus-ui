@@ -34,34 +34,16 @@
         'proofOfDeliveryService', 'fulfillingLineItemFactory', '$q', 'openlmisDateFilter',
         'stockReasonsFactory', 'facilityFactory', 'siglusInitialProofOfDeliveryService',
         'messageService', 'SIGLUS_TIME', 'siglusDownloadLoadingModalService', 'facility',
-        'orderablesPrice', 'moment', 'SiglusIssueOrReceiveReportService'
+        'orderablesPrice', 'moment', 'SiglusIssueOrReceiveReportService', 'orderNumberUpdateService'
     ];
 
     function controller(
-        proofOfDeliveryManageService,
-        $state,
-        loadingModalService,
-        notificationService,
-        pods,
-        $stateParams,
-        programs,
-        requestingFacilities,
-        supplyingFacilities,
-        ProofOfDeliveryPrinter,
-        proofOfDeliveryService,
-        fulfillingLineItemFactory,
-        $q,
-        openlmisDateFilter,
-        stockReasonsFactory,
-        facilityFactory,
-        siglusInitialProofOfDeliveryService,
-        messageService,
-        SIGLUS_TIME,
-        siglusDownloadLoadingModalService,
-        facility,
-        orderablesPrice,
-        moment,
-        SiglusIssueOrReceiveReportService
+        proofOfDeliveryManageService, $state, loadingModalService, notificationService, pods,
+        $stateParams, programs, requestingFacilities, supplyingFacilities, ProofOfDeliveryPrinter,
+        proofOfDeliveryService, fulfillingLineItemFactory, $q, openlmisDateFilter,
+        stockReasonsFactory, facilityFactory, siglusInitialProofOfDeliveryService,
+        messageService, SIGLUS_TIME, siglusDownloadLoadingModalService, facility,
+        orderablesPrice, moment, SiglusIssueOrReceiveReportService, orderNumberUpdateService
     ) {
 
         var vm = this;
@@ -75,6 +57,9 @@
             trailing: false
         });
         vm.ProofOfDeliveryPrinter = ProofOfDeliveryPrinter;
+        vm.updateOrderNumber = updateOrderNumber;
+        vm.updateVoucherNumber = updateVoucherNumber;
+
         /**
          * @ngdoc property
          * @propertyOf proof-of-delivery-manage.controller:ProofOfDeliveryManageController
@@ -475,7 +460,21 @@
             return messageService.get('proofOfDeliveryManage.start');
 
         }
+
+        function updateOrderNumber(orderNumber, orderFacility) {
+            return orderNumberUpdateService.updateOrderNumber(
+                orderNumber, _.get(orderFacility, ['type', 'code'], '')
+            );
+        }
+
+        function updateVoucherNumber(orderNumber, orderFacility) {
+            return orderNumberUpdateService.updateVoucherNumber(
+                orderNumber, _.get(orderFacility, ['type', 'code'], '')
+            );
+        }
+
     }
+
     function getName(object) {
         return object ? object.name : undefined;
     }
