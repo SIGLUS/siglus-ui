@@ -37,7 +37,7 @@
         'confirmDiscardService', 'proofOfDeliveryManageService',
         'facilityFactory', 'user', 'moment', 'facility', 'locations', 'areaLocationInfo',
         'addAndRemoveLineItemService', 'SiglusLocationCommonUtilsService', 'alertService',
-        'printInfo', 'siglusSignatureWithLimitDateModalService'
+        'printInfo', 'siglusSignatureWithLimitDateModalService', 'orderNumberUpdateService'
     ];
 
     function ProofOfDeliveryViewControllerWithLocation(
@@ -48,7 +48,7 @@
         confirmDiscardService, proofOfDeliveryManageService,
         facilityFactory, user, moment, facility, locations, areaLocationInfo,
         addAndRemoveLineItemService, SiglusLocationCommonUtilsService, alertService,
-        printInfo, siglusSignatureWithLimitDateModalService
+        printInfo, siglusSignatureWithLimitDateModalService, orderNumberUpdateService
     ) {
 
         if (canEdit) {
@@ -185,7 +185,9 @@
         function onInit() {
 
             vm.order = order;
-            // SIGLUS-REFACTOR: starts here
+            vm.updatedOrderNumber = orderNumberUpdateService.updateOrderNumber(
+                order.orderCode, _.get(order, ['facility', 'type', 'code'], '')
+            );
             vm.reasons = _.filter(reasons, function(reason) {
                 return _.contains(reason.tags, 'rejection');
             });
@@ -198,14 +200,12 @@
             vm.newlyAddedLotReason = vm.excessReasons.find(function(reason) {
                 return reason.name === NEWLY_ADDED_LOT_REASON_NAME;
             }, {});
-            // SIGLUS-REFACTOR: ends here
             vm.proofOfDelivery = proofOfDelivery;
             vm.orderLineItems = orderLineItems;
             vm.displayOrderLineItems = wrapGroupedLineItemsWithArray();
             vm.vvmStatuses = VVM_STATUS;
             vm.showVvmColumn = proofOfDelivery.hasProductsUseVvmStatus();
             vm.canEdit = canEdit;
-            vm.orderCode = order.orderCode;
             vm.facility = facility;
             vm.locations = locations;
             vm.areaLocationInfo = areaLocationInfo;
