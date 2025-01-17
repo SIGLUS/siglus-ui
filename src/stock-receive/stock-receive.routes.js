@@ -31,9 +31,9 @@
             showInNavigation: true,
             views: {
                 '@openlmis': {
-                    controller: 'StockIssueInitialController',
+                    controller: 'StockReceiveInitialController',
                     controllerAs: 'vm',
-                    templateUrl: 'stock-issue/stock-issue-initial.html'
+                    templateUrl: 'stock-receive/stock-receive-initial.html'
                 }
             },
             accessRights: [STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST],

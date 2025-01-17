@@ -75,6 +75,11 @@
             receive: 'stockIssueInitialModal.inputSource'
         };
 
+        vm.documentNumberPrefix = {
+            issue: 'GR:',
+            receive: 'GRE:'
+        };
+
         vm.submitForm = function() {
             if (vm.hasError) {
                 modalDeferred.resolve(true);

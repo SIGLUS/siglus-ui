@@ -31,7 +31,12 @@
                     </fieldset>
                     <fieldset style="margin-bottom: 6px;">
                         <label for="documentationNo">{{'stockIssueInitialModal.documentationNo' | message}}</label>
-                        <input type="text" ng-model="vm.documentNumber" id="documentationNo" required/>
+                        <div style="display: flex; flex-direction: row; align-items: center">
+                            <span style="padding-top: 10px; padding-bottom: 10px; padding-right: 10px">
+                                {{vm.documentNumberPrefix[vm.draftType]}}
+                            </span>
+                            <input type="text" ng-model="vm.documentNumber" id="documentationNo" required/>
+                        </div>
                     </fieldset>
                 </form>
             </div>
