@@ -28,13 +28,17 @@
         .module('siglus-proof-of-delivery-draft-list')
         .controller('SiglusPODDraftListController', controller);
 
-    controller.$inject = ['$scope', '$stateParams', '$state',
-        'alertService', 'loadingModalService',
-        'alertConfirmModalService', 'proofOfDeliveryManageService', 'programName', 'facility'];
+    controller.$inject = [
+        '$scope', '$stateParams', '$state', 'alertService', 'loadingModalService',
+        'alertConfirmModalService', 'proofOfDeliveryManageService', 'programName', 'facility',
+        'orderNumberUpdateService'
+    ];
 
-    function controller($scope, $stateParams, $state,
-                        alertService, loadingModalService,
-                        alertConfirmModalService, proofOfDeliveryManageService, programName, facility)  {
+    function controller(
+        $scope, $stateParams, $state, alertService, loadingModalService,
+        alertConfirmModalService, proofOfDeliveryManageService, programName, facility,
+        orderNumberUpdateService
+    )  {
         var vm = this;
         vm.$onInit = onInit;
 
@@ -151,6 +155,9 @@
             loadingModalService.close();
             vm.programName = programName;
             vm.orderCode = $stateParams.orderCode;
+            vm.updatedOrderNumber = orderNumberUpdateService.updateOrderNumber(
+                $stateParams.orderCode, _.get(facility, ['type', 'code'], '')
+            );
             $state.current.label = programName + '-' + $stateParams.orderCode;
             vm.facilityName = _.get(facility, 'name');
             vm.refreshDraftList();

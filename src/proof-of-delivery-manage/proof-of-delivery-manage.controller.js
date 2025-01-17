@@ -289,7 +289,8 @@
                 });
             } else {
                 proofOfDeliveryManageService.getByOrderId(order.id).then(function(pod) {
-                    siglusInitialProofOfDeliveryService.show(order.id, pod.id, order.orderCode);
+                    var updatedOrderNumber = vm.updateOrderNumber(order.orderCode, order.facility);
+                    siglusInitialProofOfDeliveryService.show(order.id, pod.id, updatedOrderNumber);
                 });
             }
         }
