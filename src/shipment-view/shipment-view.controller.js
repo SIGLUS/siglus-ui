@@ -264,6 +264,7 @@
                     } else {
                         notificationService.error('shipmentView.failedToSaveDraft');
                     }
+                    return $q.reject(error);
                 });
         }
 

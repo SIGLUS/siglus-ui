@@ -24,7 +24,8 @@
    * Provides stock issue state and controller.
    */
     angular.module('siglus-location-issue-creation', [
-        'siglus-issue-or-receive-report'
+        'siglus-issue-or-receive-report',
+        'stock-orderable-group'
     ]);
 
 })();
