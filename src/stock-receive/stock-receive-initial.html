@@ -18,7 +18,7 @@
             <td style="min-width: 160px;" >{{vm.key(draft.hasExistInitialDraft ? 'draft' : 'notStarted') | message}}</td>
             <!-- SIGLUS-REFACTOR: change adjustment/issue/receive entry page-->
             <td>{{draft.destinationName || draft.sourceName}}</td>
-            <td>GRE:{{draft.documentNumber}}</td>
+            <td>{{draft.documentNumber}}</td>
             <td ng-if="draft.hasExistInitialDraft">
 
                 <input

@@ -99,7 +99,7 @@
                     programId: programId,
                     facilityId: facilityId,
                     draftType: DRAFT_TYPE[moduleType][draftType],
-                    documentNumber: vm.documentNumber,
+                    documentNumber: vm.documentNumberPrefix[vm.draftType] + vm.documentNumber,
                     locationFreeText: vm.locationFreeText
                 }, formInfo[draftType]), moduleType).then(function(initialDraftInfo) {
                     modalDeferred.resolve();

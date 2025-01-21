@@ -311,6 +311,7 @@
             var orderId = order.id;
             vm.orderCode = order.orderCode;
             siglusDownloadLoadingModalService.open();
+            var isTop = isTopLevel(order);
             stockReasonsFactory.getReasons(order.program.id, order.facility.type.id)
                 .then(function(reasons) {
                     vm.reasons = reasons;
@@ -323,7 +324,7 @@
                                     )
                                         .then(function(orderLineItems) {
                                             var momentNow = moment();
-                                            var numberAndFileName = generateNumberAndFileName(order, podInfo);
+                                            var numberAndFileName = generateNumberAndFileName(order, podInfo, isTop);
                                             var lineItemsInPDF = buildLineItemsForPDF(orderLineItems);
 
                                             setPDFInfo(
@@ -414,7 +415,10 @@
             }, []);
         }
 
-        function generateNumberAndFileName(order, podInfo) {
+        function isTopLevel(order) {
+            return ['AI', 'DPM', 'HC'].includes(_.get(order.requestingFacility, ['type', 'code']));
+        }
+        function generateNumberAndFileName(order, podInfo, isTop) {
             var fileName = '';
             var documentNumber = '';
             var podNumber = '';
@@ -430,14 +434,25 @@
                 }
             } else {
                 if (order.status === 'SHIPPED') {
-                    fileName =  order.orderCode.replace(/^OF/, 'GR').replaceAll('/', '_');
-                    documentNumber = order.orderCode.replace(/^OF/, 'GR');
+                    if (isTop) {
+                        fileName =  order.orderCode.replace(/^OF/, 'GR').replaceAll('/', '_');
+                        documentNumber = order.orderCode.replace(/^OF./, '');
+                    } else {
+                        fileName =  order.orderCode.replace(/^OF/, 'GR').replaceAll('/', '_');
+                        documentNumber = order.orderCode.replace(/^OF/, 'GR');
+                    }
                 }
 
                 if (order.status === 'RECEIVED') {
-                    fileName =  order.orderCode.replace(/^OF/, 'RR').replaceAll('/', '_');
-                    documentNumber = order.orderCode.replace(/^OF/, 'GR');
-                    podNumber = order.orderCode.replace(/^OF/, 'RR');
+                    if (isTop) {
+                        fileName =  order.orderCode.replace(/^OF/, 'RR').replaceAll('/', '_');
+                        documentNumber = order.orderCode.replace(/^OF./, '');
+                        podNumber = order.orderCode.replace(/^OF/, 'RR');
+                    } else {
+                        fileName =  order.orderCode.replace(/^OF/, 'RR').replaceAll('/', '_');
+                        documentNumber = order.orderCode.replace(/^OF/, 'GR');
+                        podNumber = order.orderCode.replace(/^OF/, 'RR');
+                    }
                 }
             }
             return {

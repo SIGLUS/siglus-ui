@@ -50,14 +50,16 @@
                 <td>{{lineItem.isMainGroup ? lineItem.productCode : ''}}</td>
                 <td class="white-space-pre">{{lineItem.isMainGroup ? lineItem.productName : ''}}</td>
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
-                <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
-                    <siglus-stock-input-select
-                            line-items="lineItems"
-                            line-item="lineItem"
-                            index="index"
-                            hide-expired-popover="true"
-                            enable-input="true">
-                    </siglus-stock-input-select>
+                <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)"
+                    openlmis-invalid="{{lineItem.$error.lotCodeError || '' | message}}"
+                    popover="{{!lineItem.$error.lotCodeError && lineItem.$hint.lotCodeHint || '' | message}}">
+                    <select
+                            ng-model="lineItem.lot"
+                            no-auto-select="true"
+                            ng-options=" (lot | siglusExpiredLotCode) for lot in vm.getLotList(lineItem) track by lot.lotCode"
+                            ng-change="vm.changeLot(lineItem, lineItems, index);$event.blur()"
+                    >
+                    </select>
                 </td>
                 <td ng-if="vm.showEmptyBlockWithKit(lineItem, lineItems, index)"></td>
                 <td ng-if="!vm.showEmptyBlockWithKit(lineItem, lineItems, index)">
