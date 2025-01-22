@@ -459,7 +459,7 @@
                 fileName: fileName,
                 documentNumber: documentNumber,
                 podNumber: podNumber,
-                issueVoucherNumber: order.issueVoucherNumber ? order.issueVoucherNumber : undefined
+                issueVoucherNumber: order.issueVoucherNumber ? 'GR.' + order.issueVoucherNumber : undefined
             };
         }
 
