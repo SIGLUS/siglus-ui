@@ -103,6 +103,15 @@
         };
         // #105: ends here
 
+        function getDocLine1(lineItem) {
+            return lineItem.documentNumber ? lineItem.documentNumber.split('<br>')[0] : lineItem.documentNumber;
+        }
+        function getDocLine2(lineItem) {
+            return lineItem.documentNumber ? lineItem.documentNumber.split('<br>')[1] : undefined;
+        }
+
+        vm.getDocLine1 = getDocLine1;
+        vm.getDocLine2 = getDocLine2;
         function onInit() {
             $state.current.label = stockCard.productName;
             vm.stockCard = stockCard;

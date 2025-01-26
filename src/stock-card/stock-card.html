@@ -81,7 +81,7 @@
             <!-- SIGLUS-REFACTOR: starts here -->
             <td class="text-align-right">{{lineItem.quantity}}</td>
             <td class="text-align-right">{{lineItem.stockOnHand}}</td>
-            <td>{{lineItem.documentNumber}}</td>
+            <td>{{vm.getDocLine1(lineItem)}}<br>{{vm.getDocLine2(lineItem)}}</td>
             <!-- SIGLUS-REFACTOR: ends here -->
             <td>{{lineItem.signature}}</td>
         </tr>

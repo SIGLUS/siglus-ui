@@ -43,6 +43,8 @@
 
         vm.$onInit = onInit;
         vm.getReason = getReason;
+        vm.getDocLine1 = getDocLine1;
+        vm.getDocLine2 = getDocLine2;
         vm.stockCard = [];
         vm.displayedLineItems = [];
         // SIGLUS-REFACTOR: starts here
@@ -192,6 +194,13 @@
                 stockCardDataService.clear();
             }
         });
+
+        function getDocLine1(lineItem) {
+            return lineItem.documentNumber ? lineItem.documentNumber.split('<br>')[0] : lineItem.documentNumber;
+        }
+        function getDocLine2(lineItem) {
+            return lineItem.documentNumber ? lineItem.documentNumber.split('<br>')[1] : undefined;
+        }
         // SIGLUS-REFACTOR: ends here
 
     }

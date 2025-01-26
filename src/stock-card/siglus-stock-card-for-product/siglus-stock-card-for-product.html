@@ -62,7 +62,7 @@
             </td>
             <td class="text-align-right">{{lineItem.movementQuantity}}</td>
             <td class="text-align-right">{{lineItem.productSoh}}</td>
-            <td>{{lineItem.documentNumber}}</td>
+            <td>{{vm.getDocLine1(lineItem)}}<br>{{vm.getDocLine2(lineItem)}}</td>
             <td>{{lineItem.signature}}</td>
         </tr>
         </tbody>
