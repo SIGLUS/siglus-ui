@@ -574,7 +574,8 @@
                     lotCode: _.get(item, ['lot', 'lotCode']),
                     expirationDate: _.get(item, ['lot', 'expirationDate']),
                     quantity: item.quantity,
-                    price: orderablesPrice.data[_.get(item, ['orderable', 'id'])] || null
+                    price: orderablesPrice.data[_.get(item, ['orderable', 'id'])] || null,
+                    documentationNo: _.get(item, ['documentationNo'], '')
                 };
             });
         }
@@ -615,6 +616,7 @@
                 type: type,
                 addedLineItems: lineItems,
                 documentNumber: documentNumber,
+                documentNumberWithItemsNo: buildDocumentNumberWithItemsNo(lineItems),
                 numberN: documentNumber,
                 supplier: type === ReportService.REPORT_TYPE.RECEIVE ? null : vm.facility.name,
                 supplierDistrict: vm.facility.geographicZone.name,
@@ -632,6 +634,19 @@
                 nowTime: momentNow.format('D MMM YYYY h:mm:ss A'),
                 isSupply: true
             };
+        }
+
+        function buildDocumentNumberWithItemsNo(documentNumber, lineItems) {
+            var lineItemsNo = lineItems.map(function(lineItem) {
+                return lineItem.documentationNo;
+            });
+            var validLineItemsNo = lineItemsNo.filter(function(documentation) {
+                return documentation.length > 0;
+            });
+            if (validLineItemsNo.length > 0) {
+                return documentNumber + '_' + validLineItemsNo.join('_');
+            }
+            return documentNumber;
         }
 
         /**
