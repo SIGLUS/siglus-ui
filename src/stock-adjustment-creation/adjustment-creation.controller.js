@@ -616,7 +616,7 @@
                 type: type,
                 addedLineItems: lineItems,
                 documentNumber: documentNumber,
-                documentNumberWithItemsNo: buildDocumentNumberWithItemsNo(lineItems),
+                documentNumberWithItemsNo: buildDocumentNumberWithItemsNo(documentNumber, lineItems),
                 numberN: documentNumber,
                 supplier: type === ReportService.REPORT_TYPE.RECEIVE ? null : vm.facility.name,
                 supplierDistrict: vm.facility.geographicZone.name,
