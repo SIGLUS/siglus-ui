@@ -195,8 +195,11 @@
         }
         function getKitStockOnHand(item) {
             var mapKit = SiglusLocationCommonUtilsService.getOrderableLocationLotsMap(item.locationsInfo);
-            return _.get(mapKit[item.orderableId],
-                [item.location.locationCode, 0, 'stockOnHand'], 0);
+            if (item.location && item.location.locationCode) {
+                return _.get(mapKit[item.orderableId],
+                    [item.location.locationCode, 0, 'stockOnHand'], 0);
+            }
+            return 0;
         }
 
         this.prepareAddedLineItems = function(draftInfo, locations,  productList, reasons, areaLocationInfo) {
