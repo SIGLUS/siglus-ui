@@ -199,6 +199,14 @@ describe('stockAdjustmentCreationService', function() {
             }, undefined, '2020-05-20');
             httpBackend.flush();
 
+            var today = new Date();
+
+            var year = today.getFullYear();
+            var month = String(today.getMonth() + 1).padStart(2, '0');
+            var day = String(today.getDate()).padStart(2, '0');
+
+            var formattedDate = year + '-' + month + '-' + day;
+
             var event = {
                 programId: programId,
                 facilityId: facilityId,
@@ -212,7 +220,7 @@ describe('stockAdjustmentCreationService', function() {
                         lotCode: null,
                         expirationDate: null
                     },
-                    occurredDate: '2020-05-20',
+                    occurredDate: formattedDate,
                     reasonId: reasonId,
                     documentationNo: '',
                     // SIGLUS-REFACTOR: ends here

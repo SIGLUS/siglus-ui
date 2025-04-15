@@ -68,7 +68,7 @@
                     lineItem.extraData.expirationDate = formatDate(lineItem.expirationDate);
                 }
                 lineItem.extraData.stockCardId = lineItem.stockCardId;
-                lineItem.occurredDate = formatDate(lineItem.occurredDate);
+                lineItem.occurredDate = moment().format('YYYY-MM-DD');
 
                 delete lineItem.lotCode;
                 delete lineItem.expirationDate;
