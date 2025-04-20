@@ -96,6 +96,24 @@
                     }, {
                         paginationId: 'archivedStockCardList'
                     });
+                },
+                filteredStockCardSummaries: function($stateParams, stockCardSummaries) {
+                    var summaries = angular.copy(stockCardSummaries);
+                    if (!$stateParams.isArchivedProducts) {
+                        _.forEach(summaries, function(stockCardSummary) {
+                            if (stockCardSummary.orderable.isKit) {
+                                stockCardSummary.occurredDate =
+                                    _.get(stockCardSummary.stockCardDetails, [0, 'occurredDate']);
+                                stockCardSummary.stockCardDetails = [];
+                            }
+
+                            stockCardSummary.stockCardDetails =
+                                _.filter(stockCardSummary.stockCardDetails, function(item) {
+                                    return item.stockOnHand !== 0;
+                                });
+                        });
+                    }
+                    return summaries;
                 }
             }
         });
