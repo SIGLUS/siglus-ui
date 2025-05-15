@@ -33,7 +33,7 @@
         'shipment', 'loadingModalService', '$state', 'fulfillmentUrlFactory',
         'messageService', 'updatedOrder', 'QUANTITY_UNIT',
         'selectProductsModalService', 'OpenlmisArrayDecorator', 'alertService', '$q',
-        'stockCardSummaries', 'orderService',
+        'orderService',
         'displayTableLineItems', 'filterDisplayTableLineItems',
         '$stateParams', 'order', 'moment', 'SiglusLocationViewService',
         'prepareRowDataService', 'SiglusLocationCommonUtilsService',
@@ -41,7 +41,7 @@
         'locations', 'siglusLocationCommonApiService',
         'localStorageService', '$window', 'facility', 'siglusPrintPalletLabelComfirmModalService',
         'suggestedQuatity', 'siglusShipmentConfirmModalService', 'SIGLUS_TIME',
-        'alertConfirmModalService', 'StockCardSummaryRepositoryImpl', 'summaryRequestBody'
+        'alertConfirmModalService'
     ];
 
     function SiglusLocationShipmentViewController(
@@ -49,7 +49,6 @@
         fulfillmentUrlFactory, messageService,
         updatedOrder, QUANTITY_UNIT,
         selectProductsModalService, OpenlmisArrayDecorator, alertService, $q,
-        stockCardSummaries,
         orderService,
         displayTableLineItems, filterDisplayTableLineItems, $stateParams,
         order, moment,
@@ -61,7 +60,7 @@
         localStorageService, $window, facility,
         siglusPrintPalletLabelComfirmModalService,
         suggestedQuatity, siglusShipmentConfirmModalService, SIGLUS_TIME,
-        alertConfirmModalService, StockCardSummaryRepositoryImpl, summaryRequestBody
+        alertConfirmModalService
     ) {
         var vm = this;
 
@@ -76,7 +75,6 @@
         vm.saveAndPrintShipment = saveAndPrintShipment;
         vm.order = undefined;
         vm.facility = undefined;
-        vm.summaries = undefined;
 
         vm.shipment = undefined;
         vm.quantityUnit = undefined;
@@ -119,11 +117,11 @@
             vm.orderableIdToSuggestedQuantity = suggestedQuatity.orderableIdToSuggestedQuantity;
             vm.facility = facility;
             vm.keyword = $stateParams.keyword;
-            vm.summaries = stockCardSummaries;
             $stateParams.order = order;
-            $stateParams.stockCardSummaries = stockCardSummaries;
             $stateParams.shipment = shipment;
             $stateParams.displayTableLineItems = vm.displayTableLineItems;
+            // TODO still needs a service to store
+            $stateParams.locations = locations;
         }
 
         function setSuggestedQuantity(items) {
@@ -382,27 +380,25 @@
 
         vm.getReservedSoh = function(lineItems, index) {
             var currentLineItem = lineItems[index];
-            if (!currentLineItem.lot || !_.get(currentLineItem, ['location', 'locationCode'])) {
+            if (!currentLineItem.isMainGroup
+                && (!currentLineItem.lot || !_.get(currentLineItem, ['location', 'locationCode']))) {
                 return 0;
             }
-            var currentOrderableId = currentLineItem.orderableId;
-            var currentLotId = currentLineItem.lot.id;
-            var currentLocationCode = currentLineItem.location.locationCode;
 
             // for main group with multiple lineItems
             if (index === 0 && lineItems.length > 1) {
-                return _.reduce(lineItems.slice(1), function(reservedStockSum, _, index) {
-                    return reservedStockSum + vm.getFillQuantity(lineItems, index) +
-                        getReservedSohFromSummaries(
-                            vm.summaries, currentOrderableId, currentLotId, currentLocationCode
-                        );
-                }, 0);
+                return lineItems
+                    .slice(1)
+                    .reduce(function(sum, item, idx) {
+                        var originalIndex = idx + 1;
+                        var fillQty = vm.getFillQuantity(lineItems, originalIndex);
+                        var reserved = _.get(item, 'reservedStock', 0);
+                        return sum + fillQty + reserved;
+                    }, 0);
             }
             // for one location-lot lineItem
             return vm.getFillQuantity(lineItems, index) +
-                getReservedSohFromSummaries(
-                    vm.summaries, currentOrderableId, currentLotId, currentLocationCode
-                );
+                _.get(currentLineItem, 'reservedStock', 0);
         };
 
         function showInDoses() {
@@ -471,7 +467,6 @@
                             );
                             $stateParams.displayTableLineItems = angular.copy(vm.displayTableLineItems);
                             $stateParams.order = vm.order;
-                            $stateParams.locations = locations;
                             reloadParams();
                         })
                         .finally(function() {
@@ -921,76 +916,28 @@
             alertService.error('shipmentView.saveDraftError.label', '', 'OK')
                 .then(function() {
                     loadingModalService.open();
-                    new StockCardSummaryRepositoryImpl()
-                        .queryWithStockCardsForLocation(summaryRequestBody)
-                        .then(function(summaries) {
-                            vm.summaries = summaries;
-                            $stateParams.stockCardSummaries = summaries;
-                            updateLineItemsSoh(summaries);
-                            vm.cancelFilter();
-                        })
-                        .catch(function(error) {
-                            notificationService.error(error);
-                            throw new Error(error);
+                    var orderableIds = _.map(order.orderLineItems, function(lineItem) {
+                        return lineItem.orderable.id;
+                    });
+                    siglusLocationCommonApiService.getOrderableLocationLotsInfo({
+                        isAdjustment: false,
+                        extraData: true
+                    }, orderableIds)
+                        .then(function(locationsInfo) {
+                            var lineItems = prepareRowDataService.prepareGroupLineItems(shipment, locationsInfo, order);
+                            vm.displayTableLineItems = _.sortBy(lineItems, function(itemGroup) {
+                                return _.get(itemGroup, [0, 'productCode'], '');
+                            });
+                            $stateParams.displayTableLineItems = angular.copy(vm.displayTableLineItems);
+                            $stateParams.locations = locationsInfo;
+                            reloadParams();
                         })
                         .finally(function() {
                             loadingModalService.close();
                         });
+
+                    loadingModalService.open();
                 });
-        }
-
-        function updateLineItemsSoh(summaries) {
-            vm.displayTableLineItems.forEach(function(lineItemGroup) {
-                var currentGroupOrderableId = lineItemGroup[0].orderableId;
-                var summary = summaries.find(function(summary) {
-                    return summary.orderable.id === currentGroupOrderableId;
-                });
-
-                lineItemGroup.forEach(function(lineItem) {
-                    if (lineItemGroup.length > 1 && lineItem.isMainGroup) {
-                        return;
-                    }
-                    if (!lineItem.lot || !lineItem.location.locationCode) {
-                        return;
-                    }
-
-                    var locationCode = _.get(lineItem, ['location', 'locationCode']);
-                    var currentLotId = _.get(lineItem, ['lot', 'id']);
-
-                    var targetLotDetail = summary.stockCardDetails.find(function(detail) {
-                        return detail.lot.id  === currentLotId;
-                    });
-
-                    var targetLotDetailWithLocation = targetLotDetail.lotLocationSohDtoList.find(
-                        function(detailWithLocation) {
-                            return  detailWithLocation.locationCode === locationCode;
-                        }
-                    );
-
-                    lineItem.lot.stockOnHand = _.get(targetLotDetailWithLocation, ['stockOnHand']);
-                });
-            });
-        }
-
-        function getReservedSohFromSummaries(summaries, orderableId, lotId, locationCode) {
-            var summary = summaries.find(function(summary) {
-                return summary.orderable.id === orderableId;
-            });
-            if (!summary) {
-                return 0;
-            }
-
-            var stockCardDetail = summary.stockCardDetails.find(function(stockCardDetail) {
-                return stockCardDetail.lot.id === lotId;
-            });
-            if (!stockCardDetail) {
-                return 0;
-            }
-
-            var lotItemWithLocationInfo = stockCardDetail.lotLocationSohDtoList.find(function(lotItemWithLocationInfo) {
-                return lotItemWithLocationInfo.locationCode === locationCode;
-            });
-            return lotItemWithLocationInfo ? lotItemWithLocationInfo.reservedStock : 0;
         }
 
         vm.search = function() {

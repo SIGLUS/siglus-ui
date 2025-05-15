@@ -62,16 +62,17 @@
             }
         });
 
-        this.getDraftByOrderId = function(order, stockCardSummaries) {
+        this.getDraftByOrderId = function(order) {
             return resource.getDraftByOrderId({
                 id: order.id
             }).$promise.then(function(shipment) {
-                var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
-                var orderableIds = Object.keys(canFulfillForMeMap);
-                shipment.lineItems = shipment.lineItems.filter(function(lineItem) {
-                    return orderableIds.includes(lineItem.orderable.id);
-                });
-                return combineResponses(shipment, order, canFulfillForMeMap);
+                return shipment;
+                // var canFulfillForMeMap = mapCanFulfillForMe(stockCardSummaries);
+                // var orderableIds = Object.keys(canFulfillForMeMap);
+                // shipment.lineItems = shipment.lineItems.filter(function(lineItem) {
+                //     return orderableIds.includes(lineItem.orderable.id);
+                // });
+                // return combineResponses(shipment, order, canFulfillForMeMap);
             });
         };
 
@@ -111,38 +112,6 @@
                 shipment: params
             }, signature)).$promise;
         };
-
-        function combineResponses(shipment, order, stockCardDetailMap) {
-            shipment.order = order;
-
-            shipment.lineItems.forEach(function(lineItem) {
-                var lotId = _.get(lineItem.lot, 'id', undefined);
-                lineItem.canFulfillForMe = stockCardDetailMap[lineItem.orderable.id][lotId];
-            });
-
-            return shipment;
-        }
-
-        function mapCanFulfillForMe(summaries) {
-            var stockCardDetailMap = {};
-
-            var orderableIds = [];
-            _.forEach(summaries, function(summary) {
-                _.forEach(summary.stockCardDetails, function(stockCardDetail) {
-                    var orderableId = stockCardDetail.orderable.id,
-                        lotId = stockCardDetail.lot ? stockCardDetail.lot.id : undefined;
-
-                    if (!stockCardDetailMap[orderableId]) {
-                        stockCardDetailMap[orderableId] = {};
-                    }
-                    orderableIds.push(orderableId);
-                    stockCardDetailMap[orderableId][lotId] = stockCardDetail;
-                });
-            });
-
-            return stockCardDetailMap;
-        }
-
     }
 
 })();

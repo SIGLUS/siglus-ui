@@ -63,27 +63,6 @@
                         }
                         return $stateParams.order;
                     },
-                    summaryRequestBody: function(order) {
-                        var orderableIds = order.availableProducts.map(function(orderable) {
-                            return orderable.id;
-                        });
-                        return {
-                            programId: order.program.id,
-                            facilityId: order.supplyingFacility.id,
-                            orderableId: orderableIds,
-                            orderId: order.id
-                        };
-                    },
-                    stockCardSummaries: function($stateParams, StockCardSummaryRepositoryImpl, summaryRequestBody) {
-                        if ($stateParams.stockCardSummaries === undefined || $stateParams.stockCardSummaries === null) {
-                            return new StockCardSummaryRepositoryImpl()
-                                .queryWithStockCardsForLocation(summaryRequestBody)
-                                .then(function(page) {
-                                    return page;
-                                });
-                        }
-                        return $stateParams.stockCardSummaries;
-                    },
                     locations: function(siglusLocationCommonApiService, order, $stateParams) {
                         if ($stateParams.locations) {
                             return $stateParams.locations;
@@ -96,18 +75,18 @@
                             extraData: true
                         }, orderableIds);
                     },
-                    shipment: function(SiglusLocationViewService, order, stockCardSummaries,
+                    shipment: function(SiglusLocationViewService, order,
                         $stateParams, ORDER_STATUS) {
                         if (!$stateParams.shipment) {
                             var orderWithoutAvailableProducts = angular.copy(order);
                             delete orderWithoutAvailableProducts.availableProducts;
 
                             if (_.includes([ORDER_STATUS.ORDERED, ORDER_STATUS.PARTIALLY_FULFILLED], order.status)) {
-                                return SiglusLocationViewService.createDraft(order, stockCardSummaries);
+                                return SiglusLocationViewService.createDraft(order);
                             }
 
                             if (order.status === ORDER_STATUS.FULFILLING) {
-                                return SiglusLocationViewService.getDraftByOrderId(order, stockCardSummaries);
+                                return SiglusLocationViewService.getDraftByOrderId(order);
                             }
                         }
                         return $stateParams.shipment;
@@ -143,16 +122,8 @@
                         });
                     },
 
-                    updatedOrder: function(shipment, order, stockCardSummaries, loadingModalService) {
-                        var shipmentOrder = order;
-                        shipmentOrder.availableProducts = order.availableProducts.map(function(orderable) {
-                            var stockCard = stockCardSummaries.find(function(stockCard) {
-                                return stockCard.orderable.id === orderable.id;
-                            });
-                            return stockCard.orderable;
-                        });
-                        loadingModalService.close();
-                        return shipmentOrder;
+                    updatedOrder: function(shipment, order) {
+                        return order;
                     }
                 }
             }
