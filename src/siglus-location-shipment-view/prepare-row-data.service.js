@@ -127,7 +127,6 @@
 
         this.prepareAddProductLineItem = function(selectedOrderables) {
             return _.map(selectedOrderables, function(orderable) {
-                orderable.versionNumber = orderable.meta.versionNumber;
                 return {
                     $error: {},
                     $hint: {},
