@@ -916,27 +916,34 @@
             alertService.error('shipmentView.saveDraftError.label', '', 'OK')
                 .then(function() {
                     loadingModalService.open();
-                    var orderableIds = _.map(order.orderLineItems, function(lineItem) {
-                        return lineItem.orderable.id;
-                    });
-                    siglusLocationCommonApiService.getOrderableLocationLotsInfo({
-                        isAdjustment: false,
-                        extraData: true
-                    }, orderableIds)
-                        .then(function(locationsInfo) {
-                            var lineItems = prepareRowDataService.prepareGroupLineItems(shipment, locationsInfo, order);
-                            vm.displayTableLineItems = _.sortBy(lineItems, function(itemGroup) {
-                                return _.get(itemGroup, [0, 'productCode'], '');
+                    SiglusLocationViewService.getDraftByOrderId(order).then(function(updatedShipment) {
+                        vm.shipment = _.clone(updatedShipment);
+                        $stateParams.shipment = updatedShipment;
+                        var orderableIds = _.map(order.orderLineItems, function(lineItem) {
+                            return lineItem.orderable.id;
+                        });
+                        return siglusLocationCommonApiService.getOrderableLocationLotsInfo({
+                            isAdjustment: false,
+                            extraData: true
+                        }, orderableIds)
+                            .then(function(locationsInfo) {
+                                var lineItems = prepareRowDataService
+                                    .prepareGroupLineItems(updatedShipment, locationsInfo, order);
+                                vm.displayTableLineItems = _.sortBy(lineItems, function(itemGroup) {
+                                    return _.get(itemGroup, [0, 'productCode'], '');
+                                });
+                                $stateParams.displayTableLineItems = angular.copy(vm.displayTableLineItems);
+                                $stateParams.locations = locationsInfo;
+                                reloadParams();
+                            })
+                            .finally(function() {
+                                loadingModalService.close();
                             });
-                            $stateParams.displayTableLineItems = angular.copy(vm.displayTableLineItems);
-                            $stateParams.locations = locationsInfo;
-                            reloadParams();
-                        })
+                    })
                         .finally(function() {
                             loadingModalService.close();
                         });
 
-                    loadingModalService.open();
                 });
         }
 

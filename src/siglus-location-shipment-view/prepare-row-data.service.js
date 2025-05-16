@@ -92,7 +92,7 @@
                 isMainGroup: isFirstRow,
                 netContent: _.get(orderLineItem, ['orderable', 'netContent']),
                 skipped: _.get(orderLineItem, 'skipped'),
-                reservedStock: _.get(lineItem, ['canFulfillForMe', 'reservedStock'], 0)
+                reservedStock: _.get(lineItem, ['reservedStock'], 0)
             };
         }
 
