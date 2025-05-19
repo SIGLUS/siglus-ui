@@ -79,7 +79,8 @@
                 productName: _.get(orderLineItem, ['orderable', 'fullProductName']),
                 orderable: {
                     id: orderLineItem.orderable.id,
-                    versionNumber: orderLineItem.orderable.meta.versionNumber
+                    versionNumber: orderLineItem.orderable.meta ?
+                        orderLineItem.orderable.meta.versionNumber : orderLineItem.orderable.versionNumber
                 },
                 id: _.get(lineItem, 'id'),
                 isKit: _.get(orderLineItem, ['orderable', 'isKit']),

@@ -442,6 +442,34 @@
             return QUANTITY_UNIT.$getDisplayName(vm.quantityUnit);
         }
 
+        var SEPARATOR = '&&';
+        function convertLocationsInfoToMap(locations) {
+            var map = {};
+
+            for (var i = 0; i < locations.length; i++) {
+                var location = locations[i];
+                var locKey = location.locationCode + SEPARATOR + location.area;
+                var lots = location.lots;
+
+                for (var j = 0; j < lots.length; j++) {
+                    var lot = lots[j];
+                    if (lot.stockOnHand > 0) {
+                        var orderableId = lot.orderableId;
+
+                        if (!map[orderableId]) {
+                            map[orderableId] = {};
+                        }
+                        if (!map[orderableId][locKey]) {
+                            map[orderableId][locKey] = [];
+                        }
+                        map[orderableId][locKey].push(lot);
+                    }
+                }
+            }
+
+            return map;
+        }
+
         function addProducts() {
             var availableProducts = getAvailableProducts();
             selectProducts({
@@ -457,16 +485,24 @@
                     }))
                         .then(function(locationsInfo) {
                             locations = locations.concat(locationsInfo);
-                            var addedProductRows = prepareRowDataService.prepareAddProductLineItem(selectedProducts);
+                            var orderableIdLocationMap = convertLocationsInfoToMap(locationsInfo);
+
+                            // update order line items
                             var addedOrderLineItems = prepareOrderLineItems(selectedProducts);
                             vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
-                            vm.displayTableLineItems = vm.displayTableLineItems.concat(
-                                _.map(addedProductRows, function(item) {
-                                    return [item];
-                                })
+
+                            var addedShipmentLineItems = prepareAddedShipmentLineItems(
+                                selectedProducts, orderableIdLocationMap
                             );
-                            $stateParams.displayTableLineItems = angular.copy(vm.displayTableLineItems);
+                            vm.shipment.lineItems = vm.shipment.lineItems.concat(addedShipmentLineItems);
+
+                            var updatedDisplayTableLineItems = prepareRowDataService
+                                .prepareGroupLineItems(vm.shipment, locations, vm.order);
+
+                            console.log('displayTableLineItems', updatedDisplayTableLineItems);
+                            $stateParams.displayTableLineItems = updatedDisplayTableLineItems;
                             $stateParams.order = vm.order;
+                            $stateParams.locations = locations;
                             reloadParams();
                         })
                         .finally(function() {
@@ -510,6 +546,9 @@
 
         function prepareOrderLineItems(selectedProducts) {
             return selectedProducts.map(function(orderable) {
+                orderable.meta = {
+                    versionNumber: orderable.versionNumber
+                };
                 return {
                     orderedQuantity: 0,
                     orderable: orderable,
@@ -518,6 +557,43 @@
                     skipped: false
                 };
             });
+        }
+
+        function prepareAddedShipmentLineItems(selectedProducts, orderableIdLocationMap) {
+            var shipmentLineItems = [];
+            console.log('prepareAddedShipmentLineItems START', orderableIdLocationMap);
+            selectedProducts.forEach(function(orderable) {
+                var locationMap = orderableIdLocationMap[orderable.id];
+                if (locationMap) {
+                    var locationCodes = Object.keys(locationMap);
+                    locationCodes.forEach(function(locationCode) {
+                        var lotList = locationMap[locationCode];
+                        var splited = locationCode.split(SEPARATOR);
+                        lotList.forEach(function(lotLocation) {
+                            shipmentLineItems.push({
+                                id: null,
+                                stockCardId: null,
+                                extraData: null,
+                                location: {
+                                    area: splited[1],
+                                    locationCode: splited[0]
+                                },
+                                lot: {
+                                    id: lotLocation.lotId,
+                                    lotCode: lotLocation.lotId,
+                                    expirationDate: lotLocation.expirationDate
+                                },
+                                orderable: orderable || null,
+                                quantityShipped: 0,
+                                reservedStock: lotLocation.reservedStock || 0,
+                                stockOnHand: lotLocation.stockOnHand
+                            });
+                        });
+                    });
+                }
+            });
+            console.log('prepareAddedShipmentLineItems END', shipmentLineItems);
+            return shipmentLineItems;
         }
 
         function skipAllLineItems() {
