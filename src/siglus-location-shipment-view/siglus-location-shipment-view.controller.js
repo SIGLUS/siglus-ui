@@ -843,7 +843,15 @@
 
                 siglusPrintPalletLabelComfirmModalService.show().then(function(result) {
                     if (result) {
-                        downloadPrint();
+                        // TODO print is NOT update-to-date,
+                        //  it needs to first save & refreshShipmentFromServer to do this operation
+                        vm.save()
+                            .then(function() {
+                                return refreshShipmentFromServer();
+                            })
+                            .then(function() {
+                                return downloadPrint();
+                            });
                     }
                     var totalPartialLineItems = getPartialFulfilledLineItems(unskippedLineItems);
                     var isPartialFulfilled = !result.closed && totalPartialLineItems > 0;
@@ -964,7 +972,7 @@
                 return;
             }
             loadingModalService.open();
-            SiglusLocationViewService.saveDraft(buildSaveParams())
+            return SiglusLocationViewService.saveDraft(buildSaveParams())
                 .then(function() {
                     notificationService.success('shipmentView.draftHasBeenSaved');
                     if (shouldPrintShipment) {
@@ -988,38 +996,40 @@
             vm.save(true);
         }
 
+        function refreshShipmentFromServer() {
+            loadingModalService.open();
+            return SiglusLocationViewService.getDraftByOrderId(order).then(function(updatedShipment) {
+                vm.shipment = _.clone(updatedShipment);
+                $stateParams.shipment = updatedShipment;
+                var orderableIds = _.map(order.orderLineItems, function(lineItem) {
+                    return lineItem.orderable.id;
+                });
+                return siglusLocationCommonApiService.getOrderableLocationLotsInfo({
+                    isAdjustment: false,
+                    extraData: true
+                }, orderableIds)
+                    .then(function(locationsInfo) {
+                        var lineItems = prepareRowDataService
+                            .prepareGroupLineItems(updatedShipment, locationsInfo, order);
+                        vm.displayTableLineItems = _.sortBy(lineItems, function(itemGroup) {
+                            return _.get(itemGroup, [0, 'productCode'], '');
+                        });
+                        $stateParams.displayTableLineItems = angular.copy(vm.displayTableLineItems);
+                        $stateParams.locations = locationsInfo;
+                        reloadParams();
+                    })
+                    .finally(function() {
+                        loadingModalService.close();
+                    });
+            })
+                .finally(function() {
+                    loadingModalService.close();
+                });
+        }
         function handleStockError() {
             alertService.error('shipmentView.saveDraftError.label', '', 'OK')
                 .then(function() {
-                    loadingModalService.open();
-                    SiglusLocationViewService.getDraftByOrderId(order).then(function(updatedShipment) {
-                        vm.shipment = _.clone(updatedShipment);
-                        $stateParams.shipment = updatedShipment;
-                        var orderableIds = _.map(order.orderLineItems, function(lineItem) {
-                            return lineItem.orderable.id;
-                        });
-                        return siglusLocationCommonApiService.getOrderableLocationLotsInfo({
-                            isAdjustment: false,
-                            extraData: true
-                        }, orderableIds)
-                            .then(function(locationsInfo) {
-                                var lineItems = prepareRowDataService
-                                    .prepareGroupLineItems(updatedShipment, locationsInfo, order);
-                                vm.displayTableLineItems = _.sortBy(lineItems, function(itemGroup) {
-                                    return _.get(itemGroup, [0, 'productCode'], '');
-                                });
-                                $stateParams.displayTableLineItems = angular.copy(vm.displayTableLineItems);
-                                $stateParams.locations = locationsInfo;
-                                reloadParams();
-                            })
-                            .finally(function() {
-                                loadingModalService.close();
-                            });
-                    })
-                        .finally(function() {
-                            loadingModalService.close();
-                        });
-
+                    return refreshShipmentFromServer();
                 });
         }
 
