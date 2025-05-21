@@ -489,12 +489,12 @@
 
                             // update order line items
                             var addedOrderLineItems = prepareOrderLineItems(selectedProducts);
-                            vm.order.orderLineItems = vm.order.orderLineItems.concat(addedOrderLineItems);
+                            vm.order.orderLineItems = addedOrderLineItems.concat(vm.order.orderLineItems);
 
                             var addedShipmentLineItems = prepareAddedShipmentLineItems(
                                 selectedProducts, orderableIdLocationMap
                             );
-                            vm.shipment.lineItems = vm.shipment.lineItems.concat(addedShipmentLineItems);
+                            vm.shipment.lineItems = addedShipmentLineItems.concat(vm.shipment.lineItems);
 
                             var updatedDisplayTableLineItems = prepareRowDataService
                                 .prepareGroupLineItems(vm.shipment, locations, vm.order);
