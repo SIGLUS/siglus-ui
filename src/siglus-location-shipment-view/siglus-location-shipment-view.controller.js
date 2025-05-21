@@ -845,10 +845,11 @@
                     if (result) {
                         // TODO print is NOT update-to-date,
                         //  it needs to first save & refreshShipmentFromServer to do this operation
-                        vm.save()
-                            .then(function() {
-                                return refreshShipmentFromServer(true);
-                            });
+                        // vm.save()
+                        //     .then(function() {
+                        //         return refreshShipmentFromServer(true);
+                        //     });
+                        downloadPrint();
                     }
                     var totalPartialLineItems = getPartialFulfilledLineItems(unskippedLineItems);
                     var isPartialFulfilled = !result.closed && totalPartialLineItems > 0;
