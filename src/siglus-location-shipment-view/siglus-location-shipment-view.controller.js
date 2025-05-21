@@ -847,10 +847,7 @@
                         //  it needs to first save & refreshShipmentFromServer to do this operation
                         vm.save()
                             .then(function() {
-                                return refreshShipmentFromServer();
-                            })
-                            .then(function() {
-                                return downloadPrint();
+                                return refreshShipmentFromServer(true);
                             });
                     }
                     var totalPartialLineItems = getPartialFulfilledLineItems(unskippedLineItems);
@@ -996,7 +993,7 @@
             vm.save(true);
         }
 
-        function refreshShipmentFromServer() {
+        function refreshShipmentFromServer(isPrint) {
             loadingModalService.open();
             return SiglusLocationViewService.getDraftByOrderId(order).then(function(updatedShipment) {
                 vm.shipment = _.clone(updatedShipment);
@@ -1014,9 +1011,13 @@
                         vm.displayTableLineItems = _.sortBy(lineItems, function(itemGroup) {
                             return _.get(itemGroup, [0, 'productCode'], '');
                         });
-                        $stateParams.displayTableLineItems = angular.copy(vm.displayTableLineItems);
-                        $stateParams.locations = locationsInfo;
-                        reloadParams();
+                        if (isPrint) {
+                            downloadPrint();
+                        } else {
+                            $stateParams.displayTableLineItems = angular.copy(vm.displayTableLineItems);
+                            $stateParams.locations = locationsInfo;
+                            reloadParams();
+                        }
                     })
                     .finally(function() {
                         loadingModalService.close();
