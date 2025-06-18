@@ -70,7 +70,7 @@
                                 return productName.includes(keyword) || productCode.includes(keyword);
                             });
                         }
-                        var programNeedSortByProductCode = ['VC', 'MMC'];
+                        var programNeedSortByProductCode = ['VC', 'MMC', 'TR', 'TB', 'T'];
                         var sortOrder = programNeedSortByProductCode.includes(program.code) ?  [
                             '$program.orderableCategoryDisplayOrder',
                             '$program.orderableCategoryDisplayName',

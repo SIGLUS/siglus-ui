@@ -1797,7 +1797,7 @@
   "shipmentView.confirmShipment": "Confirmar a Remessa",
   "shipmentView.dateCreated": "Data da Ordem",
   "shipmentView.deleteDraftButton": "Apagar",
-  "shipmentView.deleteDraft": "Confirmar",
+  "shipmentView.deleteDraft": "Apagar",
   "shipmentView.deleteDraftConfirmation": "Pretende apagar? Depois de confirmar, todos qtds mandadas aviar na remessa em curso serão apagados e a Ordem regressará ao Estado anterior (Ordenado ou Parcial)",
   "shipmentView.doses": "Doses",
   "shipmentView.draftHasBeenDeleted": "O rascunho foi eliminado",
