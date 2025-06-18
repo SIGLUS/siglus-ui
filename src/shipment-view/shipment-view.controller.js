@@ -148,6 +148,13 @@
             return items;
         }
 
+        vm.getSuggestedQuantity = function(tableLineItem) {
+            if (vm.orderableIdToSuggestedQuantity) {
+                return tableLineItem.suggestedQuantity ? Math.ceil(tableLineItem.suggestedQuantity) : 0;
+            }
+            return Math.ceil(tableLineItem.getOrderQuantity(vm.showInDoses()) - tableLineItem.partialFulfilledQuantity);
+        };
+
         function sortLineItemLotsByExpirationDate(displayLineItems) {
             var sortedLineItems = [];
             var lineItemsMapByProductCode = _.groupBy(displayLineItems, function(lineItem) {

@@ -137,6 +137,13 @@
             return items;
         }
 
+        vm.getSuggestedQuantity = function(lineItem) {
+            if (vm.orderableIdToSuggestedQuantity) {
+                return lineItem.suggestedQuantity ? Math.ceil(lineItem.suggestedQuantity) : 0;
+            }
+            return Math.ceil(lineItem.orderedQuantity - lineItem.partialFulfilledQuantity);
+        };
+
         function validateNotFirstToExpire(item) {
             if (!item.$error.lotCodeError) {
                 var lotOptions = _.filter(SiglusLocationCommonUtilsService.getLotList(item,
