@@ -44,16 +44,23 @@
             POD: 'pod'
         };
         var RECEIVE_PDF_REASON_NAME_LIST = [
+            // eslint-disable-next-line max-len
+            '[Ajustes Positivos] Correcção de inventário, no caso do stock Superior (stock é Superior ao existente na ficha de stock)',
+            '[Ajustes Positivos] Da quarentena para Depósito, no caso de se confirmar a qualidade do produto',
             '[Ajustes Positivos] Devolução Dentro do prazo de validade dos clientes (US e Depósitos Beneficiários)',
             '[Ajustes Positivos] Devolução de expirados (US e Depósitos Beneficiários)',
-            '[Ajustes Positivos] Empréstimos (de todos os níveis) que dão entrada no depósito',
-            '[Ajustes Positivos] Doações ao Depósito'
+            '[Ajustes Positivos] Doações ao Depósito',
+            '[Ajustes Positivos] Empréstimos (de todos os níveis) que dão entrada no depósito'
         ];
         var ISSUE_PDF_REASON_NAME_LIST = [
-            '[Ajustes Negativos] Devolução de expirados para Depósito fornecedor',
+            // eslint-disable-next-line max-len
+            '[Ajustes Negativos] Correcção de inventário, no caso do stock inferior (stock é inferior ao existente na ficha de stock)',
             '[Ajustes Negativos] Danificado no depósito',
+            '[Ajustes Negativos] Devolução Dentro do prazo de validade ao Depósito fornecedor',
+            '[Ajustes Negativos] Devolução de expirados para Depósito fornecedor',
             '[Ajustes Negativos] Empréstimos (para todos níveis) que dão saída do depósito',
-            '[Ajustes Negativos] Devolução Dentro do prazo de validade ao Depósito fornecedor'
+            '[Ajustes Negativos] Saída para quarentena, no caso de problemas relativos a qualidade',
+            '[Ajustes Negativos] Transferência de produtos expirados'
         ];
 
         SiglusIssueOrReceiveReportService.prototype.downloadPdf = downloadPdf;

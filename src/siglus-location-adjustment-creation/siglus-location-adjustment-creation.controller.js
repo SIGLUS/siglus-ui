@@ -613,8 +613,11 @@
         }
 
         function printPdfForRRIVAndGoStockOnHandPage(signatureInfo) {
+            console.log('printPdfForRRIVAndGoStockOnHandPage start');
             var receiveLineItemsToPrint = buildLineItemsToPrintPdf(ReportService.RECEIVE_PDF_REASON_NAME_LIST);
             var issueLineItemsToPrint = buildLineItemsToPrintPdf(ReportService.ISSUE_PDF_REASON_NAME_LIST);
+            console.log('receiveLineItemsToPrint', receiveLineItemsToPrint);
+            console.log('issueLineItemsToPrint', issueLineItemsToPrint);
             var momentNow = moment();
 
             if (receiveLineItemsToPrint.length > 0 && issueLineItemsToPrint.length > 0) {
@@ -722,6 +725,7 @@
         }
 
         function setPrintPDFInfo(type, lineItems, signatureInfo, momentNow, documentNumber) {
+            console.log('setPrintPDFInfo start');
             vm.reportPDFInfo = {
                 type: type,
                 addedLineItems: lineItems,
@@ -744,6 +748,7 @@
                 nowTime: momentNow.format('D MMM YYYY h:mm:ss A'),
                 isSupply: true
             };
+            console.log('setPrintPDFInfo end');
         }
 
         function buildDocumentNumberWithItemsNo(documentNumber, lineItems) {
@@ -751,7 +756,7 @@
                 return lineItem.documentationNo;
             });
             var validLineItemsNo = lineItemsNo.filter(function(documentation) {
-                return documentation.length > 0;
+                return documentation && documentation.length > 0;
             });
             if (validLineItemsNo.length > 0) {
                 return documentNumber + '_' + validLineItemsNo.join('_');

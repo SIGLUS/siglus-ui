@@ -641,7 +641,7 @@
                 return lineItem.documentationNo;
             });
             var validLineItemsNo = lineItemsNo.filter(function(documentation) {
-                return documentation.length > 0;
+                return documentation && documentation.length > 0;
             });
             if (validLineItemsNo.length > 0) {
                 return documentNumber + '_' + validLineItemsNo.join('_');
