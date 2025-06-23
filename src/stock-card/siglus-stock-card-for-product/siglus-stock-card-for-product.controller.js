@@ -61,7 +61,11 @@
             var unit = vm.stockCard.displayUnit;
             return _.isEmpty(unit) ? vm.stockCard.productName : vm.stockCard.productName + ' - ' + unit;
         };
-        vm.getReason = function(reason) {
+        vm.getReason = function(lineItem) {
+            var reason = lineItem.reason;
+            if (reason === 'stockConstants.adjustment' && lineItem.reasonFreeText) {
+                return _.get(STOCKREASON, reason, '') + ': ' + _.get(lineItem, 'reasonFreeText', '');
+            }
             return _.get(STOCKREASON, reason, null);
         };
 

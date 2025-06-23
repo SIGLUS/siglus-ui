@@ -54,7 +54,11 @@
             document.getElementsByClassName('page')[0].childNodes[1].style.display = 'none';
         };
 
-        vm.getReason = function(reason) {
+        vm.getReason = function(lineItem) {
+            var reason = lineItem.reason;
+            if (reason === 'stockConstants.adjustment' && lineItem.reasonFreeText) {
+                return _.get(STOCKREASON, reason, '') + ': ' + _.get(lineItem, 'reasonFreeText', '');
+            }
             return _.get(STOCKREASON, reason, null);
         };
 
