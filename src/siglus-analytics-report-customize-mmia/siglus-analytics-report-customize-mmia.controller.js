@@ -103,7 +103,11 @@
                 .sortBy('displayOrder')
                 .value();
             vm.regimensAdults = getCategories(vm.requisition.regimenLineItems)['Adulto'];
-            vm.regimensPaediatrics = getCategories(vm.requisition.regimenLineItems)['Criança'];
+            var extraItems = vm.requisition.regimenLineItems.filter(function(lineItem) {
+                return lineItem.regimen && lineItem.regimen.code === 'X7BPed';
+            });
+            vm.regimensPaediatrics = _.union(getCategories(vm.requisition.regimenLineItems)['Criança'],
+                extraItems);
             setBarCodeDom();
             var summerySection = _.find(vm.requisition.usageTemplate.regimen, function(item) {
                 return item.name === 'summary';
@@ -113,7 +117,7 @@
                 summerySection.columns
             );
             var patients = patientTemplateFactory();
-            vm.patientList = ignoreSection6(patients.normalPatientList);
+            vm.patientList = ignoreSection5(ignoreSection6(patients.normalPatientList));
             vm.mergedPatientMap = patients.mergedPatientMap;
             vm.getValueByKey = getValueByKey;
             vm.getHistoryComments = getHistoryComments;
@@ -126,6 +130,13 @@
             // Ticket#729 newSection6 Tipo de Dispensa - Total de pacientes com tratamento
             return patientList.filter(function(p) {
                 return p.name !== 'newSection6';
+            });
+        }
+
+        function ignoreSection5(patientList) {
+            // Ticket#729 newSection5 Tipo de Dispensa - Levantaram no mês
+            return patientList.filter(function(p) {
+                return p.name !== 'newSection5';
             });
         }
 
