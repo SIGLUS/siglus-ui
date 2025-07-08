@@ -53,8 +53,6 @@
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.issues">{{ 'mmia.issues' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.adjustments">{{ 'mmia.loss_adjustments' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.inventory">{{ 'mmia.inventory' | message }}</th>
-          <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.inventory">{{ 'mmia.requestedQuantity' | message }}</th>
-          <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.inventory">{{ 'mmia.authorizedQuantity' | message }}</th>
           <th style="padding: 0 2px;" openlmis-message="view.rnr.mmia.validate">{{ 'mmia.validate' | message }}</th>
       </tr>
       </thead>
@@ -71,11 +69,6 @@
             <td>{{item.totalConsumedQuantity}}</td>
             <td>{{item.totalLossesAndAdjustments}}</td>
             <td>{{item.stockOnHand}}</td>
-            <td>{{item.requestedQuantity}}</td>
-            <!-- authorizedQuantity -->
-            <td ng-if="!item.orderable.productCode"></td>
-            <td ng-if="item.orderable.productCode">{{item.authorizedQuantity ? item.authorizedQuantity : 0}}</td>
-            <!-- authorizedQuantity -->
             <td><span ng-show="item.expirationDate">{{item.expirationDate === 'Invalid date' ? '-' : item.expirationDate}}</span></td>
         </tr>
       </tbody>
