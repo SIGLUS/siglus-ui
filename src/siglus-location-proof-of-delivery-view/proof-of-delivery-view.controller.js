@@ -493,6 +493,7 @@
         }
 
         function getPodMainOrFirstLineItems() {
+            console.log('vm.displayOrderLineItems', vm.displayOrderLineItems);
             // update accepted & rejected quantity first
             vm.displayOrderLineItems.forEach(function(productGroup) {
                 productGroup.groupedLineItems.forEach(function(lotGroup) {
@@ -665,6 +666,8 @@
         function downloadPrint() {
             var mainGroupItems = getPodMainOrFirstLineItems();
             var locationItems = getPodLocationLineItems();
+            console.log('mainGroupItems', mainGroupItems);
+            console.log('locationItems', locationItems);
             // change vm.printLineItems would trigger $scope.$watch in siglus-print-pallet-label.controller to print
             vm.printLineItems = _.chain(locationItems)
                 .map(function(locationItem) {
@@ -783,6 +786,7 @@
             groupedLineItems.forEach(function(line) {
                 addAndRemoveLineItemService.fillMovementOptions(line, locations, areaLocationInfo);
             });
+            console.log('After added groupedLineItems', groupedLineItems);
         }
 
         function addLotGroup(lotGroupLineItems) {
