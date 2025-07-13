@@ -582,6 +582,7 @@
                                 id: null,
                                 stockCardId: null,
                                 extraData: null,
+                                isKit: orderable.isKit,
                                 location: {
                                     area: splited[1],
                                     locationCode: splited[0]
