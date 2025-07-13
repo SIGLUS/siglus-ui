@@ -637,7 +637,7 @@
                 return 'shipment.required';
             }
             // check input number valid
-            if (quantityShipped + reservedStock > stockOnHand) {
+            if ((quantityShipped !== 0) && (quantityShipped + reservedStock > stockOnHand)) {
                 return 'shipment.fillQuantityCannotExceedStockOnHand';
             }
             return '';

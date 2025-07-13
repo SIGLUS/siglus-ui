@@ -284,11 +284,11 @@
             var currentLotCode =  _.get(currentLineItem, ['lot', 'lotCode'], '');
 
             if (!currentLotId && currentLotCode) {
-                var lineItemsToSum = lotGroup.filter(function(lineItem) {
+                var lineItemsToSumForLotCode = lotGroup.filter(function(lineItem) {
                     return !lineItem.isMainGroup && currentOrderableId === _.get(lineItem, ['orderable', 'id'], '') &&
                         currentLotCode === _.get(lineItem, ['lot', 'lotCode'], '');
                 });
-                return lineItemsToSum.reduce(function(acc, lineItem) {
+                return lineItemsToSumForLotCode.reduce(function(acc, lineItem) {
                     var quantityAccepted = _.get(lineItem, 'quantityAccepted', 0);
                     return acc + quantityAccepted;
                 }, 0);

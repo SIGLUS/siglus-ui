@@ -104,7 +104,8 @@
         function isInvalid() {
             var errors = this.shipmentLineItem.isInvalid();
             if (!errors &&
-                this.reservedStock + this.shipmentLineItem.quantityShipped > this.shipmentLineItem.stockOnHand) {
+                this.shipmentLineItem.quantityShipped !== 0 &&
+                (this.reservedStock + this.shipmentLineItem.quantityShipped > this.shipmentLineItem.stockOnHand)) {
                 errors = {};
                 errors.quantityShipped = 'shipment.fillQuantityCannotExceedStockOnHand';
             }

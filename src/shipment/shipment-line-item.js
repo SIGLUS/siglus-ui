@@ -75,7 +75,7 @@
             }
             // #287: ends here
 
-            if (this.quantityShipped > this.stockOnHand) {
+            if (this.quantityShipped !== 0 && this.quantityShipped > this.stockOnHand) {
                 errors.quantityShipped = 'shipment.fillQuantityCannotExceedStockOnHand';
             }
 
