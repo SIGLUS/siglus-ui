@@ -664,14 +664,16 @@
         }
 
         function downloadPrint() {
-            var mainGroupItems = getPodMainOrFirstLineItems();
+            var allLineItems = getAllLineItems();
+            // TODO mainGroupItems MISSING,case mainGroupItem can NOT find below in LM
+            // var mainGroupItems = getPodMainOrFirstLineItems();
             var locationItems = getPodLocationLineItems();
-            console.log('mainGroupItems', mainGroupItems);
+            console.log('mainGroupItems', allLineItems);
             console.log('locationItems', locationItems);
             // change vm.printLineItems would trigger $scope.$watch in siglus-print-pallet-label.controller to print
             vm.printLineItems = _.chain(locationItems)
                 .map(function(locationItem) {
-                    var mainGroupItem = _.find(mainGroupItems, function(mainGroupItem) {
+                    var mainGroupItem = _.find(allLineItems, function(mainGroupItem) {
                         return mainGroupItem.id === locationItem.podLineItemId;
                     });
 
