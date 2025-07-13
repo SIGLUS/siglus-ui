@@ -281,6 +281,18 @@
         function getSumOfLot(currentLineItem, lotGroup) {
             var currentOrderableId = _.get(currentLineItem, ['orderable', 'id'], '');
             var currentLotId =  _.get(currentLineItem, ['lot', 'id'], '');
+            var currentLotCode =  _.get(currentLineItem, ['lot', 'lotCode'], '');
+
+            if (!currentLotId && currentLotCode) {
+                var lineItemsToSum = lotGroup.filter(function(lineItem) {
+                    return !lineItem.isMainGroup && currentOrderableId === _.get(lineItem, ['orderable', 'id'], '') &&
+                        currentLotCode === _.get(lineItem, ['lot', 'lotCode'], '');
+                });
+                return lineItemsToSum.reduce(function(acc, lineItem) {
+                    var quantityAccepted = _.get(lineItem, 'quantityAccepted', 0);
+                    return acc + quantityAccepted;
+                }, 0);
+            }
             var lineItemsToSum = lotGroup.filter(function(lineItem) {
                 return !lineItem.isMainGroup && currentOrderableId === _.get(lineItem, ['orderable', 'id'], '') &&
                     currentLotId === _.get(lineItem, ['lot', 'id'], '');
