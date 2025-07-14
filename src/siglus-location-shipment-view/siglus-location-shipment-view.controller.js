@@ -771,6 +771,13 @@
                     return data;
                 })
                 .flatten()
+                // TODO Filter no id but NO added, it should from order not shipment
+                .filter(function(lineItem) {
+                    if (!lineItem.id) {
+                        return lineItem.added;
+                    }
+                    return true;
+                })
                 .filter(function(lineItem) {
                     return isSubmit ? !lineItem.skipped : true;
                 })
