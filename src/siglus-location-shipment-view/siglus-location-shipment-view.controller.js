@@ -533,9 +533,7 @@
                                     };
                                 })
                                 .value();
-
                             vm.shipment.lineItems = addedShipmentLineItems.concat(filledLineItems);
-                            
                             var updatedDisplayTableLineItems = prepareRowDataService
                                 .prepareGroupLineItems(vm.shipment, locations, vm.order);
 
