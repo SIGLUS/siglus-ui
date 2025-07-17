@@ -502,8 +502,40 @@
                             var addedShipmentLineItems = prepareAddedShipmentLineItems(
                                 selectedProducts, orderableIdLocationMap
                             );
-                            vm.shipment.lineItems = addedShipmentLineItems.concat(vm.shipment.lineItems);
 
+                            var filledLineItems = _.chain(vm.displayTableLineItems)
+                                .map(function(group) {
+                                    var data =  _.filter(group, function(lineItem) {
+                                        return (group.length > 1 && !lineItem.isMainGroup)
+                                            || (group.length === 1 && lineItem.isMainGroup);
+                                    });
+                                    return data;
+                                })
+                                .flatten()
+                                // TODO Filter no id but NO added, it should from order not shipment
+                                .filter(function(lineItem) {
+                                    if (!lineItem.id) {
+                                        return lineItem.added;
+                                    }
+                                    return true;
+                                })
+                                .map(function(lineItem) {
+                                    var lot = lineItem.lot;
+                                    return {
+                                        lot: _.isEmpty(lot) ? null : {
+                                            id: lot.id
+                                        },
+                                        location: lineItem.location,
+                                        id: lineItem.id,
+                                        orderable: lineItem.orderable,
+                                        quantityShipped: lineItem.quantityShipped,
+                                        stockOnHand: getSohByOrderableLocation(lineItem)
+                                    };
+                                })
+                                .value();
+
+                            vm.shipment.lineItems = addedShipmentLineItems.concat(filledLineItems);
+                            
                             var updatedDisplayTableLineItems = prepareRowDataService
                                 .prepareGroupLineItems(vm.shipment, locations, vm.order);
 
