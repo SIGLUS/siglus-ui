@@ -85,7 +85,9 @@
             validateQuantityAccepted(this, errors);
             validateRejectionReasonId(this, errors);
             validateVvmStatus(this, errors);
-            validateLotCodeAndExpirationDate(this, errors);
+            if (!_.get(this, ['orderable', 'isKit'])) {
+                validateLotCodeAndExpirationDate(this, errors);
+            }
 
             return angular.equals(errors, {}) ? undefined : errors;
         }

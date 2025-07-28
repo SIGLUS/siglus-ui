@@ -685,12 +685,22 @@
             return 0;
         }
 
+        /* eslint-disable complexity */
         function areLotsEqual(left, right) {
             if (left && right && left.id === right.id) {
                 return true;
             } else if (!left && !right)  {
                 return true;
             }
+
+            // Case 3: one is null, the other is object with id and lotCode null
+            if (!left && right && right.id === null && right.lotCode === null) {
+                return true;
+            }
+            if (!right && left && left.id === null && left.lotCode === null) {
+                return true;
+            }
+
             return false;
         }
 

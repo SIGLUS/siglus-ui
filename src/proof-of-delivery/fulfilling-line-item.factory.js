@@ -138,6 +138,13 @@
                         if (fulfillingLineItemsGroup) {
                             orderLineItem.groupedLineItems.push(fulfillingLineItemsGroup);
                         }
+
+                        if (orderLineItem.groupedLineItems
+                            && orderLineItem.groupedLineItems.length > 0
+                            && orderLineItem.groupedLineItems[0].length > 0
+                            && orderLineItem.groupedLineItems[0][0].orderable) {
+                            orderLineItem.orderable = orderLineItem.groupedLineItems[0][0].orderable;
+                        }
                     });
 
                     return orderLineItems.filter(function(orderLineItem) {
