@@ -311,10 +311,11 @@
                 var lotIds = getLotIdListFromLineItems(proofOfDeliveryJson.lineItems);
                 var orderableIds = getOrderableIdListFromLineItems(proofOfDeliveryJson.lineItems);
 
+                var lotPromise = lotIds.length === 0
+                    ? $q.resolve([])
+                    : lotRepositoryImpl.query({ id: lotIds }).$promise;
                 return $q.all([
-                    lotRepositoryImpl.query({
-                        id: lotIds
-                    }),
+                    lotPromise,
                     orderableResource.query({
                         id: orderableIds
                     })
