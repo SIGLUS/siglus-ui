@@ -313,7 +313,9 @@
 
                 var lotPromise = lotIds.length === 0
                     ? $q.resolve([])
-                    : lotRepositoryImpl.query({ id: lotIds }).$promise;
+                    : lotRepositoryImpl.query({
+                        id: lotIds
+                    }).$promise;
                 return $q.all([
                     lotPromise,
                     orderableResource.query({
