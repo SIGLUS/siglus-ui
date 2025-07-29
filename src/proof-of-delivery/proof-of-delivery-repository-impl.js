@@ -672,6 +672,9 @@
         }
 
         function getLotInfoById(lotResultList, lineItemLotId) {
+            if (!lotResultList) {
+                return null;
+            }
             return lotResultList.find(function(lot) {
                 return lot.id === lineItemLotId;
             });
