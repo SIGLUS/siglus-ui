@@ -90,12 +90,6 @@
         <td openlmis-message="view.rnr.rapid.test.lossandadjustment">
           {{ 'rapid.loss_and_adjustment' | message }}
         </td>
-        <td openlmis-message="view.rnr.rapid.test.requestedQuantity">
-          {{ 'rapid.requestedQuantity' | message }}
-        </td>
-        <td openlmis-message="view.rnr.rapid.test.authorizedQuantity">
-          {{ 'rapid.authorizedQuantity' | message }}
-        </td>
         <td openlmis-message="view.rnr.rapid.test.inverntory">
           {{ 'rapid.inverntory' | message }}
         </td>
@@ -112,8 +106,6 @@
         <td>{{product.totalReceivedQuantity}}</td>
         <td>{{product.totalConsumedQuantity}}</td>
         <td>{{product.totalLossesAndAdjustments}}</td>
-        <td>{{product.requestedQuantity}}</td>
-        <td>{{product.authorizedQuantity ? product.authorizedQuantity : 0}}</td>
         <td>{{product.stockOnHand}}</td>
         <td>{{product.expirationDate}}</td>
       </tr>

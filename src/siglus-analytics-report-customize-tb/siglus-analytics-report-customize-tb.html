@@ -76,12 +76,10 @@
                 <!-- <td class="background-black text-center"></td> -->
                 <td class="text-center grey" colspan="4">{{'tb.product' | message}}</td>
                 <td class="text-center grey">{{'tb.unit' | message}}</td>
-                <td class="text-center grey">{{'tb.initialStock' | message}}</td>
+                <td colspan="2" class="text-center grey">{{'tb.initialStock' | message}}</td>
                 <td class="text-center grey">{{'tb.entries' | message}} </td>
                 <td class="text-center grey">{{'tb.issues' | message}}</td>
-                <td class="text-center grey">{{'tb.lossAndAdjustments' | message}}</td>
-                <td class="text-center grey">{{'tb.requestedQuantity' | message}}</td>
-                <td class="text-center grey">{{'tb.authorizedQuantity' | message}}</td>
+                <td colspan="2" class="text-center grey">{{'tb.lossAndAdjustments' | message}}</td>
                 <td class="text-center grey">{{'tb.inventory' | message}}</td>
                 <td class="text-center grey">{{'tb.expireDate' | message}}</td>
             </tr>
@@ -90,12 +88,10 @@
             <tr id="calcTr" ng-repeat="(index, product) in vm.productLineItems">
                 <td class="col-4 normal-td green-dark" colspan="4">{{ product.orderable.fullProductName }}</td>
                 <td class="normal-td green-dark">{{product.orderable.unit || product.orderable.dispensable.displayUnit}}</td>
-                <td class="normal-td">{{product.beginningBalance}}</td>
+                <td colspan="2" class="normal-td">{{product.beginningBalance}}</td>
                 <td class="normal-td">{{product.totalReceivedQuantity}}</td>
                 <td class="normal-td">{{product.totalConsumedQuantity}}</td>
-                <td class="normal-td">{{product.totalLossesAndAdjustments}}</td>
-                <td class="normal-td">{{product.requestedQuantity}}</td>
-                <td class="normal-td">{{product.authorizedQuantity ? product.authorizedQuantity : 0}}</td>
+                <td colspan="2" class="normal-td">{{product.totalLossesAndAdjustments}}</td>
                 <td class="normal-td">{{product.stockOnHand}}</td>
                 <td class="normal-td"><span ng-show="product.expirationDate">{{product.expirationDate}}</span></td>
             </tr>
