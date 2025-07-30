@@ -315,7 +315,7 @@
                     ? $q.resolve([])
                     : lotRepositoryImpl.query({
                         id: lotIds
-                    }).$promise;
+                    });
                 return $q.all([
                     lotPromise,
                     orderableResource.query({
