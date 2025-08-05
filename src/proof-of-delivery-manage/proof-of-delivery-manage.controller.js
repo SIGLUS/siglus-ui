@@ -353,6 +353,7 @@
             vm.reportPDFInfo = {
                 type: ReportService.REPORT_TYPE.POD,
                 addedLineItems: lineItemsInPDF,
+                documentNumberWithItemsNo: numberAndFileName.documentNumber,
                 documentNumber: numberAndFileName.documentNumber,
                 issueVoucherNumber: numberAndFileName.issueVoucherNumber,
                 supplier: podInfo.supplier,
