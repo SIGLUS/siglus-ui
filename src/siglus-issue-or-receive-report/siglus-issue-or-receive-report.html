@@ -179,7 +179,7 @@
         <tr>
           <!-- keep blank -->
           <td class="text__left" style="border-right: 1px solid #000; height: 72px; vertical-align: top;">
-            {{ 'siglusIssueOrReceiveReport.receptionDate' | message }}: {{ vm.reportPDFInfo.type === 'receive' ? vm.reportPDFInfo.receptionDate  : '' }}
+            {{ 'siglusIssueOrReceiveReport.receptionDate' | message }}: {{ vm.reportPDFInfo.receptionDate  || '' }}
           </td>
         </tr>
       </table>
