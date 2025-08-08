@@ -361,7 +361,7 @@
                 supplierProvince: podInfo.supplierProvince,
                 client: podInfo.client,
                 requisitionNumber: podInfo.requisitionNum,
-                requisitionDate: moment(podInfo.requisitionDate, 'YYYY-MM-dd'),
+                requisitionDate: moment(podInfo.requisitionDate).format('YYYY-MM-DD'),
                 issueVoucherDate: moment(order.occurredDate).format('YYYY-MM-DD'),
                 numberN: numberAndFileName.podNumber,
                 receptionDate: podInfo.receivedDate,
