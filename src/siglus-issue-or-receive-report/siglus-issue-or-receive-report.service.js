@@ -155,6 +155,8 @@
                             // new page
                             addNewPage();
 
+                            addComponentsImage(topComponents);
+
                             offsetHeight = sectionFirst.offsetHeight + sectionSecond.offsetHeight;
                             realHeight = 0;
                         }
