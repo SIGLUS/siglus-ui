@@ -474,6 +474,7 @@
                 type: ReportService.REPORT_TYPE.ISSUE,
                 addedLineItems: vm.allLineItemsAdded,
                 documentNumber: vm.initialDraftInfo.documentNumber,
+                documentNumberWithItemsNo: vm.initialDraftInfo.documentNumber,
                 numberN: vm.initialDraftInfo.documentNumber,
                 supplier: vm.facility.name,
                 supplierDistrict: vm.facility.geographicZone.name,

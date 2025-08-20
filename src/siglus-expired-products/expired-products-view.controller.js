@@ -212,6 +212,7 @@
                 type: ReportService.REPORT_TYPE.ISSUE,
                 addedLineItems: vm.addedLineItems,
                 documentNumber: documentNumber,
+                documentNumberWithItemsNo: documentNumber,
                 numberN: documentNumber,
                 supplier: vm.facility.name,
                 supplierDistrict: vm.facility.geographicZone.name,

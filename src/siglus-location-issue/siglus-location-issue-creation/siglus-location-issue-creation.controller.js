@@ -649,6 +649,7 @@
             vm.reportPDFInfo = {
                 type: ReportService.REPORT_TYPE.ISSUE,
                 addedLineItems: lineItemsToPrint,
+                documentNumberWithItemsNo: vm.initialDraftInfo.documentNumber,
                 documentNumber: vm.initialDraftInfo.documentNumber,
                 numberN: vm.initialDraftInfo.documentNumber,
                 supplier: vm.facility.name,

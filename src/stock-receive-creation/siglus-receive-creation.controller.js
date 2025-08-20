@@ -438,6 +438,7 @@
                 type: ReportService.REPORT_TYPE.RECEIVE,
                 addedLineItems: vm.allLineItemsAdded,
                 documentNumber: vm.initialDraftInfo.documentNumber,
+                documentNumberWithItemsNo: vm.initialDraftInfo.documentNumber,
                 numberN: vm.initialDraftInfo.documentNumber,
                 supplier: vm.initialDraftInfo.sourceName === 'Outros' ?
                     vm.initialDraftInfo.locationFreeText : vm.sourceName,
