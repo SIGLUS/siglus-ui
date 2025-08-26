@@ -60,8 +60,10 @@
          * Updates the quantity returned based on the set quantity received.
          */
         function updateQuantityRejected() {
-            if (isEmpty(this.quantityAccepted) || this.quantityShipped < this.quantityAccepted) {
+            if (isEmpty(this.quantityAccepted)) {
                 this.quantityRejected = 0;
+            } else if (this.quantityShipped < this.quantityAccepted) {
+                this.quantityRejected = this.quantityAccepted - this.quantityShipped;
             } else if (this.quantityAccepted < 0) {
                 this.quantityRejected = this.quantityShipped;
             } else {

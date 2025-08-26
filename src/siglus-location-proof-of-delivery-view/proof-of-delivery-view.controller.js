@@ -501,7 +501,7 @@
             }
             var quantityAccepted = getSumOfLot(lineItem, lotGroup);
             var diff = _.get(lineItem, 'quantityShipped', 0) - quantityAccepted;
-            return diff < 0 ? 0 : diff;
+            return diff < 0 ? - diff : diff;
         }
 
         function getPodMainOrFirstLineItems() {
