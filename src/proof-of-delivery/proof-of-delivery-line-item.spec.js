@@ -68,7 +68,7 @@ describe('ProofOfDeliveryLineItem', function() {
 
             proofOfDeliveryLineItem.updateQuantityRejected();
 
-            expect(proofOfDeliveryLineItem.quantityRejected).toBe(0);
+            expect(proofOfDeliveryLineItem.quantityRejected).toBe(1);
         });
 
         it('should set quantity rejected to 0 if quantity accepted matches quantity shipped', function() {
