@@ -65,10 +65,48 @@
         vm.creationDate = undefined;
         vm.requisition = {};
         vm.mergedPatientMap = {};
+
+        var productOrder = ['08C01', '08H07X', '08H07XZ', '08H07Y', '08H07', '08L02', '08L02X', '08L02Z',
+            '08L03', '08L04', '08L05', '08L05Y', '08L06X', '08L06XZ', '08L06Y', '08L06YZ', '08L06Z', '08L07', '08L08',
+            '08L09', '08L0XX', '08L10', '08L10X', '08L10Z', '08L11W', '08L12X', '08L11X', '08L11Y', '08L11Z', '08M01',
+            '08M02', '08D01I', '12D14', '12D14Z'];
+
+        function sortProductLineItems(productLineItems) {
+            var sort = [];
+            productOrder.forEach(function(c) {
+                var found = _.find(productLineItems, function(p) {
+                    return c === _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                });
+                if (found) {
+                    sort.push(found);
+                }
+            });
+
+            var allDefined = {};
+            productOrder.forEach(function(code) {
+                allDefined[code] = true;
+            });
+
+            var otherLineItems = productLineItems.filter(function(p) {
+                var code = _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                return code && !allDefined[code];
+            });
+
+            otherLineItems.sort(function(a, b) {
+                return _.get(a, ['orderable', 'productCode'])
+                    .localeCompare(_.get(b, ['orderable', 'productCode']));
+            });
+
+            return [].concat(
+                sort,
+                otherLineItems
+            );
+        }
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
-            vm.productLineItems = requisition.requisitionLineItems;
+            vm.productLineItems = sortProductLineItems(requisition.requisitionLineItems);
+            console.log('sortProductLineItems', vm.productLineItems);
             services = requisition.testConsumptionLineItems;
             vm.showBreadCrumb = $stateParams.showBreadCrumb === 'false';
             if (vm.showBreadCrumb) {

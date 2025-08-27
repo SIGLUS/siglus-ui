@@ -155,7 +155,7 @@
                 hideBreadcrumb();
             }
             vm.productLineItems = sortProductLineItems(getProductLineItems(requisition.requisitionLineItems));
-            console.log('openlmis.analyticsReport.requisitionAndMonthly.mmia', vm.productLineItems);
+            console.log('sortProductLineItems', vm.productLineItems);
             services = requisition.testConsumptionLineItems;
             vm.year = moment(requisition.processingPeriod.endDate).format('YYYY');
             vm.signaure = getSignaure(requisition.extraData.signaure);
