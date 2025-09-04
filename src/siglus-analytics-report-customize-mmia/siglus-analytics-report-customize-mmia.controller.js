@@ -147,6 +147,82 @@
             );
         }
 
+        var regimenOrderAdults = ['1aLTLD', '1alt1', '1alt2', '2alt3', '2alt1', '2alt2', 'A2F',
+            'C7A', 'ABC12', '2Op4', 'HepB_TDF', 'PreP_TDF+3TC'].map(function(c) {
+            return c.toUpperCase();
+        });
+
+        var regimenOrderPaediatrics = ['X7BPed', 'X7APed', 'X6APed', 'ABCPedCpts', 'A2Fped Cpts',
+            'CE123'].map(function(c) {
+            return c.toUpperCase();
+        });
+
+        function sortRegimenOrderAdults(regimenLineItems) {
+            var sort1 = [];
+            regimenOrderAdults.forEach(function(c) {
+                var found = _.find(regimenLineItems, function(r) {
+                    return c === _.get(r, ['regimen', 'code'], '').toUpperCase();
+                });
+                if (found) {
+                    sort1.push(found);
+                }
+            });
+
+            var allDefined = {};
+            regimenOrderAdults.forEach(function(code) {
+                allDefined[code] = true;
+            });
+
+            var otherLineItems = regimenLineItems.filter(function(p) {
+                var code = _.get(p, ['regimen', 'code'], '').toUpperCase();
+                return code && !allDefined[code];
+            });
+
+            otherLineItems.sort(function(a, b) {
+                return _.get(a, ['regimen', 'code'])
+                    .localeCompare(_.get(b, ['regimen', 'code']));
+            });
+            console.log('sortRegimenOrderAdults sort1', sort1);
+            console.log('sortRegimenOrderAdults otherLineItems', otherLineItems);
+            return [].concat(
+                sort1,
+                otherLineItems
+            );
+        }
+
+        function sortRegimenOrderPaediatrics(regimenLineItems) {
+            var sort1 = [];
+            regimenOrderPaediatrics.forEach(function(c) {
+                var found = _.find(regimenLineItems, function(r) {
+                    return c === _.get(r, ['regimen', 'code'], '').toUpperCase();
+                });
+                if (found) {
+                    sort1.push(found);
+                }
+            });
+
+            var allDefined = {};
+            regimenOrderPaediatrics.forEach(function(code) {
+                allDefined[code] = true;
+            });
+
+            var otherLineItems = regimenLineItems.filter(function(p) {
+                var code = _.get(p, ['regimen', 'code'], '').toUpperCase();
+                return code && !allDefined[code];
+            });
+
+            otherLineItems.sort(function(a, b) {
+                return _.get(a, ['regimen', 'code'])
+                    .localeCompare(_.get(b, ['regimen', 'code']));
+            });
+            console.log('sortRegimenOrderPaediatrics sort1', sort1);
+            console.log('sortRegimenOrderPaediatrics otherLineItems', otherLineItems);
+            return [].concat(
+                sort1,
+                otherLineItems
+            );
+        }
+
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -155,7 +231,7 @@
                 hideBreadcrumb();
             }
             vm.productLineItems = sortProductLineItems(getProductLineItems(requisition.requisitionLineItems));
-            console.log('sortProductLineItems', vm.productLineItems);
+            console.log('openlmis.analyticsReport.requisitionAndMonthly.mmia', vm.productLineItems);
             services = requisition.testConsumptionLineItems;
             vm.year = moment(requisition.processingPeriod.endDate).format('YYYY');
             vm.signaure = getSignaure(requisition.extraData.signaure);
@@ -184,15 +260,18 @@
             var categories = getCategories(vm.requisition.regimenLineItems);
             var adultoItems = categories['Adulto'] || [];
 
-            vm.regimensAdults = adultoItems.filter(function(lineItem) {
+            vm.regimensAdults = sortRegimenOrderAdults(adultoItems.filter(function(lineItem) {
                 return lineItem.regimen && lineItem.regimen.code !== 'CE123';
-            });
+            }));
+            console.log('vm.regimensAdults', vm.regimensAdults);
 
             var extraItems = vm.requisition.regimenLineItems.filter(function(lineItem) {
                 return lineItem.regimen && (lineItem.regimen.code === 'X7BPed' || lineItem.regimen.code === 'CE123');
             });
-            vm.regimensPaediatrics = _.union(getCategories(vm.requisition.regimenLineItems)['Criança'],
-                extraItems);
+            vm.regimensPaediatrics = sortRegimenOrderPaediatrics(
+                _.union(getCategories(vm.requisition.regimenLineItems)['Criança'],
+                    extraItems)
+            );
             setBarCodeDom();
             var summerySection = _.find(vm.requisition.usageTemplate.regimen, function(item) {
                 return item.name === 'summary';
