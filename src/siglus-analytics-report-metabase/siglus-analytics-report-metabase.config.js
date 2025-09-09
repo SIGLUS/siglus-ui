@@ -29,7 +29,8 @@
             'self',
             // Allow loading from our assets domain.  Notice the difference between * and **.
             'https://*-metabase.siglus.us/**',
-            'https://*.simam.cmam.gov.mz/**'
+            'https://*.simam.cmam.gov.mz/**',
+            'https://*.sigeca.org/**'
         ]);
     }
 
