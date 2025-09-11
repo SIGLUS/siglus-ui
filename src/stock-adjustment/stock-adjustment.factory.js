@@ -71,6 +71,7 @@
             return getMapOfIdAndLot(draft.lineItems).then(function(mapOfIdAndLot) {
                 var newLineItems = [];
                 draft.lineItems.forEach(function(draftLineItem) {
+                    console.log('draftLineItem.orderableId', draftLineItem.orderableId);
                     // set default value for orderable
                     var orderable = mapOfIdAndOrderable[draftLineItem.orderableId] || {
                         programs: [],
