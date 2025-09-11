@@ -2,8 +2,8 @@ $res-xs: 320px;
 $res-sm: 576px;
 $res-md: 768px;
 
-.auth-modal {
-  background-color: $dark-gray;
+.auth-modal.reset-modal {
+  background-color: rgb(1, 40, 83) !important;
 
   .modal-content {
     background-image: linear-gradient(to bottom, $white 0%, $white 48%, $light-gray 100%);
@@ -46,17 +46,18 @@ $res-md: 768px;
     }
   }
 
-  .modal-body, #login-form {
-    background-image: url("openlmis-auth/CMAM-logo.png");
-    background-size: 40% auto;
-    background-position: 2em 45%;
+  .modal-body {
+    background-image: url("openlmis-auth/logo-header.png") !important;
+    background-size: auto !important;
+    background-position: 50px 20px !important;
+    min-height: 258px + $space-size !important;
     background-repeat: no-repeat;
     @media screen and (max-width: $res-sm) {
       background-size: 30% auto;
     }
-
-    padding: 1em 1em 1em 50% !important;
-
+    
+    padding: 20% 25% 1em 25% !important;
+    
     & > .form-desc,
     & > form > fieldset {
       width: 100%;
