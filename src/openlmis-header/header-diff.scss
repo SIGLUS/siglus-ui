@@ -30,19 +30,14 @@ body > header {
   }
 
   > .logo {
-    display: block;
-    overflow: hidden;
+    background-image: url("openlmis-header/logo.png");
     background-repeat: no-repeat;
-    background-size: auto $font-size-openlmis-header-title;
+    display: block;
+    text-indent: -30000em;
+    overflow: hidden;
+    background-size: auto 36px;
     flex-grow: 1;
-    font-size: 22px;
-    height: $font-size-openlmis-header-title;
-    @media screen and (max-width: $res-sm) {
-      background-size: auto 24px;
-    }
-    @media screen and (max-width: $res-xs) {
-      background-size: auto 20px;
-    }
+    height: 36px;
   }
 }
 
