@@ -1,9 +1,9 @@
 {
   "siglusIssueOrReceiveReport.modelo": "CMAM - Modelo 02",
-  "siglusIssueOrReceiveReport.republic_of_mozambique": "REPUBLIC OF MOZAMBIQUE",
-  "siglusIssueOrReceiveReport.ministry_of_health": "MINISTRY OF HEALTH",
+  "siglusIssueOrReceiveReport.republic_of_mozambique": "Republic of Angola",
+  "siglusIssueOrReceiveReport.ministry_of_health": "Ministry of Health",
   "siglusIssueOrReceiveReport.health_facility": "Health Facility",
-  "siglusIssueOrReceiveReport.central_medicines_and_medical_articles": "CENTRAL MEDICINES AND MEDICAL ARTICLES",
+  "siglusIssueOrReceiveReport.central_medicines_and_medical_articles": "CECOMA – Central de Compras e Aprovisionamento de Medicamentos e Meios Médicos",
   "siglusIssueOrReceiveReport.issueVoucherNo": "Issue Voucher ",
   "siglusIssueOrReceiveReport.supplier": "Supplier",
   "siglusIssueOrReceiveReport.client": "Client",
