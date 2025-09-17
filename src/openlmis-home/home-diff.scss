@@ -26,6 +26,28 @@
         width: 170px;
         height: 100px;
     }
+
+    .footer-container {
+        position: absolute;
+        right: 40px;
+        bottom: 40px;
+        font-size: 12px;
+        text-align: right;
+    }
+
+    .footer-title {
+        font-family: "Gill Sans MT", sans-serif;
+        font-size: 9pt;
+        color: rgb(186, 12, 47);
+        padding-bottom: 6px;
+    }
+
+    .footer-subtitle {
+        font-family: "Gill Sans MT", sans-serif;
+        font-size: 8pt;
+        color: rgb(0, 47, 108);
+    }
+
     .power-container {
         position: absolute;
         left: 36px;

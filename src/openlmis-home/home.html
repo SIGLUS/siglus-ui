@@ -18,11 +18,18 @@
             {{'openlmisLogin.poweredBy' | message:({openlmis:'OpenLMIS'})}}
         </h2>
         <h2 ng-if="!vm.isLocalMachine" class="version">
-            {{'adminFacilityView.version' | message}}: 2.1.4
+            {{'adminFacilityView.version' | message}}: 2.1.7
         </h2>
         <openlmis-app-cache></openlmis-app-cache>
     </div>
-    <div class="usaid"></div>
+    <!--    <div class="usaid"></div>-->
+    <div class="footer-container">
+        <div class="footer-title">
+            Contractor for <b>Global Health Supply Chain Program</b>
+        </div>
+        <b class="footer-subtitle">Procurement and Supply Management</b>
+    </div>
+
     <div ng-if="vm.isLocalMachine" class="offline-container">
         <div class="sync-version">
             <span>{{'openlmisHome.localMachineVersion' | message}}：</span>
