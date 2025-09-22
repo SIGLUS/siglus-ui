@@ -66,10 +66,10 @@
         vm.requisition = {};
         vm.mergedPatientMap = {};
 
-        var productOrder = ['08C01', '08H07X', '08H07XZ', '08H07Y', '08H07', '08L02', '08L02X', '08L02Z',
-            '08L03', '08L04', '08L05', '08L05Y', '08L06X', '08L06XZ', '08L06Y', '08L06YZ', '08L06Z', '08L07', '08L08',
-            '08L09', '08L0XX', '08L10', '08L10X', '08L10Z', '08L11W', '08L12X', '08L11X', '08L11Y', '08L11Z', '08M01',
-            '08M02', '08D01I', '12D14', '12D14Z'];
+        var productOrder = ['08L08', '08L07', '08L06Z', '08L0XX', '08L09', '08M01', '08M02', '08L10Z',
+            '08L10', '08L06YZ', '08L06Y', '08L02Z', '08L02', '08L11X', '08L11Y', '08H07XZ', '08H07X', '08L10X',
+            '08L11Z', '08L12X', '08L05Y', '08L05', '08D01I', '08C01', '08L11I', '08L11W', '08L04', '08L03',
+            '08H07Y', '08H07', '08L06X', '08L06XZ', '12D14', '12D14Z'];
 
         function sortProductLineItems(productLineItems) {
             var sort = [];

@@ -83,6 +83,113 @@
                             '$program.displayOrder',
                             'orderable.fullProductName'
                         ];
+                        // TODO community table component will merge the lines with same category in one page
+                        // even sort is correct
+                        var productOrder = ['08L08', '08L07', '08L06Z', '08L0XX', '08L09', '08M01', '08M02',
+                            '08L10Z', '08L10', '08L06YZ', '08L06Y', '08L02Z', '08L02', '08L11X', '08L11Y', '08H07XZ',
+                            '08H07X', '08L10X', '08L11Z', '08L12X', '08L05Y', '08L05', '08D01I', '08C01', '08L11I',
+                            '08L11W', '08L04', '08L03', '08H07Y', '08H07', '08L06X', '08L06XZ', '12D14', '12D14Z'];
+                        function sortProductLineItems(productLineItems) {
+                            var sort = [];
+                            productOrder.forEach(function(c) {
+                                var found = _.find(productLineItems, function(p) {
+                                    return c === _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                                });
+                                if (found) {
+                                    sort.push(found);
+                                }
+                            });
+
+                            var allDefined = {};
+                            productOrder.forEach(function(code) {
+                                allDefined[code] = true;
+                            });
+
+                            var otherLineItems = productLineItems.filter(function(p) {
+                                var code = _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                                return code && !allDefined[code];
+                            });
+
+                            otherLineItems.sort(function(a, b) {
+                                return _.get(a, ['orderable', 'productCode'])
+                                    .localeCompare(_.get(b, ['orderable', 'productCode']));
+                            });
+
+                            return [].concat(
+                                sort,
+                                otherLineItems
+                            );
+                        }
+
+                        var productOrder1 = ['08S18WI', '08S18W', '08S40', '08S18Z', '08S01ZY', '08S30WZ',
+                            '08S30ZY', '08S38Z', '08S30Y', '08S29'];
+                        var productOrder2 = ['08S01ZV', '08S01ZVI', '08S30ZW', '08S39B', '08S01Zw', '08S40Z'];
+                        var productOrder3 = ['08S23', '08S17'];
+
+                        function sortMMIAProductLineItems(productLineItems) {
+                            var sort1 = [];
+                            productOrder1.forEach(function(c) {
+                                var found = _.find(productLineItems, function(p) {
+                                    return c === _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                                });
+                                if (found) {
+                                    sort1.push(found);
+                                }
+                            });
+
+                            var sort2 = [];
+                            productOrder2.forEach(function(c) {
+                                var found = _.find(productLineItems, function(p) {
+                                    return c === _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                                });
+                                if (found) {
+                                    sort2.push(found);
+                                }
+                            });
+
+                            var sort3 = [];
+                            productOrder3.forEach(function(c) {
+                                var found = _.find(productLineItems, function(p) {
+                                    return c === _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                                });
+                                if (found) {
+                                    sort3.push(found);
+                                }
+                            });
+
+                            var allDefined = {};
+                            productOrder1.concat(productOrder2, productOrder3).forEach(function(code) {
+                                allDefined[code] = true;
+                            });
+
+                            var otherLineItems = productLineItems.filter(function(p) {
+                                var code = _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                                return code && !allDefined[code];
+                            });
+
+                            otherLineItems.sort(function(a, b) {
+                                return _.get(a, ['orderable', 'productCode'])
+                                    .localeCompare(_.get(b, ['orderable', 'productCode']));
+                            });
+
+                            return [].concat(
+                                sort1,
+                                sort2,
+                                sort3,
+                                otherLineItems
+                            );
+                        }
+
+                        if ('TB' === program.code) {
+                            var sortedMMTBLineItems = sortProductLineItems(fullSupplyLineItems);
+                            console.log('sortedLineItems', sortedMMTBLineItems);
+                            return sortedMMTBLineItems;
+                        }
+                        if ('T' === program.code) {
+                            var sortedMMIALineItems = sortMMIAProductLineItems(fullSupplyLineItems);
+                            console.log('sortedMMIALineItems', sortedMMIALineItems);
+                            return sortedMMIALineItems;
+                        }
                         return $filter('orderBy')(fullSupplyLineItems, sortOrder);
                     },
                     items: function(paginationService, lineItems, $stateParams, requisitionValidator,
