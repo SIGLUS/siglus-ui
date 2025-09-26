@@ -171,15 +171,8 @@
 
         function print() {
             if (vm.isPrintAsReport) {
-                var programCodeToReportNameMap = {
-                    VC: 'Balance Requisition',
-                    TR: 'MMIT',
-                    ML: 'Malaria',
-                    T: 'MMIA',
-                    TB: 'MMTB'
-                };
                 var printUrl = '#!/requisitions/'
-                    + programCodeToReportNameMap[vm.program.code]
+                    + 'Balance%20Requisition'
                     + '/'
                     + vm.requisition.id
                     + '?showBreadCrumb=false';

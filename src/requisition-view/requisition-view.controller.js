@@ -392,16 +392,9 @@
             var status = vm.requisition.isInitForClient ? 'APPROVED' : vm.requisition.status;
             if (status === 'APPROVED' || status === 'IN_APPROVAL' || status === 'RELEASED'
                 || status === 'RELEASED_WITHOUT_ORDER') {
-                var programCodeToReportNameMap = {
-                    VC: 'Balance Requisition',
-                    TR: 'MMIT',
-                    ML: 'Malaria',
-                    T: 'MMIA',
-                    TB: 'MMTB'
-                };
                 var printUrl = '#!/'
                     + 'requisitions/'
-                    + programCodeToReportNameMap[vm.program.code]
+                    + 'Balance%20Requisition'
                     + '/'
                     + vm.requisition.id
                     + '?'
