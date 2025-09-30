@@ -218,14 +218,21 @@
                                 }
                             }
                         };
-
-                        $scope.filterLotOptions = function(originalOptions) {
+                        // TODO openlmis.js:26 TypeError: Cannot read properties of null (reading 'expirationDate')
+                        function filterLotOptions(originalOptions) {
                             return _.filter(originalOptions, function(option) {
-                                var isExpired = moment().isAfter(moment(option.expirationDate).add(1, 'd'));
-                                var soh = getLotSOH(option);
-                                return !isExpired || soh > 0;
+                                if (option && option.expirationDate) {
+                                    var isExpired = moment().isAfter(moment(option.expirationDate).add(1, 'd'));
+                                    var soh = getLotSOH(option);
+                                    return !isExpired || soh > 0;
+                                }
+                                return true;
                             });
-                        };
+                        }
+
+                        $scope.$watchCollection('lineItem.lotOptions', function(newOptions) {
+                            $scope.filteredLotOptions = filterLotOptions(newOptions);
+                        });
 
                         function validateRequiredLot(lineItem) {
                             if (!lineItem.isKit) {
