@@ -70,159 +70,6 @@
         vm.totalWithTreatment = undefined;
         vm.adjustmentValue = undefined;
 
-        var productOrder1 = ['08S18WI', '08S18W', '08S40', '08S18Z', '08S01ZY', '08S30WZ',
-            '08S30ZY', '08S38Z', '08S30Y', '08S29'];
-        var productOrder2 = ['08S01ZV', '08S01ZVI', '08S30ZW', '08S39B', '08S01Zw', '08S40Z'];
-        var productOrder3 = ['08S23', '08S17'];
-
-        function sortProductLineItems(productLineItems) {
-            var sort1 = [];
-            productOrder1.forEach(function(c) {
-                var found = _.find(productLineItems, function(p) {
-                    return c === _.get(p, ['orderable', 'productCode'], '').toUpperCase();
-                });
-                if (found) {
-                    sort1.push(found);
-                }
-            });
-
-            var sort2 = [];
-            productOrder2.forEach(function(c) {
-                var found = _.find(productLineItems, function(p) {
-                    return c === _.get(p, ['orderable', 'productCode'], '').toUpperCase();
-                });
-                if (found) {
-                    sort2.push(found);
-                }
-            });
-
-            var sort3 = [];
-            productOrder3.forEach(function(c) {
-                var found = _.find(productLineItems, function(p) {
-                    return c === _.get(p, ['orderable', 'productCode'], '').toUpperCase();
-                });
-                if (found) {
-                    sort3.push(found);
-                }
-            });
-
-            var divider1 = _.filter(productLineItems, function(p) {
-                return !_.get(p, ['orderable', 'productCode']) &&
-                    'Adulto' === _.get(p, ['orderable', 'programs', '0', 'orderableCategoryDisplayName']);
-            });
-
-            var divider2 = _.filter(productLineItems, function(p) {
-                return !_.get(p, ['orderable', 'productCode']) &&
-                    'Pediátrico' === _.get(p, ['orderable', 'programs', '0', 'orderableCategoryDisplayName']);
-            });
-
-            var divider3 = _.filter(productLineItems, function(p) {
-                return !_.get(p, ['orderable', 'productCode']) &&
-                    'Solution' === _.get(p, ['orderable', 'programs', '0', 'orderableCategoryDisplayName']);
-            });
-
-            var allDefined = {};
-            productOrder1.concat(productOrder2, productOrder3).forEach(function(code) {
-                allDefined[code] = true;
-            });
-
-            var otherLineItems = productLineItems.filter(function(p) {
-                var code = _.get(p, ['orderable', 'productCode'], '').toUpperCase();
-                return code && !allDefined[code];
-            });
-
-            otherLineItems.sort(function(a, b) {
-                return _.get(a, ['orderable', 'productCode'])
-                    .localeCompare(_.get(b, ['orderable', 'productCode']));
-            });
-
-            return [].concat(
-                sort1,
-                divider1,
-                sort2,
-                divider2,
-                sort3,
-                divider3,
-                otherLineItems
-            );
-        }
-
-        var regimenOrderAdults = ['1aLTLD', '1alt1', '1alt2', '2alt3', '2alt1', '2alt2', 'A2F',
-            'C7A', 'ABC12', '2Op4', 'HepB_TDF', 'PreP_TDF+3TC'].map(function(c) {
-            return c.toUpperCase();
-        });
-
-        var regimenOrderPaediatrics = ['X7BPed', 'X7APed', 'X6APed', 'ABCPedCpts', 'A2Fped Cpts',
-            'CE123'].map(function(c) {
-            return c.toUpperCase();
-        });
-
-        function sortRegimenOrderAdults(regimenLineItems) {
-            var sort1 = [];
-            regimenOrderAdults.forEach(function(c) {
-                var found = _.find(regimenLineItems, function(r) {
-                    return c === _.get(r, ['regimen', 'code'], '').toUpperCase();
-                });
-                if (found) {
-                    sort1.push(found);
-                }
-            });
-
-            var allDefined = {};
-            regimenOrderAdults.forEach(function(code) {
-                allDefined[code] = true;
-            });
-
-            var otherLineItems = regimenLineItems.filter(function(p) {
-                var code = _.get(p, ['regimen', 'code'], '').toUpperCase();
-                return code && !allDefined[code];
-            });
-
-            otherLineItems.sort(function(a, b) {
-                return _.get(a, ['regimen', 'code'])
-                    .localeCompare(_.get(b, ['regimen', 'code']));
-            });
-            console.log('sortRegimenOrderAdults sort1', sort1);
-            console.log('sortRegimenOrderAdults otherLineItems', otherLineItems);
-            return [].concat(
-                sort1,
-                otherLineItems
-            );
-        }
-
-        function sortRegimenOrderPaediatrics(regimenLineItems) {
-            var sort1 = [];
-            regimenOrderPaediatrics.forEach(function(c) {
-                var found = _.find(regimenLineItems, function(r) {
-                    return c === _.get(r, ['regimen', 'code'], '').toUpperCase();
-                });
-                if (found) {
-                    sort1.push(found);
-                }
-            });
-
-            var allDefined = {};
-            regimenOrderPaediatrics.forEach(function(code) {
-                allDefined[code] = true;
-            });
-
-            var otherLineItems = regimenLineItems.filter(function(p) {
-                var code = _.get(p, ['regimen', 'code'], '').toUpperCase();
-                return code && !allDefined[code];
-            });
-
-            otherLineItems.sort(function(a, b) {
-                return _.get(a, ['regimen', 'code'])
-                    .localeCompare(_.get(b, ['regimen', 'code']));
-            });
-            console.log('sortRegimenOrderPaediatrics sort1', sort1);
-            console.log('sortRegimenOrderPaediatrics otherLineItems', otherLineItems);
-            return [].concat(
-                sort1,
-                otherLineItems
-            );
-        }
-
         function onInit() {
             vm.facility = facility;
             vm.requisition = requisition;
@@ -230,8 +77,7 @@
             if (vm.showBreadCrumb) {
                 hideBreadcrumb();
             }
-            vm.productLineItems = sortProductLineItems(getProductLineItems(requisition.requisitionLineItems));
-            console.log('openlmis.analyticsReport.requisitionAndMonthly.mmia', vm.productLineItems);
+            vm.productLineItems = getProductLineItems(requisition.requisitionLineItems);
             services = requisition.testConsumptionLineItems;
             vm.year = moment(requisition.processingPeriod.endDate).format('YYYY');
             vm.signaure = getSignaure(requisition.extraData.signaure);
@@ -256,22 +102,12 @@
             vm.services = _.chain(services)
                 .sortBy('displayOrder')
                 .value();
-
-            var categories = getCategories(vm.requisition.regimenLineItems);
-            var adultoItems = categories['Adulto'] || [];
-
-            vm.regimensAdults = sortRegimenOrderAdults(adultoItems.filter(function(lineItem) {
-                return lineItem.regimen && lineItem.regimen.code !== 'CE123';
-            }));
-            console.log('vm.regimensAdults', vm.regimensAdults);
-
+            vm.regimensAdults = getCategories(vm.requisition.regimenLineItems)['Adulto'];
             var extraItems = vm.requisition.regimenLineItems.filter(function(lineItem) {
-                return lineItem.regimen && (lineItem.regimen.code === 'X7BPed' || lineItem.regimen.code === 'CE123');
+                return lineItem.regimen && lineItem.regimen.code === 'X7BPed';
             });
-            vm.regimensPaediatrics = sortRegimenOrderPaediatrics(
-                _.union(getCategories(vm.requisition.regimenLineItems)['Criança'],
-                    extraItems)
-            );
+            vm.regimensPaediatrics = _.union(getCategories(vm.requisition.regimenLineItems)['Criança'],
+                extraItems);
             setBarCodeDom();
             var summerySection = _.find(vm.requisition.usageTemplate.regimen, function(item) {
                 return item.name === 'summary';
