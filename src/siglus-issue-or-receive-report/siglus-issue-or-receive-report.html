@@ -279,7 +279,7 @@
     <section id="sectionThird" class="section-third">
       <div class="issue-voucher-title">{{ 'siglusIssueOrReceiveReport.totalValue' | message }}</div>
       <div class="issue-voucher" style="text-align: center;">
-        {{ vm.reportPDFInfo.type === 'issue' || vm.reportPDFInfo.type === 'pod' ? (vm.reportPDFInfo.totalPriceValue / 100).toFixed(2) : '' }}
+        {{ vm.reportPDFInfo.type === 'issue' || vm.reportPDFInfo.type === 'pod' ? (vm.reportPDFInfo.totalPriceValue).toFixed(2) : '' }}
       </div>
     </section>
     <section id="sectionFouth" class="section-fouth">

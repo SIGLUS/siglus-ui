@@ -362,7 +362,7 @@
                 client: podInfo.client,
                 requisitionNumber: podInfo.requisitionNum,
                 requisitionDate: moment(podInfo.requisitionDate).format('YYYY-MM-DD'),
-                issueVoucherDate: moment(order.occurredDate).format('YYYY-MM-DD'),
+                issueVoucherDate: moment(podInfo.issueVoucherDate).format('YYYY-MM-DD'),
                 numberN: numberAndFileName.podNumber,
                 receptionDate: podInfo.receivedDate,
                 totalPriceValue: _.reduce(lineItemsInPDF, function(acc, lineItem) {
