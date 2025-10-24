@@ -75,6 +75,7 @@
          * @return {Promise}        page of stock card summaries
          */
         function query(params) {
+            console.log('FullStockCardSummaryRepositoryImpl query');
             var LotResource = this.LotResource,
                 OrderableResource = this.OrderableResource;
                 // orderableFulfillsResource = this.orderableFulfillsResource;
@@ -136,11 +137,13 @@
                     });
                     var promise = deferred.promise;
                     if (tradeItemIds.length > 0) {
-                        return  LotResource.query({
-                            tradeItemId: tradeItemIds
-                        })
-                            .then(function(lotPage) {
-                                return handleMissingStocklessProducts(facilityId, summaries, orderablePage, lotPage);
+                        console.log('givenOrderableIds', givenOrderableIds);
+                        return siglusOrderableLotService.getFacilityLotsByOrderableIds(facilityId, givenOrderableIds)
+                            .then(function(response) {
+                                console.log('getFacilityLotsByOrderableIds response', response);
+                                return handleMissingStocklessProducts(facilityId, summaries, orderablePage, {
+                                    content: response.data
+                                });
                             });
                     }
                     return promise.then(function(lotPage) {
