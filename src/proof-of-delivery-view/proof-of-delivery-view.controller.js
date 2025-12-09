@@ -163,6 +163,9 @@
                 return reason.name === NEWLY_ADDED_LOT_REASON_NAME;
             }, {});
             vm.proofOfDelivery = proofOfDelivery;
+            if (vm.proofOfDelivery.status === 'CONFIRMED' && vm.order.status !== 'RECEIVED') {
+                vm.order.status = 'RECEIVED';
+            }
             vm.orderLineItems = orderLineItems;
             vm.vvmStatuses = VVM_STATUS;
             vm.showVvmColumn = proofOfDelivery.hasProductsUseVvmStatus();

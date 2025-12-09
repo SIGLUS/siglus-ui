@@ -169,6 +169,11 @@
          */
         function onInit() {
             vm.pods = pods;
+            vm.pods.forEach(function(pod) {
+                if (pod.proofOfDeliveryStatus === 'CONFIRMED' && pod.status !== 'RECEIVED') {
+                    pod.status = 'RECEIVED';
+                }
+            });
             vm.programs = _.filter(programs, function(program) {
                 return program.code !== 'ML';
             });
