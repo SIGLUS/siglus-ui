@@ -83,6 +83,73 @@
                             '$program.displayOrder',
                             'orderable.fullProductName'
                         ];
+                        // TODO community table component will merge the lines with same category in one page
+                        // even sort is correct
+
+                        var productOrder1 = ['08S18WI', '08S18W', '08S40', '08S18Z', '08S01ZY', '08S30WZ',
+                            '08S30ZY', '08S38Z', '08S30Y', '08S29'];
+                        var productOrder2 = ['08S01ZV', '08S01ZVI', '08S30ZW', '08S39B', '08S01Zw', '08S40Z'];
+                        var productOrder3 = ['08S23', '08S17'];
+
+                        function sortMMIAProductLineItems(productLineItems) {
+                            var sort1 = [];
+                            productOrder1.forEach(function(c) {
+                                var found = _.find(productLineItems, function(p) {
+                                    return c === _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                                });
+                                if (found) {
+                                    sort1.push(found);
+                                }
+                            });
+
+                            var sort2 = [];
+                            productOrder2.forEach(function(c) {
+                                var found = _.find(productLineItems, function(p) {
+                                    return c === _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                                });
+                                if (found) {
+                                    sort2.push(found);
+                                }
+                            });
+
+                            var sort3 = [];
+                            productOrder3.forEach(function(c) {
+                                var found = _.find(productLineItems, function(p) {
+                                    return c === _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                                });
+                                if (found) {
+                                    sort3.push(found);
+                                }
+                            });
+
+                            var allDefined = {};
+                            productOrder1.concat(productOrder2, productOrder3).forEach(function(code) {
+                                allDefined[code] = true;
+                            });
+
+                            var otherLineItems = productLineItems.filter(function(p) {
+                                var code = _.get(p, ['orderable', 'productCode'], '').toUpperCase();
+                                return code && !allDefined[code];
+                            });
+
+                            otherLineItems.sort(function(a, b) {
+                                return _.get(a, ['orderable', 'productCode'])
+                                    .localeCompare(_.get(b, ['orderable', 'productCode']));
+                            });
+
+                            return [].concat(
+                                sort1,
+                                sort2,
+                                sort3,
+                                otherLineItems
+                            );
+                        }
+
+                        if ('T' === program.code) {
+                            var sortedMMIALineItems = sortMMIAProductLineItems(fullSupplyLineItems);
+                            console.log('sortedMMIALineItems', sortedMMIALineItems);
+                            return sortedMMIALineItems;
+                        }
                         return $filter('orderBy')(fullSupplyLineItems, sortOrder);
                     },
                     items: function(paginationService, lineItems, $stateParams, requisitionValidator,
