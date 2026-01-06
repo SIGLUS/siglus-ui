@@ -1752,6 +1752,7 @@
   "requisitionViewTab.skip": "Ignorar",
   "requisitionViewTab.totalLossesAndAdjustment.disabled": "Transferência",
   "requisitionForClient.selectClientFacility": "Selecionar a instalação do cliente",
+  "requisitionForClient.requisitionAlreadyExist": "Já existe uma requição, por favor refresque a página.",
   "selectAdditionalProductModal.add": "Adicionar",
   "selectAdditionalProductModal.addAdditionalProduct": "Adicionar Produtos",
   "selectAdditionalProductModal.addProducts.emptyList": "Você não selecionou nenhum produto",

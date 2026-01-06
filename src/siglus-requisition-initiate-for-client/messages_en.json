@@ -1,3 +1,4 @@
 {
-  "requisitionForClient.selectClientFacility": "Selected client facility"
+  "requisitionForClient.selectClientFacility": "Selected client facility",
+  "requisitionForClient.requisitionAlreadyExist": "Requisition already exist, please refresh the page."
 }

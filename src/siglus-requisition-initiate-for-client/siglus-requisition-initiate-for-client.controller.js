@@ -29,12 +29,12 @@
     controller.$inject = [
         '$stateParams', '$state', 'REQUISITION_STATUS', 'localStorageService',
         'SiglusRequisitionInitiateForClientService', 'loadingModalService', 'notificationService', 'moment',
-        'requisitionService', 'alertService'
+        'requisitionService', 'alertService', 'messageService'
     ];
 
     function controller($stateParams, $state, REQUISITION_STATUS, localStorageService,
                         SiglusRequisitionInitiateForClientService, loadingModalService, notificationService, moment,
-                        requisitionService, alertService) {
+                        requisitionService, alertService, messageService) {
         var vm = this;
         var CREATE_FOR_CLIENT_ID = 'create_for_client_facility_id';
 
@@ -132,7 +132,7 @@
                     if (error && error.data
                         && error.data.detail === 'Requisition already exist, please refresh the page') {
                         console.log('trigger error modal');
-                        alertService.error('Requisition already exist, please refresh the page');
+                        alertService.error(messageService.get('requisitionForClient.requisitionAlreadyExist'));
                     }
                     loadingModalService.close();
                 });
