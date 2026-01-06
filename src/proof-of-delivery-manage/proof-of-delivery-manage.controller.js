@@ -371,7 +371,7 @@
                 numberN: numberAndFileName.podNumber,
                 receptionDate: podInfo.receivedDate,
                 totalPriceValue: _.reduce(lineItemsInPDF, function(acc, lineItem) {
-                    var price = lineItem.price ? lineItem.price : 0;
+                    var price = lineItem.price ? lineItem.price * 100 : 0;
                     return acc + lineItem.quantityShipped * price;
                 }, 0),
                 preparedBy: podInfo.preparedBy,
