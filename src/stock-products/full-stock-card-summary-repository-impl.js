@@ -138,7 +138,8 @@
                     var promise = deferred.promise;
                     if (tradeItemIds.length > 0) {
                         console.log('givenOrderableIds', givenOrderableIds);
-                        return siglusOrderableLotService.getFacilityLotsByOrderableIds(facilityId, givenOrderableIds)
+
+                        return siglusOrderableLotService.getLotsByOrderableIds(givenOrderableIds)
                             .then(function(response) {
                                 console.log('getFacilityLotsByOrderableIds response', response);
                                 return handleMissingStocklessProducts(facilityId, summaries, orderablePage, {
