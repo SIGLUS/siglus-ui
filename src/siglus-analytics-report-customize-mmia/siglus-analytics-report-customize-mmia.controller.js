@@ -379,13 +379,11 @@
             var lineItemsGroupByCategory = _.reduce(productLineItems, function(r, c) {
                 if (
                     r[c.orderable.programs[0].orderableCategoryDisplayName]
-                        && c.orderable.programs[0].orderableCategoryDisplayName !== 'Default'
                 ) {
                     r[c.orderable.programs[0].orderableCategoryDisplayName].push(c);
                 }
                 if (
                     !r[c.orderable.programs[0].orderableCategoryDisplayName]
-                        && c.orderable.programs[0].orderableCategoryDisplayName !== 'Default'
                 ) {
                     r[c.orderable.programs[0].orderableCategoryDisplayName] = [c];
                 }
