@@ -86,8 +86,8 @@
                         // TODO community table component will merge the lines with same category in one page
                         // even sort is correct
 
-                        var productOrder1 = ['08S18WI', '08S18W', '08S40', '08S18Z', '08S01ZY', '08S30WZ',
-                            '08S30ZY', '08S38Z', '08S30Y', '08S29'];
+                        var productOrder1 = ['08S18WI', '08S18W', '08S40', '08S18Z', '08S18ZX', '08S18XZ',
+                            '08S01ZY', '08S30WZ', '08S30ZY', '08S38Z', '08S30Y', '08S29'];
                         var productOrder2 = ['08S01ZV', '08S01ZVI', '08S30ZW', '08S39B', '08S01ZWI', '08S40Z'];
                         var productOrder3 = ['08S23', '08S17'];
 
