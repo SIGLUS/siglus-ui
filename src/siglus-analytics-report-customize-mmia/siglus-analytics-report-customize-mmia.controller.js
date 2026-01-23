@@ -148,7 +148,7 @@
         }
 
         var regimenOrderAdults = ['1aLTLD', '1alt1', '1alt2', '2alt3', '2alt1', '2alt2', 'A2F',
-            'C7A', 'ABC12', '2Op4', 'HepB_TDF', 'PreP_TDF+3TC'].map(function(c) {
+            'C7A', 'ABC12', '2Op4', 'HepB_TDF', 'PreP_LEN', 'PreP_TDF+3TC'].map(function(c) {
             return c.toUpperCase();
         });
 
