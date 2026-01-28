@@ -200,12 +200,35 @@
         }
 
         function batchCloseFulfillment() {
-            loadingModalService.open();
-            orderRepository.batchClose().then(function() {
-                loadOrders();
-                $state.reload();
-            })
-                .finally(loadingModalService.close);
+            var expiredOrders = orderList.content
+                .filter(function(order) {
+                    return order.expired;
+                })
+                .map(function(order) {
+                    return order.orderCode;
+                });
+
+            var html =
+                '<h1>Para encerrar pedidos expirados</h1>' +
+                '<ul>' +
+                expiredOrders.map(function(code) {
+                    return '<li>' + code + '</li>';
+                }).join('') +
+                '</ul>';
+
+            confirmService.confirm(
+                html,
+                'PhysicalInventoryDraftList.confirm',
+                'PhysicalInventoryDraftList.cancel'
+            )
+                .then(function() {
+                    loadingModalService.open();
+                    orderRepository.batchClose().then(function() {
+                        loadOrders();
+                        $state.reload();
+                    })
+                        .finally(loadingModalService.close);
+                });
         }
     }
 })();
