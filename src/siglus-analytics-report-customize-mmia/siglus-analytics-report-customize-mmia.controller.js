@@ -70,9 +70,28 @@
         vm.totalWithTreatment = undefined;
         vm.adjustmentValue = undefined;
 
-        var productOrder1 = ['08S18WI', '08S18W', '08S40', '08S18Z', '08S18ZX', '08S18XZ',
-            '08S01ZY', '08S30WZ', '08S30ZY', '08S38Z', '08S30Y', '08S29'];
-        var productOrder2 = ['08S01ZV', '08S01ZVI', '08S30ZW', '08S39B', '08S01ZWI', '08S40Z'];
+        var productOrder1 = [
+            '08S18WI',
+            '08S18W',
+            '08S40',
+            '08S18Z',
+            '08S01ZY',
+            '08S30WZ',
+            '08S30ZY',
+            '08S39Z',
+            '08S30Y',
+            '08S29',
+            '08S18ZX',
+            '08S18XZ'
+        ];
+        var productOrder2 = [
+            '08S01ZV',
+            '08S01ZVI',
+            '08S30ZX',
+            '08S39B',
+            '08S01ZW',
+            '08S40Z'
+        ];
         var productOrder3 = ['08S23', '08S17'];
 
         function sortProductLineItems(productLineItems) {
