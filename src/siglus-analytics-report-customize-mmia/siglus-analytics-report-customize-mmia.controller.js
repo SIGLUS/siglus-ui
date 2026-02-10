@@ -167,11 +167,11 @@
         }
 
         var regimenOrderAdults = ['1aLTLD', '1alt1', '1alt2', '2alt3', '2alt1', '2alt2', 'A2F',
-            'C7A', 'ABC12', '2Op4', 'HepB_TDF', 'PreP_LEN', 'PreP_TDF+3TC'].map(function(c) {
+            'C7A', 'ABC12', '2Op4', 'HepB_TDF', 'PreP_TDF+3TC', 'PreP_LEN'].map(function(c) {
             return c.toUpperCase();
         });
 
-        var regimenOrderPaediatrics = ['X7BPed', 'X7APed', 'X6APed', 'ABCPedCpts', 'A2Fped Cpts',
+        var regimenOrderPaediatrics = ['X7BPed', 'X6APed', 'X7APed', 'ABCPedCpts', 'A2Fped Cpts',
             'CE123'].map(function(c) {
             return c.toUpperCase();
         });
