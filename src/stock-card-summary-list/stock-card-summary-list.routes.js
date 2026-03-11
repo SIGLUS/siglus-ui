@@ -58,13 +58,16 @@
                 // SIGLUS-REFACTOR: ends here
                 stockCardSummaries: function(user, paginationService, StockCardSummaryRepository,
                     StockCardSummaryRepositoryImpl, $stateParams, STOCKMANAGEMENT_RIGHTS, loadingModalService,
-                    stockCardDataService, siglusProductOrderableGroupService, dateUtils) {
+                    stockCardDataService, siglusProductOrderableGroupService, dateUtils, permissionService) {
                     return paginationService.registerUrl($stateParams, function(stateParams) {
                         if (stateParams.program) {
                             var paramsCopy = angular.copy(stateParams);
 
                             paramsCopy.facilityId = stateParams.facility;
-                            paramsCopy.programId = stateParams.program;
+
+                            var mmcId = 'a6257d40-58c5-11ed-b15f-acde48001122';
+                            var isMmcOnly = permissionService.isOneProgramOnlyUser(mmcId);
+                            paramsCopy.programId = isMmcOnly ? mmcId : stateParams.program;
                             paramsCopy.nonEmptyOnly = true;
                             // #103: archive product
                             paramsCopy.excludeArchived = true;
