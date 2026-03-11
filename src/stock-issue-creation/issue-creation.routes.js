@@ -78,9 +78,29 @@
                 // SIGLUS-REFACTOR: starts here
                 orderableGroups: function($stateParams, facility, existingStockOrderableGroupsFactory) {
                     if (!$stateParams.hasLoadOrderableGroups) {
+                        var isMmcOnly = false;
+                        var MmcId = 'a6257d40-58c5-11ed-b15f-acde48001122';
+                        var permissionString = localStorage.getItem('openlmis.permissions');
+                        if (permissionString) {
+                            var arr = JSON.parse(permissionString);
+                            var programIds = [];
+                            var seen = {};
+
+                            for (var i = 0; i < arr.length; i++) {
+                                var id = arr[i].programId;
+
+                                if (!seen[id]) {
+                                    seen[id] = true;
+                                    programIds.push(id);
+                                }
+                            }
+                            if (programIds.length === 1 && programIds[0] === MmcId) {
+                                isMmcOnly = true;
+                            }
+                        }
                         return existingStockOrderableGroupsFactory
                             .getGroupsWithoutStock($stateParams, {
-                                id: $stateParams.programId
+                                id: isMmcOnly ? MmcId : $stateParams.programId
                             }, facility,
                             STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST, $stateParams.draftId);
                     }
