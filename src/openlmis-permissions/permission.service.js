@@ -68,6 +68,7 @@
         this.hasRoleWithRight = hasRoleWithRight;
         this.hasRoleWithRightForProgramAndSupervisoryNode = hasRoleWithRightForProgramAndSupervisoryNode;
         this.hasRoleWithRightAndFacility = hasRoleWithRightAndFacility;
+        this.isOneProgramOnlyUser = isOneProgramOnlyUser;
 
         /**
          * @ngdoc method
@@ -427,6 +428,28 @@
             };
         }
 
+        function isOneProgramOnlyUser(programId) {
+            var isMmcOnly = false;
+            var permissionString = localStorage.getItem('openlmis.permissions');
+            if (permissionString) {
+                var arr = JSON.parse(permissionString);
+                var programIds = [];
+                var seen = {};
+
+                for (var i = 0; i < arr.length; i++) {
+                    var id = arr[i].programId;
+
+                    if (!seen[id]) {
+                        seen[id] = true;
+                        programIds.push(id);
+                    }
+                }
+                if (programIds.length === 1 && programIds[0] === programId) {
+                    isMmcOnly = true;
+                }
+            }
+            return isMmcOnly;
+        }
     }
 
 })();
