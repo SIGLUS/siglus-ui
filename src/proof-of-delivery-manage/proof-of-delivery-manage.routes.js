@@ -47,7 +47,12 @@
                 programs: function(programService, authorizationService) {
                     return programService.getUserPrograms(authorizationService.getUser().user_id);
                 },
-                supplyingFacilities: function(facilityFactory) {
+                supplyingFacilities: function(orderService, facilityFactory, $stateParams) {
+                    if ($stateParams && $stateParams.requestingFacilityId) {
+                        return orderService.searchSupplier({
+                            requestingFacilityId: $stateParams.requestingFacilityId
+                        });
+                    }
                     return facilityFactory.getSupervisedFacilitiesBasedOnRights([
                         FULFILLMENT_RIGHTS.SHIPMENTS_EDIT,
                         FULFILLMENT_RIGHTS.SHIPMENTS_VIEW

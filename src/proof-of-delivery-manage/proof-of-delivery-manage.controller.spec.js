@@ -18,7 +18,7 @@ describe('ProofOfDeliveryManageController', function() {
     var proofOfDeliveryManageService, $rootScope, $state, $q, $controller, ProgramDataBuilder, FacilityDataBuilder,
         ProofOfDeliveryDataBuilder, vm, deferred, pod, stateParams, supplyingFacilities, programs, requestingFacilities,
         loadingModalService, siglusDownloadLoadingModalService, orderablesPrice,
-        notificationService, loadingDeferred, $window, ProofOfDeliveryPrinter, order;
+        notificationService, loadingDeferred, $window, ProofOfDeliveryPrinter, order, $scope, orderService;
 
     beforeEach(function() {
         module('proof-of-delivery-manage');
@@ -27,6 +27,7 @@ describe('ProofOfDeliveryManageController', function() {
 
         inject(function($injector) {
             $rootScope = $injector.get('$rootScope');
+            $scope = $injector.get('$rootScope').$new();
             $q = $injector.get('$q');
             deferred = $q.defer();
             $window = $injector.get('$window');
@@ -40,6 +41,7 @@ describe('ProofOfDeliveryManageController', function() {
             notificationService = $injector.get('notificationService');
             ProofOfDeliveryPrinter = $injector.get('ProofOfDeliveryPrinter');
             siglusDownloadLoadingModalService = $injector.get('siglusDownloadLoadingModalService');
+            orderService = $injector.get('orderService');
         });
 
         order = {
@@ -103,11 +105,13 @@ describe('ProofOfDeliveryManageController', function() {
             pods: [pod],
             $stateParams: stateParams,
             facility: new FacilityDataBuilder().build(),
-            orderablesPrice: orderablesPrice
+            orderablesPrice: orderablesPrice,
+            $scope: $scope
         });
 
         loadingDeferred = $q.defer();
 
+        spyOn(orderService, 'searchSupplier');
         spyOn(loadingModalService, 'close');
         spyOn(siglusDownloadLoadingModalService, 'close');
         spyOn(notificationService, 'success');

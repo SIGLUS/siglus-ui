@@ -69,6 +69,11 @@
             batchClose: {
                 method: 'POST',
                 url: fulfillmentUrlFactory('/api/siglusapi/orders/batchClose')
+            },
+            searchSupplier: {
+                method: 'GET',
+                url: fulfillmentUrlFactory('/api/siglusapi/orders/supplying'),
+                isArray: true
             }
         });
 
@@ -80,9 +85,14 @@
         // #401: ends here
         // #447: DDM facility can see the fulfilment which is supervised by DPM facility
         this.searchFulfill = searchFulfill;
+        this.searchSupplier = searchSupplier;
         this.closeOrder = closeOrder;
         this.batchClose = batchClose;
         // #447: ends here
+
+        function searchSupplier(params) {
+            return resource.searchSupplier(params).$promise;
+        }
 
         /**
          * @ngdoc method

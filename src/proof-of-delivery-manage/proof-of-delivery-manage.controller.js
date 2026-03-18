@@ -34,7 +34,8 @@
         'proofOfDeliveryService', 'fulfillingLineItemFactory', '$q', 'openlmisDateFilter',
         'stockReasonsFactory', 'facilityFactory', 'siglusInitialProofOfDeliveryService',
         'messageService', 'SIGLUS_TIME', 'siglusDownloadLoadingModalService', 'facility',
-        'orderablesPrice', 'moment', 'SiglusIssueOrReceiveReportService', 'orderNumberUpdateService'
+        'orderablesPrice', 'moment', 'SiglusIssueOrReceiveReportService', 'orderNumberUpdateService',
+        '$scope', 'orderService'
     ];
 
     function controller(
@@ -43,7 +44,8 @@
         proofOfDeliveryService, fulfillingLineItemFactory, $q, openlmisDateFilter,
         stockReasonsFactory, facilityFactory, siglusInitialProofOfDeliveryService,
         messageService, SIGLUS_TIME, siglusDownloadLoadingModalService, facility,
-        orderablesPrice, moment, SiglusIssueOrReceiveReportService, orderNumberUpdateService
+        orderablesPrice, moment, SiglusIssueOrReceiveReportService, orderNumberUpdateService,
+        $scope, orderService
     ) {
 
         var vm = this;
@@ -186,6 +188,23 @@
             vm.programName = getName(vm.program);
             vm.facility = facility;
         }
+
+        $scope.$watch(function() {
+            return vm.requestingFacility;
+        }, function(newValue, oldValue) {
+            // Prevent logic from running on the initial controller load if unnecessary
+            if (newValue === oldValue) {
+                return;
+            }
+
+            if (newValue) {
+                orderService.searchSupplier({
+                    requestingFacilityId: newValue.id
+                }).then(function(response) {
+                    vm.supplyingFacilities = response;
+                });
+            }
+        });
 
         /**
          * @ngdoc method
