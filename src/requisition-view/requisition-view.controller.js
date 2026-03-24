@@ -394,6 +394,7 @@
                 || status === 'RELEASED_WITHOUT_ORDER') {
                 var programCodeToReportNameMap = {
                     VC: 'Balance Requisition',
+                    MMC: 'Balance Requisition',
                     TR: 'MMIT',
                     ML: 'Malaria',
                     T: 'MMIA',
