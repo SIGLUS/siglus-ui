@@ -209,7 +209,7 @@
                 });
 
             var html =
-                '<h1>Para encerrar pedidos expirados to Ordens Expiradas por fechar</h1>' +
+                '<h1>Ordens Expiradas por fechar</h1>' +
                 '<ul>' +
                 expiredOrders.map(function(code) {
                     return '<li>' + code + '</li>';
