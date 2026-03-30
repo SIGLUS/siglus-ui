@@ -325,7 +325,15 @@
                 var allLineItems = _.flatten(_.get(orderLineItem, 'groupedLineItems', []));
 
                 var groupByLot = _.groupBy(allLineItems, function(line) {
-                    return _.get(line, ['lot', 'id'], '');
+                    var lotId = _.get(line, ['lot', 'id']);
+
+                    var isEmpty = lotId === null || lotId === undefined || lotId === '';
+
+                    if (isEmpty) {
+                        return _.get(line, ['lot', 'lotCode'], '');
+                    }
+
+                    return lotId;
                 });
 
                 Object.values(groupByLot).forEach(function(lotLineItems) {
