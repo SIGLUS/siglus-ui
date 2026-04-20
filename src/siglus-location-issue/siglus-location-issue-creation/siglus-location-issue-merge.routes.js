@@ -141,7 +141,8 @@
                         var isMmcOnly = permissionService.isOneProgramOnlyUser(mmcId);
 
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            isMmcOnly ? mmcId : $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
+                            isMmcOnly ? mmcId : $stateParams.programId,
+                            facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
                             $stateParams.draftId, allLineOrderableIds
                         );
                     }
