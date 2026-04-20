@@ -56,7 +56,7 @@
             vm.stockCardSummaries = stockCardSummaries;
             vm.keyword = $stateParams.keyword;
             vm.programs =  _.filter(programs, function(program) {
-                return program.code !== 'MMC' && program.code !== 'ML';
+                return program.code !== 'ML';
             });
             vm.program = _.find(vm.programs, function(item) {
                 return $stateParams.program === item.id;

@@ -126,13 +126,17 @@
 
                     return displayItems;
                 },
-                orderableGroups: function($stateParams, facility, draftInfo, orderableGroupService) {
+                orderableGroups: function($stateParams, facility, draftInfo, orderableGroupService,
+                    permissionService) {
                     if (!$stateParams.orderableGroups) {
                         var allLineOrderableIds = draftInfo.lineItems.map(function(line) {
                             return line.orderableId;
                         });
+                        var mmcId = 'a6257d40-58c5-11ed-b15f-acde48001122';
+                        var isMmcOnly = permissionService.isOneProgramOnlyUser(mmcId);
+
                         return orderableGroupService.findAvailableProductsAndCreateOrderableGroups(
-                            $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
+                            isMmcOnly ? mmcId : $stateParams.programId, facility.id, true, STOCKMANAGEMENT_RIGHTS.STOCK_ADJUST,
                             $stateParams.draftId, allLineOrderableIds
                         );
                     }

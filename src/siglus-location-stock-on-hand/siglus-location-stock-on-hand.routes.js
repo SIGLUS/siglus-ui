@@ -66,10 +66,16 @@
                         return responses[0].concat(responses[1]);
                     });
                 },
-                stockCardSummaries: function($stateParams, siglusLocationStockOnHandService, facility) {
+                stockCardSummaries: function($stateParams, siglusLocationStockOnHandService, facility,
+                    permissionService) {
                     if (_.isEmpty($stateParams.program)) {
                         return [];
                     }
+
+                    var mmcId = 'a6257d40-58c5-11ed-b15f-acde48001122';
+                    var isMmcOnly = permissionService.isOneProgramOnlyUser(mmcId);
+                    $stateParams.program = isMmcOnly ? mmcId : $stateParams.program;
+
                     if ($stateParams.stockCardSummaries) {
                         return $stateParams.stockCardSummaries;
                     }
