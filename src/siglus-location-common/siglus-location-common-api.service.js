@@ -50,10 +50,11 @@
 
         });
 
-        this.getProductList = function(isRequestAll, draftId) {
+        this.getProductList = function(isRequestAll, draftId, programId) {
             return resource.getProductList({
                 isRequestAll: isRequestAll,
-                draftId: draftId
+                draftId: draftId,
+                programId: programId || '00000000-0000-0000-0000-000000000000'
             }).$promise;
         };
 

@@ -78,11 +78,15 @@
                     }
                     return $stateParams.reasons;
                 },
-                productList: function(siglusLocationCommonApiService, $stateParams) {
+                productList: function(siglusLocationCommonApiService, $stateParams,
+                    permissionService) {
                     if ($stateParams.productList) {
                         return $stateParams.productList;
                     }
-                    return siglusLocationCommonApiService.getProductList(false, $stateParams.draftId);
+                    var mmcId = 'a6257d40-58c5-11ed-b15f-acde48001122';
+                    var isMmcOnly = permissionService.isOneProgramOnlyUser(mmcId);
+                    return siglusLocationCommonApiService.getProductList(false, $stateParams.draftId,
+                        isMmcOnly ? mmcId : $stateParams.programId);
                 },
                 mergedItems: function($stateParams, siglusStockIssueLocationService, alertService) {
                     if ($stateParams.mergedItems) {
