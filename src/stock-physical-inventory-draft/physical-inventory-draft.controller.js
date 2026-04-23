@@ -903,9 +903,23 @@
         }
 
         function buildLineItemsData() {
+            var mapByOrderableId = _.groupBy(rawLineItems, function(lineItem) {
+                return lineItem.orderable.productCode;
+            });
+
+            var sortedLineItemsGroup = [];
+            for (var key in mapByOrderableId) {
+                var sortedLotLineItems = mapByOrderableId[key].sort(function(item1, item2) {
+                    var item1Date = _.get(item1, ['lot', 'expirationDate'], 0);
+                    var item2Date = _.get(item2, ['lot', 'expirationDate'], 0);
+                    return new Date(item1Date) - new Date(item2Date);
+                });
+                sortedLineItemsGroup.push(sortedLotLineItems);
+            }
+            console.log('sortedLineItemsGroup', sortedLineItemsGroup);
             var lineItemsData = [];
             try {
-                vm.displayLineItemsGroup.forEach(function(displayLineItems) {
+                sortedLineItemsGroup.forEach(function(displayLineItems) {
                     var currentProduct = displayLineItems[0].orderable;
 
                     if (displayLineItems.length > 1) {
