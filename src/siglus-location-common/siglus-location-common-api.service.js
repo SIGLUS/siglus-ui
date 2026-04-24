@@ -28,8 +28,8 @@
         .module('siglus-location-common')
         .service('siglusLocationCommonApiService', siglusLocationCommonApiService);
 
-    siglusLocationCommonApiService.$inject = ['$resource', 'stockmanagementUrlFactory'];
-    function siglusLocationCommonApiService($resource, stockmanagementUrlFactory) {
+    siglusLocationCommonApiService.$inject = ['$resource', 'stockmanagementUrlFactory', 'permissionService'];
+    function siglusLocationCommonApiService($resource, stockmanagementUrlFactory, permissionService) {
 
         var resource = $resource(stockmanagementUrlFactory('/api/siglusapi/locations'), {}, {
 
@@ -63,8 +63,11 @@
         };
 
         this.getAllProductList = function(draftId) {
+            var mmcId = 'a6257d40-58c5-11ed-b15f-acde48001122';
+            var isMmcOnly = permissionService.isOneProgramOnlyUser(mmcId);
             return resource.getAllProductList({
-                draftId: draftId
+                draftId: draftId,
+                programId: isMmcOnly ? mmcId : undefined
             }).$promise;
         };
     }
