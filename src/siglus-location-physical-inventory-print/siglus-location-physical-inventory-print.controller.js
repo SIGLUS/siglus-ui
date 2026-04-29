@@ -49,6 +49,8 @@
         function onInit() {
             hideLayoutAndBreadcrumb();
             vm.groupedCategories = $filter('siglusGroupByAllProductProgramProductCategoryByLocation')(draft);
+            vm.emptyLines = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
             vm.facility = facility;
             vm.program = program;
             vm.isMerged = isMerged;
