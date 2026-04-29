@@ -48,6 +48,7 @@
             vm.facility = facility;
             vm.program = program;
             vm.isMerged = isMerged;
+            vm.emptyLines = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         }
 
         function hideLayoutAndBreadcrumb() {
@@ -88,15 +89,22 @@
             return _.reduce(lineItemsGroup, function(flattenedLineItems, lineItems) {
                 var lineItemInfoToDisplay = {
                     productCode: _.get(lineItems[0], ['orderable', 'productCode']),
-                    product: _.get(lineItems[0], ['orderable', 'fullProductName'])
+                    product: _.get(lineItems[0], ['orderable', 'fullProductName']),
+                    lotCode: lineItems.length > 1 ? undefined : _.get(lineItems[0], ['lot', 'lotCode']),
+                    expirationDate: lineItems.length > 1 ? undefined : _.get(lineItems[0], ['lot', 'expirationDate']),
+                    locationCode: lineItems.length > 1 ?
+                        undefined : _.get(lineItems[0], ['area']) + ' - ' + _.get(lineItems[0], ['locationCode'])
                 };
                 flattenedLineItems.push(lineItemInfoToDisplay);
 
                 if (lineItems.length > 1) {
-                    var lotList = lineItems.map(function() {
+                    var lotList = lineItems.map(function(lineItem) {
                         return {
                             productCode: '',
-                            product: ''
+                            product: '',
+                            lotCode: _.get(lineItem, ['lot', 'lotCode']),
+                            expirationDate: _.get(lineItem, ['lot', 'expirationDate']),
+                            locationCode: _.get(lineItem, ['area']) + ' - ' + _.get(lineItem, ['locationCode'])
                         };
                     });
                     flattenedLineItems = flattenedLineItems.concat(lotList);

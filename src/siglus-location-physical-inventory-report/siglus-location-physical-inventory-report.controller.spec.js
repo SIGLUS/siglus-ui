@@ -136,24 +136,31 @@ describe('SiglusLocationPhysicalInventoryReport', function() {
     describe('getTbDataSource', function() {
 
         it('should return flatten array which lot is empty', function() {
-            var result = [
-                {
-                    productCode: '08D01',
-                    product: 'testName'
-                },
-                {
-                    productCode: '',
-                    product: ''
-                },
-                {
-                    productCode: '',
-                    product: ''
-                },
-                {
-                    productCode: '08D01',
-                    product: 'testName'
-                }
-            ];
+            var result = [{
+                productCode: '08D01',
+                product: 'testName',
+                lotCode: undefined,
+                expirationDate: undefined,
+                locationCode: undefined
+            }, {
+                productCode: '',
+                product: '',
+                lotCode: 'TEST-110',
+                expirationDate: undefined,
+                locationCode: 'null - null'
+            }, {
+                productCode: '',
+                product: '',
+                lotCode: 'TEST-110',
+                expirationDate: undefined,
+                locationCode: 'null - null'
+            }, {
+                productCode: '08D01',
+                product: 'testName',
+                lotCode: 'TEST-110',
+                expirationDate: undefined,
+                locationCode: 'null - null'
+            }];
 
             vm.$onInit();
 
