@@ -44,8 +44,8 @@
                     <td>{{ groups[0].lot.expirationDate }}</td>
                     <td>{{ groups[0].area }} - {{ groups[0].locationCode }}</td>
                     <td>{{ groups[0].stockOnHand }}</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ groups[0].quantity }}</td>
+                    <td>{{ groups[0].reasonFreeText }}</td>
                 </tr>
                 <!-- The product has more than one line items -->
                 <!-- Set first line as main line -->
@@ -56,7 +56,7 @@
                     <td></td>
                     <td></td>
                     <td ng-if="vm.isMerged">{{ vm.calculate(groups, 'stockOnHand') }}</td>
-                    <td></td>
+                    <td>{{ vm.calculate(groups, 'quantity') }}</td>
                     <td></td>
                 </tr>
                 <!-- Lines for line items -->
@@ -67,8 +67,8 @@
                     <td>{{ item.lot.expirationDate }}</td>
                     <td>{{ item.area }} - {{ item.locationCode }}</td>
                     <td ng-if="vm.isMerged">{{ item.stockOnHand }}</td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.reasonFreeText }}</td>
                 </tr>
             </tbody>
             <tbody>

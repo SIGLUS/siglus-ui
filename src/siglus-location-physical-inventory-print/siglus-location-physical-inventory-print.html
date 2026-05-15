@@ -129,7 +129,7 @@
                 <td></td>
                 <td></td>
                 <td ng-if="!vm.isInitialInventory">{{vm.calculate(lineItems, 'stockOnHand')}}</td>
-                <td></td>
+                <td>{{vm.calculate(lineItems, 'quantity')}}</td>
                 <td ng-if="!vm.isInitialInventory"></td>
             </tr>
             <tr ng-if="lineItems.length > 1" ng-repeat="lineItem in lineItems" ng-repeat-end>
@@ -155,10 +155,10 @@
                     {{lineItem.isFromSelect ? lineItem.$previewSOH : lineItem.stockOnHand}}
                 </td>
                 <td>
-
+                    {{lineItem.quantity}}
                 </td>
                 <td ng-if="!vm.isInitialInventory">
-
+                    {{lineItem.reasonFreeText}}
                 </td>
             </tr>
             <tr ng-if="lineItems.length === 1 && lineItems[0].orderable.productCode"
@@ -185,10 +185,10 @@
                     {{lineItems[0].isFromSelect ? lineItems[0].$previewSOH : lineItems[0].stockOnHand}}
                 </td>
                 <td>
-
+                    {{lineItems[0].quantity}}
                 </td>
                 <td ng-if="!vm.isInitialInventory">
-
+                    {{lineItems[0].reasonFreeText}}
                 </td>
             </tr>
             <tr ng-if="lineItems.length === 1 && !lineItems[0].orderable.productCode"
