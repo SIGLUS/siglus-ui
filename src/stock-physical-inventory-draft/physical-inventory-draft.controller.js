@@ -36,7 +36,7 @@
         '$q', 'REASON_TYPES', 'SIGLUS_MAX_STRING_VALUE', 'currentUserService', 'navigationStateService',
         'siglusArchivedProductService', 'SIGLUS_TIME', 'siglusRemainingProductsModalService', 'subDraftIds',
         'alertConfirmModalService', 'draft', 'displayLineItemsGroup', 'reasons', 'rawLineItems',
-        'siglusOrderableLotListService'
+        'siglusOrderableLotListService', '$window'
     ];
 
     function controller(
@@ -47,7 +47,7 @@
         $q, REASON_TYPES, SIGLUS_MAX_STRING_VALUE, currentUserService, navigationStateService,
         siglusArchivedProductService, SIGLUS_TIME, siglusRemainingProductsModalService, subDraftIds,
         alertConfirmModalService, draft, displayLineItemsGroup, reasons, rawLineItems,
-        siglusOrderableLotListService
+        siglusOrderableLotListService, $window
     ) {
         var vm = this;
 
@@ -66,6 +66,50 @@
         vm.back = goBack;
         vm.actionType = $stateParams.actionType;
         vm.isMergeDraft = $stateParams.isMerged === 'true';
+
+        vm.print = print;
+
+        function print() {
+            var PRINT_URL;
+            var lineItemsGroupToPrint = minifyDisplayLineItemsForPrint();
+
+            localStorage.setItem(
+                'physicalInventoryCategories', JSON.stringify(lineItemsGroupToPrint)
+            );
+            PRINT_URL = '#!/stockmanagement/physicalInventory/print?';
+
+            PRINT_URL = PRINT_URL +
+                '&isMerged=' + $stateParams.isMerged +
+                '&programId=' + $stateParams.programId +
+                '&draftNum=' + $stateParams.draftNum;
+
+            $window.open(PRINT_URL, '_blank');
+        }
+
+        function minifyDisplayLineItemsForPrint() {
+            return vm.displayLineItemsGroup.map(function(lineItemsGroup) {
+                return lineItemsGroup.map(function(lineItem) {
+                    return {
+                        isFromSelect: false,
+                        area: lineItem.area,
+                        locationCode: lineItem.locationCode,
+                        stockOnHand: lineItem.stockOnHand,
+                        quantity: lineItem.quantity,
+                        reasonFreeText: lineItem.reasonFreeText,
+                        orderable: {
+                            productCode: _.get(lineItem, ['orderable', 'productCode']),
+                            fullProductName: _.get(lineItem, ['orderable', 'fullProductName'])
+                        },
+                        lot: {
+                            lotCode: _.get(lineItem, ['lot', 'lotCode']),
+                            expirationDate: _.get(lineItem, ['lot', 'expirationDate'])
+                        }
+
+                    };
+                });
+            });
+        }
+
         // SIGLUS-REFACTOR: ends here
 
         /**
