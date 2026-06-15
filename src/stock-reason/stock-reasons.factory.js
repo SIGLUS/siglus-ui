@@ -101,7 +101,9 @@
             return getReasons(program, facilityType)
                 .then(function(reasons) {
                     return reasons.filter(function(reason) {
-                        return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT;
+                        return reason.reasonCategory === REASON_CATEGORIES.ADJUSTMENT
+                            && reason.id !== '4481515a-df64-11e9-9e7e-4c32759554d9'
+                            && reason.id !== '23f7d0d4-02ce-11ef-9071-12c51f50079a';
                     });
                 });
         }
