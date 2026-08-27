@@ -90,14 +90,29 @@
                     historyId: function($stateParams) {
                         return $stateParams.historyId;
                     },
+                    orderables: function(OrderableResource) {
+                        return new OrderableResource().query()
+                            .then(function(response) {
+                                return response.content;
+                            });
+                    },
                     orderablesPrice: function(siglusOrderableLotService) {
                         return siglusOrderableLotService.getOrderablesPrice();
                     },
-                    historyData: function(historyId, SiglusPhysicalInventoryHistoryService, orderablesPrice) {
+                    historyData: function(historyId, SiglusPhysicalInventoryHistoryService, orderablesPrice,
+                        orderables) {
+                        var nameToCode = {};
+                        _.forEach(orderables, function(item) {
+                            nameToCode[item.fullProductName] = item.productCode;
+                        });
+
                         return SiglusPhysicalInventoryHistoryService.getHistoryDetail(historyId)
                             .then(function(detail) {
                                 detail.lineItemsData.forEach(function(line) {
                                     line.price = orderablesPrice.data[_.get(line, 'orderableId')] || null;
+                                    if (!line.productCode) {
+                                        line.productCode = nameToCode[line.productName];
+                                    }
                                 });
                                 return detail;
                             });

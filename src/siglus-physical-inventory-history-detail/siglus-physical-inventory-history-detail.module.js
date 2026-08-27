@@ -23,6 +23,8 @@
      * Responsible for physical inventory draft list screen.
      */
     angular.module('siglus-physical-inventory-history-detail', [
-        'stock-physical-inventory-list'
+        'stock-physical-inventory-list',
+        'referencedata',
+        'referencedata-orderable'
     ]);
 })();

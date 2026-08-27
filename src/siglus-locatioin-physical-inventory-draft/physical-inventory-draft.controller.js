@@ -777,6 +777,9 @@
                         anyError = vm.validateReasonFreeText(item) || anyError;
                         anyError = vm.validateQuantity(item) || anyError;
                         anyError = vm.validateLocation(item) || anyError;
+                        if (anyError) {
+                            console.log('anyError', anyError, item);
+                        }
                     }
                 });
             } else if (!anyError && locationManagementOption === 'location') {
@@ -1308,39 +1311,9 @@
 
         function buildLineItemsData(isByProduct) {
             try {
-                var lineItemsGroupList = _.chain(draft.lineItems)
-                    .groupBy(function(lineItem) {
-                        return isByProduct ? lineItem.orderable.id : lineItem.locationCode;
-                    })
-                    .values()
-                    .value();
-
-                var groupedLineItems;
-                if (isByProduct) {
-                    // sort product group by product code
-                    var sortedProductGroup = _.sortBy(lineItemsGroupList, function(group) {
-                        return _.get(group, [0, 'orderable', 'productCode']);
-                    });
-                    // sort lots by expiry date
-                    groupedLineItems = _.map(sortedProductGroup, function(group) {
-                        return _.sortBy(group, function(item) {
-                            return _.get(item, ['lot', 'expirationDate']);
-                        });
-                    });
-                } else {
-                    // Physical Inventory by location
-                    groupedLineItems =  _.map(lineItemsGroupList, function(group) {
-                        // for one product, sort lots by productCode then expirationDate
-                        var lotsSortedByExpirationDate = _.sortBy(group, function(lot) {
-                            return _.get(lot, ['lot', 'expirationDate']);
-                        });
-                        return _.sortBy(lotsSortedByExpirationDate, function(lot) {
-                            return _.get(lot, ['orderable', 'productCode']);
-                        });
-                    });
-                }
                 var lineItemsData = [];
-                groupedLineItems.forEach(function(displayLineItems) {
+
+                vm.displayLineItemsGroup.forEach(function(displayLineItems) {
                     var currentProduct = displayLineItems[0].orderable;
                     var currentLocation = displayLineItems[0].locationCode;
 
