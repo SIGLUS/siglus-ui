@@ -98,8 +98,8 @@
                     },
                     historyData: function(historyId, SiglusPhysicalInventoryHistoryService, orderablesPrice,
                         orderables) {
-                        var orderablesList = Array.isArray(orderables.content) ?
-                            orderables.content : orderables.content.content;
+                        var orderablesList = orderables.content.content ?
+                            orderables.content.content : orderables.content;
                         var nameToCode = {};
                         _.forEach(orderablesList, function(item) {
                             if (item) {
