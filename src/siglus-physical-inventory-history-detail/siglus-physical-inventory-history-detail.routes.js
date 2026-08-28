@@ -103,7 +103,9 @@
                         orderables) {
                         var nameToCode = {};
                         _.forEach(orderables, function(item) {
-                            nameToCode[item.fullProductName] = item.productCode;
+                            if (item) {
+                                nameToCode[_.get(item, 'fullProductName')] = _.get(item, 'productCode');
+                            }
                         });
 
                         return SiglusPhysicalInventoryHistoryService.getHistoryDetail(historyId)
@@ -111,7 +113,7 @@
                                 detail.lineItemsData.forEach(function(line) {
                                     line.price = orderablesPrice.data[_.get(line, 'orderableId')] || null;
                                     if (!line.productCode) {
-                                        line.productCode = nameToCode[line.productName];
+                                        line.productCode = nameToCode[_.get(line, 'productName')];
                                     }
                                 });
                                 return detail;
