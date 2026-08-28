@@ -91,18 +91,16 @@
                         return $stateParams.historyId;
                     },
                     orderables: function(OrderableResource) {
-                        return new OrderableResource().query()
-                            .then(function(response) {
-                                return response.content;
-                            });
+                        return (new OrderableResource()).query();
                     },
                     orderablesPrice: function(siglusOrderableLotService) {
                         return siglusOrderableLotService.getOrderablesPrice();
                     },
                     historyData: function(historyId, SiglusPhysicalInventoryHistoryService, orderablesPrice,
                         orderables) {
+                        var orderablesList = orderables.content.content;
                         var nameToCode = {};
-                        _.forEach(orderables, function(item) {
+                        _.forEach(orderablesList, function(item) {
                             if (item) {
                                 nameToCode[_.get(item, 'fullProductName')] = _.get(item, 'productCode');
                             }
