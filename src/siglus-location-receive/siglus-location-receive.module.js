@@ -26,6 +26,7 @@
     angular.module('siglus-location-receive', [
         'stock-adjustment',
         'stockmanagement',
+        'stock-reason',
         'siglus-stock-issue-initial-modal',
         'siglus-location-receive-draft-list'
     ]);

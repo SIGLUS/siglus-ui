@@ -77,7 +77,7 @@
                 },
                 reasons: function($stateParams, stockReasonsFactory, facility) {
                     if (_.isUndefined($stateParams.reasons)) {
-                        return stockReasonsFactory.getIssueReasons($stateParams.programId, facility.type.id);
+                        return stockReasonsFactory.getReceiveReasons($stateParams.programId, facility.type.id);
                     }
                     return $stateParams.reasons;
                 },
