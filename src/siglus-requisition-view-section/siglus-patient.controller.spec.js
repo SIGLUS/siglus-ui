@@ -91,31 +91,65 @@ describe('SiglusPatientController', function() {
     describe('calculatePatientValues and $interval', function() {
 
         it('should set vm.adjustmentValue to 0 when calculation results in NaN or division by zero', function() {
-            // When sections/columns aren't present for newSection2/newSection4, totalWithInThisMonth evaluates to 0 (0 / 0 = NaN)
             expect(vm.adjustmentValue).toBe(0);
         });
 
         it('should recalculate patient values every 3 seconds', function() {
-            // Set up line items and merged patient map for valid calculations
-            vm.mergedPatientMap = {
-                newSection2: { columns: { col5: { value: 10 }, col6: { value: 20 } }, column: { columns: [{}, {}, {}, {}, {}, { name: 'col5' }, { name: 'col6' }] } },
-                newSection3: { columns: { col2: { value: 5 }, col3: { value: 10 } }, column: { columns: [{}, {}, { name: 'col2' }, { name: 'col3' }] } },
-                newSection4: { columns: { col0: { value: 5 }, col1: { value: 10 } }, column: { columns: [{ name: 'col0' }, { name: 'col1' }] } },
-                newSection9: { columns: { col1: { value: 0 }, col2: { value: 0 } }, column: { columns: [{}, { name: 'col1' }, { name: 'col2' }] } }
+            var mockCol = function(name, value) {
+                return {
+                    name: name,
+                    value: value
+                };
             };
 
-            // Flush 3000ms forward on $interval
+            vm.mergedPatientMap = {
+                newSection2: {
+                    columns: {
+                        col5: mockCol('col5', 10),
+                        col6: mockCol('col6', 20)
+                    },
+                    column: {
+                        columns: [{}, {}, {}, {}, {}, {name: 'col5'}, {name: 'col6'}]
+                    }
+                },
+                newSection3: {
+                    columns: {
+                        col2: mockCol('col2', 5),
+                        col3: mockCol('col3', 10)
+                    },
+                    column: {
+                        columns: [{}, {}, {name: 'col2'}, {name: 'col3'}]
+                    }
+                },
+                newSection4: {
+                    columns: {
+                        col0: mockCol('col0', 5),
+                        col1: mockCol('col1', 10)
+                    },
+                    column: {
+                        columns: [{name: 'col0'}, {name: 'col1'}]
+                    }
+                },
+                newSection9: {
+                    columns: {
+                        col1: mockCol('col1', 0),
+                        col2: mockCol('col2', 0)
+                    },
+                    column: {
+                        columns: [{}, {name: 'col1'}, {name: 'col2'}]
+                    }
+                }
+            };
+
             $interval.flush(3000);
 
-            // totalWithTreatment = 20 + 10 + 0 + 10 = 40
-            // totalWithInThisMonth = 10 + 5 + 0 + 5 = 20
-            // adjustmentValue = (40 / 20).toFixed(2) = "2.00"
             expect(vm.adjustmentValue).toBe('2.00');
         });
 
         it('should cancel $interval on $onDestroy to prevent memory leaks', function() {
             spyOn($interval, 'cancel').andCallThrough();
             vm.$onDestroy();
+
             expect($interval.cancel).toHaveBeenCalled();
         });
     });
@@ -141,7 +175,8 @@ describe('SiglusPatientController', function() {
             expect(vm.lineItems[0].columns.total.$error).not.toBeUndefined();
         });
 
-        it('should clear the last error message and calculate the new total value when the value of newField is null', function() {
+        it('should clear the last error message and calculate the new total value when the value ' +
+            'of newField is null', function() {
             var total = vm.lineItems[0].columns.total;
             total.value = 2147483648;
             total.$error = 'This number is larger than what can be saved';
