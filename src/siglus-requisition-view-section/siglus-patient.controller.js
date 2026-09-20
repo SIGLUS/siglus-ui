@@ -13,6 +13,7 @@
  * http://www.gnu.org/licenses.  For additional information contact info@OpenLMIS.org. 
  */
 
+
 (function() {
 
     'use strict';
@@ -21,13 +22,15 @@
         .module('siglus-requisition-view-section')
         .controller('SiglusPatientController', controller);
 
-    controller.$inject = ['siglusColumnUtils', 'requisitionValidator'];
+    controller.$inject = ['$interval', '$scope', 'siglusColumnUtils', 'requisitionValidator'];
 
-    function controller(siglusColumnUtils, requisitionValidator) {
+    function controller($interval, $scope, siglusColumnUtils, requisitionValidator) {
 
         var vm = this;
+        var intervalPromise;
 
         vm.$onInit = onInit;
+        vm.$onDestroy = onDestroy;
         vm.isUserInput = siglusColumnUtils.isUserInput;
         vm.isCalculated = siglusColumnUtils.isCalculated;
         vm.isTotal = siglusColumnUtils.isTotal;
@@ -49,7 +52,17 @@
 
             var patients = patientTemplateFactory();
             vm.mergedPatientMap = patients.mergedPatientMap;
+
+            // Initial execution and recurring interval setup
             calculatePatientValues();
+            intervalPromise = $interval(calculatePatientValues, 3000);
+        }
+
+        function onDestroy() {
+            // Cancel interval timer on scope/controller destruction to prevent memory leaks
+            if (angular.isDefined(intervalPromise)) {
+                $interval.cancel(intervalPromise);
+            }
         }
 
         function getTotal(lineItem, column) {
@@ -70,20 +83,6 @@
                     mergedPatientMap: {}
                 };
             }
-            // because  vm.sections label can edit
-            // if choose fixed label
-            // the label changed  and the data will not get
-            // get new Map to match name and label
-            // the name should not change
-
-            //  *
-            //  * newSection2 : Tipo de dispensa - Dispensa para 6 Meses (DS)
-            //  * newSection3 : Tipo de dispensa - Dispensa para 3 Meses (DT)
-            //  * newSection9 : Tipo de Dispensa - Dispensa Bi-Mestral (DB)
-            //  * newSection4 : Tipo de dispensa - Dispensa Mensal(DM)
-            //  * newSection7:Tipo de Dispensa - Ajuste
-            //  * 'Tipo de Dispensa - Mês Corrente',
-            //  * 'Tipo de Dispensa - Total de pacientes com tratamento',
 
             var patientLabelNameMap = {};
             _.each(vm.sections, function(item) {
@@ -91,17 +90,11 @@
             });
 
             var jugeArray = [
-                // 'Tipo de Dispensa - Dispensa Mensal(DM)'
                 'newSection4',
-                // Tipo de dispensa - Dispensa para 6 Meses (DS)
                 'newSection2',
-                // Tipo de Dispensa - Dispensa Bi-Mestral (DB)
                 'newSection9',
-                //Tipo de dispensa - Dispensa para 3 Meses (DT)
                 'newSection3',
-                // Tipo de Dispensa - Ajuste
                 'newSection7'
-
             ];
 
             return _.reduce(vm.sections, function(r, c) {
@@ -152,6 +145,7 @@
                 getValueByKey('newSection3', 2) +
                 dbThisMonth +
                 getValueByKey('newSection4', 0);
+
             var dbTotal = getValueByKey('newSection9', 2);
             if ('' === dbTotal) {
                 dbTotal = 0;
@@ -160,7 +154,16 @@
                 getValueByKey('newSection3', 3) +
                 dbTotal +
                 getValueByKey('newSection4', 1);
-            vm.adjustmentValue = (vm.totalWithTreatment / vm.totalWithInThisMonth).toFixed(2);
+
+            var calculatedAdjustment = vm.totalWithTreatment / vm.totalWithInThisMonth;
+
+            // Return 0 if the calculated value or division results in NaN / Infinity
+            if (isNaN(calculatedAdjustment) || !isFinite(calculatedAdjustment)) {
+                vm.adjustmentValue = 0;
+            } else {
+                vm.adjustmentValue = calculatedAdjustment.toFixed(2);
+            }
+
             console.log('vm.adjustmentValue', vm.adjustmentValue);
         }
     }
