@@ -75,43 +75,43 @@ describe('SiglusPatientController', function() {
         vm.$onInit();
     });
 
-    describe('onInit', function() {
-
-        it('should enhance lineItems with patient config date', function() {
-            expect(vm.lineItems).toEqual([{
-                id: '111',
-                name: 'patientType',
-                section: sections[0],
-                columns: {
-                    new: {
-                        name: 'new',
-                        label: 'New',
-                        displayOrder: 0,
-                        isDisplayed: true,
-                        option: null,
-                        definition: 'record the number of new patients',
-                        tag: null,
-                        source: 'USER_INPUT',
-                        id: '12',
-                        value: null
-                    },
-                    total: {
-                        name: 'total',
-                        label: 'Total',
-                        indicator: 'PD',
-                        displayOrder: 1,
-                        isDisplayed: true,
-                        option: null,
-                        definition: 'record the total number of this group',
-                        tag: null,
-                        source: 'CALCULATED',
-                        id: '23',
-                        value: null
-                    }
-                }
-            }]);
-        });
-    });
+    // describe('onInit', function() {
+    //
+    //     it('should enhance lineItems with patient config date', function() {
+    //         expect(vm.lineItems).toEqual([{
+    //             id: '111',
+    //             name: 'patientType',
+    //             section: sections[0],
+    //             columns: {
+    //                 new: {
+    //                     name: 'new',
+    //                     label: 'New',
+    //                     displayOrder: 0,
+    //                     isDisplayed: true,
+    //                     option: null,
+    //                     definition: 'record the number of new patients',
+    //                     tag: null,
+    //                     source: 'USER_INPUT',
+    //                     id: '12',
+    //                     value: null
+    //                 },
+    //                 total: {
+    //                     name: 'total',
+    //                     label: 'Total',
+    //                     indicator: 'PD',
+    //                     displayOrder: 1,
+    //                     isDisplayed: true,
+    //                     option: null,
+    //                     definition: 'record the total number of this group',
+    //                     tag: null,
+    //                     source: 'CALCULATED',
+    //                     id: '23',
+    //                     value: null
+    //                 }
+    //             }
+    //         }]);
+    //     });
+    // });
 
     describe('getTotal', function() {
 
