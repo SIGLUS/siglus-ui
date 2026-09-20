@@ -33,6 +33,8 @@
         vm.isTotal = siglusColumnUtils.isTotal;
         vm.getTotal = getTotal;
 
+        vm.mergedPatientMap = {};
+
         function onInit() {
             var sectionsMap = _.indexBy(vm.sections, 'name');
             angular.forEach(vm.lineItems, function(lineItem) {
@@ -44,6 +46,10 @@
                     lineItem.columns[columnName] = angular.merge({}, column, lineItem.columns[columnName]);
                 });
             });
+
+            var patients = patientTemplateFactory();
+            vm.mergedPatientMap = patients.mergedPatientMap;
+            calculatePatientValues();
         }
 
         function getTotal(lineItem, column) {
@@ -55,6 +61,107 @@
             }, undefined);
             requisitionValidator.validateTotalColumn(column);
             return column.value;
+        }
+
+        function patientTemplateFactory() {
+            if (!vm.lineItems.length) {
+                return {
+                    normalPatientList: [],
+                    mergedPatientMap: {}
+                };
+            }
+            // because  vm.sections label can edit
+            // if choose fixed label
+            // the label changed  and the data will not get
+            // get new Map to match name and label
+            // the name should not change
+
+            //  *
+            //  * newSection2 : Tipo de dispensa - Dispensa para 6 Meses (DS)
+            //  * newSection3 : Tipo de dispensa - Dispensa para 3 Meses (DT)
+            //  * newSection9 : Tipo de Dispensa - Dispensa Bi-Mestral (DB)
+            //  * newSection4 : Tipo de dispensa - Dispensa Mensal(DM)
+            //  * newSection7:Tipo de Dispensa - Ajuste
+            //  * 'Tipo de Dispensa - Mês Corrente',
+            //  * 'Tipo de Dispensa - Total de pacientes com tratamento',
+
+            var patientLabelNameMap = {};
+            _.each(vm.sections, function(item) {
+                patientLabelNameMap[item.name] = item.label;
+            });
+
+            var jugeArray = [
+                // 'Tipo de Dispensa - Dispensa Mensal(DM)'
+                'newSection4',
+                // Tipo de dispensa - Dispensa para 6 Meses (DS)
+                'newSection2',
+                // Tipo de Dispensa - Dispensa Bi-Mestral (DB)
+                'newSection9',
+                //Tipo de dispensa - Dispensa para 3 Meses (DT)
+                'newSection3',
+                // Tipo de Dispensa - Ajuste
+                'newSection7'
+
+            ];
+
+            return _.reduce(vm.sections, function(r, c) {
+                var temp = _.find(vm.lineItems, function(item) {
+                    return item.name === c.name;
+                });
+                if (temp) {
+                    c.columns = _.chain(c.columns)
+                        .filter(function(item) {
+                            return item.isDisplayed;
+                        })
+                        .sortBy(function(item) {
+                            return item.displayOrder;
+                        })
+                        .value();
+                    temp.column = c;
+                    if (_.contains(jugeArray, c.name)) {
+                        r.mergedPatientMap[c.name] = temp;
+                    } else {
+                        r.normalPatientList.push(temp);
+                    }
+                }
+                return r;
+            }, {
+                mergedPatientMap: {},
+                normalPatientList: []
+            });
+        }
+
+        function getValueByKey(key, index) {
+            if (!vm.lineItems.length) {
+                return '';
+            }
+            var result = '';
+            if (vm.mergedPatientMap[key]) {
+                var innerKey = vm.mergedPatientMap[key].column.columns[index].name;
+                result = vm.mergedPatientMap[key].columns[innerKey].value;
+            }
+            return result;
+        }
+
+        function calculatePatientValues() {
+            var dbThisMonth = getValueByKey('newSection9', 1);
+            if ('' === dbThisMonth) {
+                dbThisMonth = 0;
+            }
+            vm.totalWithInThisMonth = getValueByKey('newSection2', 5) +
+                getValueByKey('newSection3', 2) +
+                dbThisMonth +
+                getValueByKey('newSection4', 0);
+            var dbTotal = getValueByKey('newSection9', 2);
+            if ('' === dbTotal) {
+                dbTotal = 0;
+            }
+            vm.totalWithTreatment = getValueByKey('newSection2', 6) +
+                getValueByKey('newSection3', 3) +
+                dbTotal +
+                getValueByKey('newSection4', 1);
+            vm.adjustmentValue = (vm.totalWithTreatment / vm.totalWithInThisMonth).toFixed(2);
+            console.log('vm.adjustmentValue', vm.adjustmentValue);
         }
     }
 
