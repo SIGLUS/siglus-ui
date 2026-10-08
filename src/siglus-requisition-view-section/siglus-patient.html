@@ -9,8 +9,10 @@
         <tr ng-repeat="column in lineItem.columns | orderObjectBy : 'displayOrder'">
             <td ng-class="{'grey-background': vm.isTotal(column)}" popover="{{column.definition}}" popover-trigger-area="element">{{column.label}}</td>
 
-            <!-- Special case: Show adjustment value if the section is 'newSection7' -->
-            <td ng-if="lineItem.name === 'newSection7'">
+            <!-- Special case: Show adjustment value if the section is 'newSection7'.
+                 This field is calculated automatically and must be disabled for
+                 manual editing, so it is rendered as plain (read-only) text. -->
+            <td ng-if="lineItem.name === 'newSection7'" class="grey-background">
                 {{vm.adjustmentValue}}
             </td>
 

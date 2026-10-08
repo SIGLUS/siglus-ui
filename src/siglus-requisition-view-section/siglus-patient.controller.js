@@ -163,7 +163,21 @@
                 vm.adjustmentValue = calculatedAdjustment.toFixed(2);
             }
 
-            console.log('vm.adjustmentValue', vm.adjustmentValue);
+            // Sync the calculated value back into the underlying newSection7 (Ajuste)
+            // column so that the requisition's USER_INPUT value is kept up to date and
+            // submit-time validation is not blocked by an empty/stale value.
+            syncAdjustmentValueToSection();
+        }
+
+        function syncAdjustmentValueToSection() {
+            var adjustmentSection = vm.mergedPatientMap.newSection7;
+            if (!adjustmentSection || !adjustmentSection.column || !adjustmentSection.column.columns.length) {
+                return;
+            }
+            var columnName = adjustmentSection.column.columns[0].name;
+            if (adjustmentSection.columns[columnName]) {
+                adjustmentSection.columns[columnName].value = Number(vm.adjustmentValue);
+            }
         }
     }
 
