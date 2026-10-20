@@ -57,50 +57,57 @@
 
             return result;
         };
+        
+        function isLotExpired(lot, now) {
+            var expirationDate = _.get(lot, 'expirationDate');
+            return Boolean(expirationDate && now.isAfter(moment(expirationDate).add(1, 'd')));
+        }
+
+        function hasValidStock(lot, shouldKeepSoh0) {
+            return shouldKeepSoh0 || lot.stockOnHand > 0;
+        }
+
+        function isLotEligible(lot, shouldKeepSoh0, shouldExcludeExpired, now) {
+            if (!lot || !lot.orderableId || !lot.lotId) {
+                return false;
+            }
+            if (!hasValidStock(lot, shouldKeepSoh0)) {
+                return false;
+            }
+            if (shouldExcludeExpired && isLotExpired(lot, now)) {
+                return false;
+            }
+            return true;
+        }
+
+        function addLocationToMap(result, lot, location) {
+            if (!result[lot.orderableId]) {
+                result[lot.orderableId] = {};
+            }
+            if (!result[lot.orderableId][lot.lotId]) {
+                result[lot.orderableId][lot.lotId] = [];
+            }
+
+            result[lot.orderableId][lot.lotId].push({
+                id: location.locationId,
+                area: location.area,
+                locationCode: location.locationCode
+            });
+        }
+
+// --- Main Service Method ---
 
         this.getOrderableLotsLocationMap = function(locations, shouldKeepSoh0, shouldExcludeExpired) {
             var result = {};
-            // Only instantiate moment if expiration filtering is enabled
-            var now = shouldExcludeExpired ? moment() : null;
+            var now = moment();
 
             _.forEach(locations, function(location) {
-                _.forEach(location && location.lots, function(lot) {
-                    if (!lot) {
-                        return;
+                var lots = _.get(location, 'lots', []);
+
+                _.forEach(lots, function(lot) {
+                    if (isLotEligible(lot, shouldKeepSoh0, shouldExcludeExpired, now)) {
+                        addLocationToMap(result, lot, location);
                     }
-
-                    // 1. Stock check
-                    var hasStock = shouldKeepSoh0 || lot.stockOnHand > 0;
-                    if (!hasStock) {
-                        return;
-                    }
-
-                    // 2. Expiration check (only runs if shouldExcludeExpired is true)
-                    if (shouldExcludeExpired) {
-                        var expirationDate = _.get(lot, 'expirationDate');
-                        var isExpired = expirationDate && now.isAfter(moment(expirationDate).add(1, 'd'));
-
-                        // If expired, skip (null/undefined expiration dates still pass)
-                        if (isExpired) {
-                            return;
-                        }
-                    }
-
-                    var orderableId = lot.orderableId;
-                    var lotId = lot.lotId;
-                    if (!orderableId || !lotId) {
-                        return;
-                    }
-
-                    // 3. Initialize nested structures and push location
-                    var orderableMap = result[orderableId] || (result[orderableId] = {});
-                    var lotLocations = orderableMap[lotId] || (orderableMap[lotId] = []);
-
-                    lotLocations.push({
-                        id: location.locationId,
-                        area: location.area,
-                        locationCode: location.locationCode
-                    });
                 });
             });
 
