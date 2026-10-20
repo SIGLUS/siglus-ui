@@ -35,7 +35,8 @@
         'ShipmentLineItem', 'ShipmentViewLineItemGroup', 'suggestedQuantity', 'localStorageService',
         'StockCardSummaryRepositoryImpl', 'SiglusShipmentDraftService',
         'notificationService', 'confirmService', 'stateTrackerService', 'orderService', 'messageService',
-        'siglusShipmentConfirmModalService', 'alertConfirmModalService', 'siglusOrderableLotListService'
+        'siglusShipmentConfirmModalService', 'alertConfirmModalService', 'siglusOrderableLotListService',
+        'moment'
     ];
 
     function ShipmentViewController(
@@ -45,7 +46,8 @@
         ShipmentLineItem, ShipmentViewLineItemGroup, suggestedQuantity, localStorageService,
         StockCardSummaryRepositoryImpl, SiglusShipmentDraftService,
         notificationService, confirmService, stateTrackerService, orderService, messageService,
-        siglusShipmentConfirmModalService, alertConfirmModalService, siglusOrderableLotListService
+        siglusShipmentConfirmModalService, alertConfirmModalService, siglusOrderableLotListService,
+        moment
     ) {
         var vm = this;
 
