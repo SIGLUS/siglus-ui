@@ -89,8 +89,7 @@
 
         vm.getLocationList = function(lineItem) {
             return SiglusLocationCommonUtilsService.getLocationList(lineItem,
-                SiglusLocationCommonUtilsService
-                    .getOrderableLotsLocationMap(locations, false, true));
+                SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations));
         };
 
         function sortLineItemLotsByExpiryDate(displayLineItems) {
@@ -519,6 +518,11 @@
                                         return lineItem.added;
                                     }
                                     return true;
+                                })
+                                .filter(function(lineItem) {
+                                    var now = moment();
+                                    var expirationDate = _.get(lineItem, 'lot.expirationDate');
+                                    return !expirationDate || !now.isAfter(moment(expirationDate).add(1, 'd'));
                                 })
                                 .map(function(lineItem) {
                                     var lot = lineItem.lot;

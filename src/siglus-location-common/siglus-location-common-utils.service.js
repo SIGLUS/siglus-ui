@@ -57,56 +57,25 @@
 
             return result;
         };
-        
-        function isLotExpired(lot, now) {
-            var expirationDate = _.get(lot, 'expirationDate');
-            return Boolean(expirationDate && now.isAfter(moment(expirationDate).add(1, 'd')));
-        }
 
-        function hasValidStock(lot, shouldKeepSoh0) {
-            return shouldKeepSoh0 || lot.stockOnHand > 0;
-        }
-
-        function isLotEligible(lot, shouldKeepSoh0, shouldExcludeExpired, now) {
-            if (!lot || !lot.orderableId || !lot.lotId) {
-                return false;
-            }
-            if (!hasValidStock(lot, shouldKeepSoh0)) {
-                return false;
-            }
-            if (shouldExcludeExpired && isLotExpired(lot, now)) {
-                return false;
-            }
-            return true;
-        }
-
-        function addLocationToMap(result, lot, location) {
-            if (!result[lot.orderableId]) {
-                result[lot.orderableId] = {};
-            }
-            if (!result[lot.orderableId][lot.lotId]) {
-                result[lot.orderableId][lot.lotId] = [];
-            }
-
-            result[lot.orderableId][lot.lotId].push({
-                id: location.locationId,
-                area: location.area,
-                locationCode: location.locationCode
-            });
-        }
-
-// --- Main Service Method ---
-
-        this.getOrderableLotsLocationMap = function(locations, shouldKeepSoh0, shouldExcludeExpired) {
+        this.getOrderableLotsLocationMap = function(locations, shouldKeepSoh0) {
             var result = {};
-            var now = moment();
-
             _.forEach(locations, function(location) {
-                var lots = _.get(location, 'lots', []);
+                _.forEach(location.lots, function(lot) {
 
-                _.forEach(lots, function(lot) {
-                    if (isLotEligible(lot, shouldKeepSoh0, shouldExcludeExpired, now)) {
-                        addLocationToMap(result, lot, location);
+                    if (!result[lot.orderableId]) {
+                        result[lot.orderableId] = {};
+                    }
+
+                    if (!result[lot.orderableId][lot.lotId]) {
+                        result[lot.orderableId][lot.lotId] = [];
+                    }
+                    if (shouldKeepSoh0 || lot.stockOnHand > 0) {
+                        result[lot.orderableId][lot.lotId].push({
+                            id: location.locationId,
+                            area: location.area,
+                            locationCode: location.locationCode
+                        });
                     }
                 });
             });
