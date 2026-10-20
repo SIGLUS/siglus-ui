@@ -58,25 +58,49 @@
             return result;
         };
 
-        this.getOrderableLotsLocationMap = function(locations, shouldKeepSoh0) {
+        this.getOrderableLotsLocationMap = function(locations, shouldKeepSoh0, shouldExcludeExpired) {
             var result = {};
+            // Only instantiate moment if expiration filtering is enabled
+            var now = shouldExcludeExpired ? moment() : null;
+
             _.forEach(locations, function(location) {
-                _.forEach(location.lots, function(lot) {
-
-                    if (!result[lot.orderableId]) {
-                        result[lot.orderableId] = {};
+                _.forEach(location && location.lots, function(lot) {
+                    if (!lot) {
+                        return;
                     }
 
-                    if (!result[lot.orderableId][lot.lotId]) {
-                        result[lot.orderableId][lot.lotId] = [];
+                    // 1. Stock check
+                    var hasStock = shouldKeepSoh0 || lot.stockOnHand > 0;
+                    if (!hasStock) {
+                        return;
                     }
-                    if (shouldKeepSoh0 || lot.stockOnHand > 0) {
-                        result[lot.orderableId][lot.lotId].push({
-                            id: location.locationId,
-                            area: location.area,
-                            locationCode: location.locationCode
-                        });
+
+                    // 2. Expiration check (only runs if shouldExcludeExpired is true)
+                    if (shouldExcludeExpired) {
+                        var expirationDate = _.get(lot, 'expirationDate');
+                        var isExpired = expirationDate && now.isAfter(moment(expirationDate).add(1, 'd'));
+
+                        // If expired, skip (null/undefined expiration dates still pass)
+                        if (isExpired) {
+                            return;
+                        }
                     }
+
+                    var orderableId = lot.orderableId;
+                    var lotId = lot.lotId;
+                    if (!orderableId || !lotId) {
+                        return;
+                    }
+
+                    // 3. Initialize nested structures and push location
+                    var orderableMap = result[orderableId] || (result[orderableId] = {});
+                    var lotLocations = orderableMap[lotId] || (orderableMap[lotId] = []);
+
+                    lotLocations.push({
+                        id: location.locationId,
+                        area: location.area,
+                        locationCode: location.locationCode
+                    });
                 });
             });
 

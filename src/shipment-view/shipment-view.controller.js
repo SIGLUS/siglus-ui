@@ -456,9 +456,20 @@
                 loadingModalService.open();
                 siglusOrderableLotListService.getOrderableLots(vm.facility.id, orderableIds)
                     .then(function(lotList) {
-                        var withSohLotList = lotList.filter(function(lot) {
-                            return _.get(lot, 'soh', 0) > 0;
+                        var now = moment();
+
+                        var withSohLotList = (lotList || []).filter(function(lot) {
+                            // Check stock on hand first (cheap comparison)
+                            if (_.get(lot, 'soh', 0) <= 0) {
+                                return false;
+                            }
+
+                            var expirationDate = _.get(lot, 'expirationDate');
+
+                            // Pass if expirationDate is null/undefined, otherwise verify not expired
+                            return !expirationDate || !now.isAfter(moment(expirationDate).add(1, 'd'));
                         });
+
                         var lotsMapByOrderableId =
                             siglusOrderableLotListService.getLotsMapByOrderableId(withSohLotList);
 

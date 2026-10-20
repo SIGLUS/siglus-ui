@@ -89,7 +89,8 @@
 
         vm.getLocationList = function(lineItem) {
             return SiglusLocationCommonUtilsService.getLocationList(lineItem,
-                SiglusLocationCommonUtilsService.getOrderableLotsLocationMap(locations));
+                SiglusLocationCommonUtilsService
+                    .getOrderableLotsLocationMap(locations, false, true));
         };
 
         function sortLineItemLotsByExpiryDate(displayLineItems) {
