@@ -492,6 +492,16 @@
                         return orderable.id;
                     }))
                         .then(function(locationsInfo) {
+                            var now = moment();
+
+                            locationsInfo.forEach(function (location) {
+                                if (Array.isArray(location.lots)) {
+                                    location.lots = location.lots.filter(function (lot) {
+                                        return moment(lot.expirationDate).isSameOrAfter(now, 'day');
+                                    });
+                                }
+                            });
+                            
                             locations = locations.concat(locationsInfo);
                             var orderableIdLocationMap = convertLocationsInfoToMap(locationsInfo);
 
