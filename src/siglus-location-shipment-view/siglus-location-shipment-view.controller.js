@@ -496,7 +496,8 @@
                             locationsInfo.forEach(function(location) {
                                 if (Array.isArray(location.lots)) {
                                     location.lots = location.lots.filter(function(lot) {
-                                        return moment(lot.expirationDate).isSameOrAfter(now, 'day');
+                                        return (_.isNull(lot.lotId) || _.isUndefined(lot.lotId)) ||
+                                            moment(lot.expirationDate).isSameOrAfter(now, 'day');
                                     });
                                 }
                             });
